@@ -48,10 +48,10 @@ const searchGames = async (search_term): Promise<Game[]> => {
 const Home: Component = () => {
   const searchHash = location.hash.length > 0 ? location.hash.slice(1) : "";
   const [searchValue, setSearchValue] = createSignal(searchHash);
-  console.log(searchValue())
   const [foundGames] = createResource(searchValue, searchGames);
   const [topGames] = createResource(fetchTopGames);
   let searchTimeout: number | null = null;
+
   return (
     <>
       <header class="bg-gray-700 p-1 shadow flex">
@@ -78,7 +78,7 @@ const Home: Component = () => {
           <button type="submit">Search</button>
         </form>
       </header>
-      <main>
+      <main class="px-2">
         <div>
           <h2>Search results</h2>
           <ul class="flex flex-wrap">
@@ -110,18 +110,18 @@ const Home: Component = () => {
         </div>
         <div>
           <h2>Top games</h2>
-          <ul class="flex flex-wrap">
+          <ul class="flex flex-wrap -mr-2">
             <Show when={!topGames.loading} fallback={<li>Loading...</li>}>
               <For each={topGames()}>
                 {(game) => {
                   let img_url = game.box_art_url.replace("{width}", IMG_WIDTH).replace("{height}", IMG_HEIGHT);
                   const game_link = `/directory/game/${game.name}`;
                   return (
-                    <li>
-                      <a href={game_link} title={game.name}>
-                        <img src={img_url} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
+                    <li class="w-1/3 pb-2 pr-2">
+                      <a class="flex items-center bg-purple-50 border-2 rounded-sm border-purple-300 hover:shadow-purple shadow-purple hover:text-purple-800" href={game_link} title={game.name}>
+                        <img class="block w-16" src={img_url} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
+                        <p class="ml-2 text-lg">{game.name}</p>
                       </a>
-                      <p>{game.name}</p>
                     </li>
                   );
                 }}
