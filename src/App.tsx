@@ -1,8 +1,6 @@
 import { Component, lazy } from 'solid-js';
 import { Router, Route } from 'solid-app-router';
 
-import Nav from './components/Nav';
-
 const routes = [
   {
     path: '/',
@@ -21,7 +19,6 @@ const routes = [
 const App: Component = () => {
   return (
     <Router routes={routes}>
-      <Nav />
       <Route />
     </Router>
   );

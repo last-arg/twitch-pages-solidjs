@@ -1,17 +1,10 @@
 import { Component } from 'solid-js';
 
-interface Props {
-  title: string
-}
-
-const Header: Component<Props> = (props) => {
+const Header: Component = () => {
   return (
-    <header class="bg-white shadow">
-      <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold leading-tight text-gray-900">
-          {props.title}
-        </h1>
-      </div>
+    <header class="bg-gray-700 p-1 shadow flex">
+      <h1 class="text-white">Twitch filter</h1>
+      <input type="search" class="border bg-blue-100" placeholder="Search for game"/>
     </header>
   );
 };
