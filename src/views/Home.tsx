@@ -46,8 +46,7 @@ const searchGames = async (search_term): Promise<Game[]> => {
 };
 
 const Home: Component = () => {
-  const searchHash = location.hash.length > 0 ? location.hash.slice(1) : "";
-  const [searchValue, setSearchValue] = createSignal(searchHash);
+  const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
   const [foundGames] = createResource(searchValue, searchGames);
   const [topGames] = createResource(fetchTopGames);
   let searchTimeout: number | null = null;
