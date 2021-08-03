@@ -117,9 +117,9 @@ const Home: Component = () => {
                   const game_link = `/directory/game/${game.name}`;
                   return (
                     <li class="w-1/3 pb-2 pr-2">
-                      <a class="flex items-center bg-purple-50 border-2 rounded-sm border-purple-300 hover:shadow-purple shadow-purple hover:text-purple-800" href={game_link} title={game.name}>
+                      <a class="flex items-center bg-purple-50 border-2 border-purple-200 rounded-sm hover:text-purple-800 hover:border-purple-500" href={game_link} title={game.name}>
                         <img class="block w-16" src={img_url} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
-                        <p class="ml-2 text-lg">{game.name}</p>
+                        <p class="ml-3 text-lg">{game.name}</p>
                       </a>
                     </li>
                   );
