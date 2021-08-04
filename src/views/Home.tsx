@@ -12,6 +12,15 @@ interface Game {
   box_art_url: string,
 }
 
+interface Cursor {
+  cursor?: string
+}
+
+interface GamesResponse {
+  data: Game[],
+  pagination: Cursor,
+}
+
 const client_id = "7v5r973dmjp0nd1g43b8hcocj2airz";
 const HEADER_OPTS = {
   method: "GET",
@@ -69,6 +78,7 @@ const Home: Component = () => {
             onInput={(e) => {
               clearTimeout(searchTimeout);
               const value = e.currentTarget.value;
+              location.hash = value;
               searchTimeout = setTimeout(() => {
                 setSearchValue(value)
               }, 400);
