@@ -7,8 +7,8 @@ const routes = [
     component: lazy(() => import('./views/Home'))
   },
   {
-    path: '/about',
-    component: lazy(() => import('./views/About'))
+    path: '/directory/game/:name',
+    component: lazy(() => import('./views/Game'))
   },
   {
     path: "*all",
