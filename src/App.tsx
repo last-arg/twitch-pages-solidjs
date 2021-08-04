@@ -1,5 +1,5 @@
 import { Component, lazy } from 'solid-js';
-import { Router, Route } from 'solid-app-router';
+import { Router, Route, useRouter } from 'solid-app-router';
 
 const routes = [
   {
@@ -17,6 +17,7 @@ const routes = [
 ];
 
 const App: Component = () => {
+  console.log(useRouter())
   return (
     <Router routes={routes}>
       <Route />

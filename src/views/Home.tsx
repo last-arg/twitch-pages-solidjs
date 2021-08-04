@@ -1,4 +1,5 @@
 import { Component, createResource, createSignal, For } from 'solid-js';
+import { Link } from "solid-app-router";
 
 // TODO: make game list element into component. Or make whole list (ul) into component
 
@@ -104,9 +105,9 @@ const Home: Component = () => {
                       const game_link = `/directory/game/${game.name}`;
                       return (
                         <li>
-                          <a href={game_link} title={game.name}>
+                          <Link href={game_link} title={game.name}>
                             <img src={img_url} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
-                          </a>
+                          </Link>
                           <p>{game.name}</p>
                         </li>
                       );
@@ -126,10 +127,10 @@ const Home: Component = () => {
                   const game_link = `/directory/game/${encodeURI(game.name)}`;
                   return (
                     <li class="w-1/3 pb-2 pr-2">
-                      <a class="flex items-center bg-purple-50 border-2 border-purple-200 rounded-sm hover:text-purple-800 hover:border-purple-500" href={game_link} title={game.name}>
+                      <Link class="flex items-center bg-purple-50 border-2 border-purple-200 rounded-sm hover:text-purple-800 hover:border-purple-500" href={game_link} title={game.name}>
                         <img class="block w-16" src={img_url} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
                         <p class="ml-3 text-lg">{game.name}</p>
-                      </a>
+                      </Link>
                     </li>
                   );
                 }}
