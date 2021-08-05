@@ -1,6 +1,7 @@
 import { Component, lazy } from 'solid-js';
 import { Router, Route, Link } from 'solid-app-router';
 import GameData from './views/Game.Data';
+import Header from './components/Header';
 
 const routes = [
   {
@@ -22,6 +23,7 @@ const App: Component = () => {
   return (
     <>
       <Router routes={routes}>
+        <Header />
         <Route />
       </Router>
     </>
