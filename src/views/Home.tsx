@@ -16,7 +16,7 @@ const fetchTopGames = async (id): Promise<Game[]> => {
     return (await (await fetch("/tmp/top_games.json")).json()).data;
   } else {
     if (import.meta.env.VITE_TWITCH_ACCESS_TOKEN === undefined) {
-      throw "Three is no twitch access token solution setup for prodution site";
+      throw "No Twitch access token found";
     }
     return (await (await fetch(url, HEADER_OPTS)).json()).data;
   }

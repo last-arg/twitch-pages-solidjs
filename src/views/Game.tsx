@@ -49,6 +49,7 @@ interface Stream {
   type: string, // "" (empty string is an error)
   viewer_count: number,
   thumbnail_url: string,
+  title: string,
 }
 
 interface StreamResponse {
@@ -62,8 +63,14 @@ const fetchStreams = async (props): Promise<StreamResponse> => {
   const cursor = props.cursor || "";
   const count = 4;
   const url = `https://api.twitch.tv/helix/streams?game_id=${props.id}&first=${count}&after=${cursor}`;
-  const result = (await (await fetch(url, HEADER_OPTS)).json());
-  return result;
+  if (import.meta.env.DEV) {
+    return (await (await fetch("/tmp/top_category.json")).json());
+  } else {
+    if (import.meta.env.VITE_TWITCH_ACCESS_TOKEN === undefined) {
+      throw "No Twitch access token found";
+    }
+    return (await (await fetch(url, HEADER_OPTS)).json());
+  }
 };
 
 interface CategoryState {
@@ -77,20 +84,30 @@ const CategoryStreams = (props) => {
   return (
     <Show when={!streams.loading} fallback={<p>Loading...</p>}>
       <ul class="flex flex-wrap">
-        <For each={streams().data}> {(stream) => 
-          <li class="w-1/3">
-            <img
-              src={createImgUrl(stream.thumbnail_url, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT)}
-              width={IMG_STREAM_WIDTH} height={IMG_STREAM_HEIGHT}
-            />
+        <For each={streams().data}> {(stream) => {
+          const twitch_stream_url = `https://www.twitch.tv/${stream.user_login}`;
+
+          return (<li class="w-1/3">
+            <Link href={twitch_stream_url} title={`Go to ${stream.user_name}'s stream`} external>
+              <img
+                src={createImgUrl(stream.thumbnail_url, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT)}
+                width={IMG_STREAM_WIDTH} height={IMG_STREAM_HEIGHT}
+              />
+            </Link>
+
+            <p class="truncate">
+              <Link href={twitch_stream_url} title={stream.title}>
+                {stream.title}
+              </Link>
+            </p>
             <p>
               {stream.viewer_count}
             </p>
             <p>
-              {stream.user_name} <Link href={`https://www.twitch.tv/${stream.user_login}`} external>[Twitch]</Link>
+              {stream.user_name} <Link href={`${twitch_stream_url}/videos`} external>[Twitch videos]</Link>
             </p>
           </li>
-        }</For>
+        )}}</For>
       </ul>
       <Show when={streams().pagination.cursor}>
         <button onClick={async () => {
