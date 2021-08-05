@@ -1,37 +1,14 @@
 import { Component, createResource, createSignal, For } from 'solid-js';
+import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link } from "solid-app-router";
 
 // TODO: make game list element into component. Or make whole list (ul) into component
-
-const IMG_WIDTH = 143;
-const IMG_HEIGHT = 190;
 
 interface Game {
   id: string,
   name: string,
   box_art_url: string,
 }
-
-interface Cursor {
-  cursor?: string
-}
-
-interface GamesResponse {
-  data: Game[],
-  pagination: Cursor,
-}
-
-const client_id = "7v5r973dmjp0nd1g43b8hcocj2airz";
-const HEADER_OPTS = {
-  method: "GET",
-  headers: {
-    "Host": "api.twitch.tv",
-    // TODO: remove hardcoded bearer token
-    "Authorization": `Bearer ${import.meta.env.VITE_TWITCH_ACCESS_TOKEN}`,
-    "Client-id": client_id,
-    "Accept": "application/vnd.twitchtv.v5+json",
-  }
-};
 
 const fetchTopGames = async (id): Promise<Game[]> => {
   const url = "https://api.twitch.tv/helix/games/top?first=10";

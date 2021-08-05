@@ -1,5 +1,6 @@
 import { Component, lazy } from 'solid-js';
-import { Router, Route, useRouter } from 'solid-app-router';
+import { Router, Route, Link } from 'solid-app-router';
+import GameData from './views/Game.Data';
 
 const routes = [
   {
@@ -8,7 +9,8 @@ const routes = [
   },
   {
     path: '/directory/game/:name',
-    component: lazy(() => import('./views/Game'))
+    component: lazy(() => import('./views/Game')),
+    data: GameData
   },
   {
     path: "*all",
@@ -17,11 +19,12 @@ const routes = [
 ];
 
 const App: Component = () => {
-  console.log(useRouter())
   return (
-    <Router routes={routes}>
-      <Route />
-    </Router>
+    <>
+      <Router routes={routes}>
+        <Route />
+      </Router>
+    </>
   );
 };
 
