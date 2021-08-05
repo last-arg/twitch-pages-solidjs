@@ -60,7 +60,7 @@ interface StreamResponse {
 
 const fetchStreams = async (props): Promise<StreamResponse> => {
   const cursor = props.cursor || "";
-  const count = 10;
+  const count = 4;
   const url = `https://api.twitch.tv/helix/streams?game_id=${props.id}&first=${count}&after=${cursor}`;
   const result = (await (await fetch(url, HEADER_OPTS)).json());
   return result;
