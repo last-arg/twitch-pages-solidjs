@@ -1,19 +1,12 @@
 import { Component, createResource, createSignal, createEffect, For, Show } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useRouter } from 'solid-app-router';
+import { createTwitchImage } from "../common";
 
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
 
-interface Game {
-  id: string,
-  name: string,
-  box_art_url: string,
-}
-
-const createImgUrl = (url_template, width, height) => {
-  const w = width || IMG_WIDTH;
-  const h = height || IMG_HEIGHT;
+const createLiveUserImageUrl = (url_template: string, w: number, h: number): string => {
   return url_template.replace("{width}", w).replace("{height}", h);
 };
 
@@ -63,7 +56,7 @@ const fetchStreams = async (props): Promise<StreamResponse> => {
   const cursor = props.cursor || "";
   const count = 4;
   const url = `https://api.twitch.tv/helix/streams?game_id=${props.id}&first=${count}&after=${cursor}`;
-  if (import.meta.env.DEV) {
+  if (!import.meta.env.DEV) {
     return (await (await fetch("/tmp/top_category.json")).json());
   } else {
     if (import.meta.env.VITE_TWITCH_ACCESS_TOKEN === undefined) {
@@ -89,12 +82,13 @@ const CategoryStreams = (props) => {
     <Show when={!streams.loading} fallback={<p>Loading...</p>}>
       <ul class="flex flex-wrap">
         <For each={category().streams}> {(stream) => {
+          console.log(stream)
           const twitch_stream_url = `https://www.twitch.tv/${stream.user_login}`;
 
           return (<li class="w-1/3">
             <Link href={twitch_stream_url} title={`Go to ${stream.user_name}'s stream`} external>
               <img
-                src={createImgUrl(stream.thumbnail_url, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT)}
+                src={createLiveUserImageUrl(stream.thumbnail_url, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT)}
                 width={IMG_STREAM_WIDTH} height={IMG_STREAM_HEIGHT}
               />
             </Link>
@@ -129,7 +123,7 @@ const Game: Component = (props) => {
   return (
     <>
       <Show when={props.category} fallback={<CategoryTitle name={cat_name} />}>
-        <CategoryTitle name={cat_name} img_url={createImgUrl(props.category.box_art_url)} />
+        <CategoryTitle name={cat_name} img_url={createTwitchImage(props.category.name, IMG_WIDTH, IMG_HEIGHT)} />
         <CategoryStreams category_id={props.category.id}/>
       </Show>
     </>

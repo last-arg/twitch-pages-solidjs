@@ -1,6 +1,6 @@
 import { Component, createResource, createSignal, createEffect } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
-import { Game } from "../common";
+import { Game, createTwitchImage } from "../common";
 import { Link } from 'solid-app-router';
 
 const searchGames = async (search_term): Promise<Game[]> => {
@@ -27,8 +27,9 @@ const SidebarSearch = (props) => {
         <ul>
           <For each={games()}>
             {(game) => {
-                let img_url = game.box_art_url;
-                const game_link = `/directory/game/${game.name}`;
+                const encoded_name = encodeURI(game.name);
+                let img_url = createTwitchImage(game.name, IMG_WIDTH, IMG_HEIGHT);
+                const game_link = `/directory/game/${encoded_name}`;
                 return (
                   <li class="my-4">
                     <Link class="w-full flex items-center" href={game_link} title={game.name}>

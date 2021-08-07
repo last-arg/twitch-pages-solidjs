@@ -1,5 +1,5 @@
-export const IMG_WIDTH = 143;
-export const IMG_HEIGHT = 190;
+export const IMG_WIDTH = 104;
+export const IMG_HEIGHT = 144;
 
 const clientId = "7v5r973dmjp0nd1g43b8hcocj2airz";
 

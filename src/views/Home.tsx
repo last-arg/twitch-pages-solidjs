@@ -1,6 +1,6 @@
 import { Component, createResource, createSignal, For } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
-import { Game } from "../common";
+import { Game, createTwitchImage } from "../common";
 import { Link } from "solid-app-router";
 
 const fetchTopGames = async (id): Promise<Game[]> => {
@@ -43,8 +43,9 @@ const Home: Component = () => {
           <Show when={!topGames.loading} fallback={<li>Loading...</li>}>
             <For each={topGames()}>
               {(game) => {
-                let img_url = game.box_art_url.replace("{width}", IMG_WIDTH).replace("{height}", IMG_HEIGHT);
-                const game_link = `/directory/game/${encodeURI(game.name)}`;
+                const encoded_name = encodeURI(game.name);
+                let img_url = createTwitchImage(encoded_name, IMG_WIDTH, IMG_HEIGHT);
+                const game_link = `/directory/game/${encoded_name}`;
                 return (
                   <li class="w-1/3 pb-2 pr-2">
                     <div class="bg-purple-50">
