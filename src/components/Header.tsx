@@ -12,12 +12,76 @@ const searchGames = async (search_term): Promise<Game[]> => {
   return (await (await fetch(url, HEADER_OPTS)).json()).data;
 };
 
+const SidebarSearch = (props) => {
+  const [games] = createResource(props.searchValue, searchGames);
+
+  return (
+    <Switch>
+      <Match when={games.loading} >
+        <p>Searching...</p>
+      </Match>
+      <Match when={games().length === 0}>
+        <p>No results found</p>
+      </Match>
+      <Match when={games().length > 0}>
+        <ul>
+          <For each={games()}>
+            {(game) => {
+                let img_url = game.box_art_url;
+                const game_link = `/directory/game/${game.name}`;
+                return (
+                  <li class="my-4">
+                    <Link class="w-full flex items-center" href={game_link} title={game.name}>
+                      <img src={img_url} alt="" width="52" height="72" />
+                      <p class="pl-3">{game.name}</p>
+                    </Link>
+                  </li>
+                );
+            }}
+          </For>
+        </ul>
+      </Match>
+    </Switch>
+  );
+};
+
+enum Sidebar {
+  Closed,
+  Search,
+  Games,
+  Streams,
+}
+
+// TODO: If sidebar content exceeds height display a button or gradient at bottom
 const Header: Component = () => {
   const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
-  const [foundGames] = createResource(searchValue, searchGames);
+  const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
   let searchTimeout: number | null = null;
 
-  createEffect(() => console.log(foundGames))
+  const submitSearch = (e) => {
+    e.preventDefault();
+    clearTimeout(searchTimeout);
+    const value  = e.currentTarget.querySelector("input[type=search]").value;
+    setSearchValue(value);
+  };
+
+  const inputSearch = (e) => {
+    clearTimeout(searchTimeout);
+    const value = e.currentTarget.value;
+    location.hash = value;
+    searchTimeout = setTimeout(() => {
+      setSearchValue(value)
+    }, 400);
+  };
+
+  const inputBlur = () => {
+    console.log("loose focus")
+    if (searchValue().length == 0) {
+      setSidebar(Sidebar.Closed)
+    }
+  };
+
+  createEffect(() => console.log(sidebar(), Sidebar.Closed));
 
   return (
     <div class="relative">
@@ -25,58 +89,30 @@ const Header: Component = () => {
         <h1 class="text-white">
           <Link href="/" title="Home">Home</Link>
         </h1>
-        <form onSubmit={(e) => {
-            e.preventDefault();
-            clearTimeout(searchTimeout);
-            const value  = e.currentTarget.querySelector("input[type=search]").value;
-            setSearchValue(value);
-        }}>
+        <form onSubmit={submitSearch}>
           <input
             type="search"
             class="border bg-blue-100"
             placeholder="Search for game"
             value={searchValue()}
-            onInput={(e) => {
-              clearTimeout(searchTimeout);
-              const value = e.currentTarget.value;
-              location.hash = value;
-              searchTimeout = setTimeout(() => {
-                setSearchValue(value)
-              }, 400);
-            }}
+            onInput={inputSearch}
+            onFocus={() => {setSidebar(Sidebar.Search)}}
+            onBlur={inputBlur}
           />
           <button type="submit">Search</button>
         </form>
+        <button>Games</button>
+        <button>Streams</button>
       </header>
-      <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto">
-        <h2>Search results</h2>
-        <ul class="">
-          <Switch>
-            <Match when={foundGames.loading} >
-              <p>Searching...</p>
-            </Match>
-            <Match when={searchValue().trim().length > 0 && foundGames().length === 0}>
-              <p>No results found</p>
-            </Match>
-            <Match when={foundGames().length > 0}>
-              <For each={foundGames()}>
-                {(game) => {
-                    let img_url = game.box_art_url;
-                    const game_link = `/directory/game/${game.name}`;
-                    return (
-                      <li class="my-4">
-                        <Link class="w-full flex items-center" href={game_link} title={game.name}>
-                          <img src={img_url} alt="" width="52" height="72" />
-                          <p class="pl-3">{game.name}</p>
-                        </Link>
-                      </li>
-                    );
-                }}
-              </For>
-            </Match>
-          </Switch>
-        </ul>
-      </div>
+      <Show when={sidebar() != Sidebar.Closed}>
+        <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto">
+          <div class="flex justify-between">
+            <h2>Search results</h2>
+            <button onClick={() => {setSidebar(Sidebar.Closed)}} title="close">Close</button>
+          </div>
+          <SidebarSearch searchValue={searchValue()}/>
+        </div>
+      </Show>
     </div>
   );
 };
