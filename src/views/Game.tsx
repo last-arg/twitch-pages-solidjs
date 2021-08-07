@@ -19,12 +19,8 @@ const redirectIfInvalidCategory = (category) => {
 
 const CategoryTitle: Component = (props) => {
   const name = props.name;
-  let link_href = "#";
-  let img_url = "";
-  if (props.img_url) {
-    img_url = props.img_url;
-    link_href = "https://www.twitch.tv/directory/game/" + encodeURIComponent(name);
-  }
+  const img_url = createTwitchImage(name, IMG_WIDTH, IMG_HEIGHT)
+  const link_href = "https://www.twitch.tv/directory/game/" + encodeURIComponent(name);
 
   return (
     <h1 class="text-xl">
@@ -120,10 +116,11 @@ const Game: Component = (props) => {
   const [router] = useRouter();
   const cat_name = decodeURIComponent(router.params.name);
 
+  // TODO: if invalid url(category/game) display 'Not Found' message
   return (
     <>
       <Show when={props.category} fallback={<CategoryTitle name={cat_name} />}>
-        <CategoryTitle name={cat_name} img_url={createTwitchImage(props.category.name, IMG_WIDTH, IMG_HEIGHT)} />
+        <CategoryTitle name={cat_name} />
         <CategoryStreams category_id={props.category.id}/>
       </Show>
     </>
