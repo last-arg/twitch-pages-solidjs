@@ -1,4 +1,4 @@
-import { Component, createResource, createSignal, createEffect, For, Show, Suspense, lazy } from 'solid-js';
+import { Component, createResource, createSignal, createEffect, For, Show } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useRouter } from 'solid-app-router';
 
@@ -79,12 +79,16 @@ interface CategoryState {
 }
 
 const CategoryStreams = (props) => {
+  const [category, setCategory] = createSignal({next_cursor: null, streams: []});
   const [streams] = createResource({id: props.category_id}, fetchStreams);
+
+  createEffect(() =>
+    !streams.loading && setCategory({streams: streams().data, cursor: streams().pagination.cursor}))
 
   return (
     <Show when={!streams.loading} fallback={<p>Loading...</p>}>
       <ul class="flex flex-wrap">
-        <For each={streams().data}> {(stream) => {
+        <For each={category().streams}> {(stream) => {
           const twitch_stream_url = `https://www.twitch.tv/${stream.user_login}`;
 
           return (<li class="w-1/3">
