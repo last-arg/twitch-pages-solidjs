@@ -19,8 +19,14 @@ const redirectIfInvalidCategory = (category) => {
 
 const CategoryTitle: Component = (props) => {
   const name = props.name;
-  const img_url = createTwitchImage(name, IMG_WIDTH, IMG_HEIGHT)
-  const link_href = "https://www.twitch.tv/directory/game/" + encodeURIComponent(name);
+  const placeholder = props.placeholder || false;
+  let img_url = "";
+  let link_href = "#";
+
+  if (!props.placeholder) {
+      img_url = createTwitchImage(name, IMG_WIDTH, IMG_HEIGHT)
+      link_href = "https://www.twitch.tv/directory/game/" + encodeURIComponent(name);
+  }
 
   return (
     <h1 class="text-xl">
@@ -78,7 +84,6 @@ const CategoryStreams = (props) => {
     <Show when={!streams.loading} fallback={<p>Loading...</p>}>
       <ul class="flex flex-wrap">
         <For each={category().streams}> {(stream) => {
-          console.log(stream)
           const twitch_stream_url = `https://www.twitch.tv/${stream.user_login}`;
 
           return (<li class="w-1/3">
@@ -88,7 +93,6 @@ const CategoryStreams = (props) => {
                 width={IMG_STREAM_WIDTH} height={IMG_STREAM_HEIGHT}
               />
             </Link>
-
             <p class="truncate">
               <Link href={twitch_stream_url} title={stream.title}>
                 {stream.title}
@@ -116,12 +120,15 @@ const Game: Component = (props) => {
   const [router] = useRouter();
   const cat_name = decodeURIComponent(router.params.name);
 
-  // TODO: if invalid url(category/game) display 'Not Found' message
+  createEffect(() => console.log("cat", props.category.loading))
+
   return (
     <>
-      <Show when={props.category} fallback={<CategoryTitle name={cat_name} />}>
+      <Show when={!props.category.loading} fallback={<CategoryTitle name={cat_name} placeholder={true} />}>
         <CategoryTitle name={cat_name} />
-        <CategoryStreams category_id={props.category.id}/>
+      </Show>
+      <Show when={!props.category.loading && props.category() !== undefined} fallback={<p>Not Found</p>}>
+        <CategoryStreams category_id={props.category().id}/>
       </Show>
     </>
   );
