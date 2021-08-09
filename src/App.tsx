@@ -14,12 +14,18 @@ const routes = [
     data: GameData
   },
   {
+    path: '/:name/videos',
+    component: lazy(() => import('./views/UserVideos')),
+    // data: UserVideosData
+  },
+  {
     path: "*all",
     component: lazy(() => import('./views/NotFound'))
   }
 ];
 
 const App: Component = () => {
+  // TODO?: handle localStorage data (followed games and streams) here?
   return (
     <>
       <Router routes={routes}>
