@@ -1,9 +1,9 @@
-import { Component, createResource, createSignal, createEffect, For, Switch, Match, Show } from 'solid-js';
+import { Component, createResource, createSignal, createEffect, For, Switch, Match, Show, PropsWithChildren } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Category, createTwitchImage } from "../common";
 import { Link } from 'solid-app-router';
 
-const searchGames = async (search_term): Promise<Category[]> => {
+const searchGames = async (search_term: string): Promise<Category[]> => {
   const trimmed_term = search_term.trim();
   if (trimmed_term.length === 0) {
     return [];
@@ -12,7 +12,7 @@ const searchGames = async (search_term): Promise<Category[]> => {
   return (await (await fetch(url, HEADER_OPTS)).json()).data;
 };
 
-const SidebarSearch = (props) => {
+const SidebarSearch = (props: PropsWithChildren<{searchValue: string}>) => {
   const [games] = createResource(props.searchValue, searchGames);
 
   return (
@@ -57,22 +57,23 @@ enum Sidebar {
 const Header: Component = () => {
   const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
   const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
-  let searchTimeout: number | null = null;
+  let searchTimeout: number = 0;
 
-  const submitSearch = (e) => {
+  const submitSearch = (e: Event) => {
     e.preventDefault();
     clearTimeout(searchTimeout);
-    const value  = e.currentTarget.querySelector("input[type=search]").value;
+    const value: string = (e.currentTarget as HTMLInputElement)
+      .querySelector<HTMLInputElement>("input[type=search]").value;
     setSearchValue(value);
   };
 
-  const inputSearch = (e) => {
+  const inputSearch = (e: Event) => {
     clearTimeout(searchTimeout);
-    const value = e.currentTarget.value;
+    const value: string = (e.currentTarget as HTMLInputElement).value;
     location.hash = value;
-    searchTimeout = setTimeout(() => {
+    searchTimeout = setTimeout((value: string) => {
       setSearchValue(value)
-    }, 400);
+    }, 400, value);
   };
 
   const inputBlur = () => {

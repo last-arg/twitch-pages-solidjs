@@ -132,7 +132,7 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
   );
 };
 
-const CategoryView: Component = (props: PropsWithChildren<{category: Resource<Category>}>) => {
+const CategoryView = (props: PropsWithChildren<{category: Resource<Category>}>) => {
   const [router] = useRouter();
   const cat_name = decodeURIComponent(router.params.name as string);
 
@@ -146,7 +146,7 @@ const CategoryView: Component = (props: PropsWithChildren<{category: Resource<Ca
           <p>Loading...</p>
         </Match>
         <Match when={!props.category.loading && props.category() !== undefined}>
-          <CategoryStreams category_id={props.category().id}/>
+          <CategoryStreams category_id={props.category().id} />
         </Match>
       </Switch>
     </>

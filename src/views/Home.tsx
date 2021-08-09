@@ -3,7 +3,7 @@ import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Category, createTwitchImage, createGamesStore } from "../common";
 import { Link } from "solid-app-router";
 
-const fetchTopGames = async (id): Promise<Category[]> => {
+const fetchTopGames = async (id: string): Promise<Category[]> => {
   const url = "https://api.twitch.tv/helix/games/top?first=10";
   if (import.meta.env.DEV) {
     return (await (await fetch("/tmp/top_games.json")).json()).data;
@@ -20,14 +20,16 @@ const Home: Component = () => {
   const [topGames] = createResource(fetchTopGames);
   const [gamesFollowed, setGamesFollowed] = createGamesStore()
 
-  const followGame = (e) => {
+  const followGame = (e: MouseEvent) => {
     e.preventDefault();
-    setGamesFollowed(e.target.getAttribute("data-id"), e.target.getAttribute("data-name"));
+    const elem = e.target as Element;
+    setGamesFollowed(elem.getAttribute("data-id"), elem.getAttribute("data-name"));
   };
 
-  const unfollowGame = (e) => {
+  const unfollowGame = (e: MouseEvent) => {
     e.preventDefault();
-    setGamesFollowed(e.target.getAttribute("data-id"), undefined);
+    const elem = e.target as Element;
+    setGamesFollowed(elem.getAttribute("data-id"), undefined);
   };
 
   return (
