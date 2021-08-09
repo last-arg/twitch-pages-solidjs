@@ -1,18 +1,23 @@
-import { Component, createResource, createSignal, createEffect, For, Show } from 'solid-js';
+import { Component, createResource, createSignal, createEffect, For, Show, Switch, Match, PropsWithChildren, Resource } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useRouter } from 'solid-app-router';
-import { createTwitchImage } from "../common";
+import { Game, createTwitchImage } from "../common";
 
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
 
 const createLiveUserImageUrl = (url_template: string, w: number, h: number): string => {
-  return url_template.replace("{width}", w).replace("{height}", h);
+  return url_template.replace("{width}", w.toString()).replace("{height}", h.toString());
 };
 
-const CategoryTitle: Component = (props) => {
+interface TitleProps {
+  name: string,
+  placeholder?: boolean
+}
+
+const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
   const name = props.name;
-  const placeholder = props.placeholder || false;
+  const placeholder = props.placeholder ?? false;
   let img_url = "";
   let link_href = "#";
 
@@ -78,8 +83,12 @@ interface CategoryState {
   streams: Stream[],
 }
 
-const CategoryStreams = (props) => {
-  const [category, setCategory] = createSignal({next_cursor: null, streams: []});
+interface StreamProps {
+  category_id: string
+}
+
+const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
+  const [category, setCategory] = createSignal<CategoryState>({next_cursor: null, streams: []});
   const [streams] = createResource({id: props.category_id}, fetchStreams);
 
   createEffect(() =>
@@ -88,7 +97,7 @@ const CategoryStreams = (props) => {
   return (
     <Show when={!streams.loading} fallback={<p>Loading...</p>}>
       <ul class="flex flex-wrap">
-        <For each={category().streams}> {(stream) => {
+        <For each={category().streams}>{(stream: Stream) => {
           const twitch_stream_url = `https://www.twitch.tv/${stream.user_login}`;
 
           return (
@@ -116,18 +125,16 @@ const CategoryStreams = (props) => {
       </ul>
       <Show when={streams().pagination.cursor}>
         <button onClick={async () => {
-          fetchStreams({id: props.category_id, cursor: streams.pagination.cursor})}
+          fetchStreams({id: props.category_id, cursor: streams().pagination.cursor})}
         }>Load more streams</button>
       </Show>
     </Show>
   );
 };
 
-const Game: Component = (props) => {
+const Game: Component = (props: PropsWithChildren<{category: Resource<Game>}>) => {
   const [router] = useRouter();
-  const cat_name = decodeURIComponent(router.params.name);
-
-  createEffect(() => console.log("cat", props.category.loading))
+  const cat_name = decodeURIComponent(router.params.name as string);
 
   return (
     <>

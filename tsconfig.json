@@ -8,5 +8,7 @@
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
     "types": ["vite/client"]
-  }
+  },
+  "include": ["src/**/*.tsx", "src/**/*.tsx"],
+  "exclude": ["node_modules"]
 }

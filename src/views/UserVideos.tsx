@@ -5,7 +5,7 @@ import { createTwitchImage } from "../common";
 
 const UserVideos: Component = (props) => {
   const [router] = useRouter();
-  const username = decodeURIComponent(router.params.name);
+  const username = decodeURIComponent(router.params.name as string);
 
   // TODO: make sure valid/existing user
   // TODO: get user videos
