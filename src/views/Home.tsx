@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, createEffect, For } from 'solid-js';
 import { createStore, Store } from "solid-js/store";
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
-import { Game, createTwitchImage } from "../common";
+import { Game, createTwitchImage, createGamesStore } from "../common";
 import { Link } from "solid-app-router";
 
 const fetchTopGames = async (id): Promise<Game[]> => {
@@ -14,17 +14,6 @@ const fetchTopGames = async (id): Promise<Game[]> => {
     }
     return (await (await fetch(url, HEADER_OPTS)).json()).data;
   }
-};
-
-const createGamesStore = () => {
-  let initValue = {};
-  const local_games = localStorage.getItem("games")
-  if (local_games) {
-    initValue = JSON.parse(local_games);
-  }
-  const [games, setGames] = createStore(initValue);
-  createEffect(() => {localStorage.setItem("games", JSON.stringify(games))})
-  return [games, setGames];
 };
 
 const Home: Component = () => {
