@@ -1,5 +1,4 @@
-import { Component, createResource, createSignal, createEffect, For } from 'solid-js';
-import { createStore, Store } from "solid-js/store";
+import { Component, createResource, createSignal, createEffect, For, Show } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Game, createTwitchImage, createGamesStore } from "../common";
 import { Link } from "solid-app-router";

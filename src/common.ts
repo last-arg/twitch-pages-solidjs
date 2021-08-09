@@ -1,13 +1,23 @@
-import { createStore, Store } from "solid-js/store";
+import { createStore, Store, SetStoreFunction } from "solid-js/store";
 import { createEffect } from 'solid-js';
 
-export const createGamesStore = () => {
+export interface Game {
+  id: string,
+  name: string,
+  box_art_url: string,
+}
+
+export interface GameFollow {
+  [id: string]: string
+}
+
+export const createGamesStore = (): [get: Store<GameFollow>, set: SetStoreFunction<GameFollow>] => {
   let initValue = {};
   const local_games = localStorage.getItem("games")
   if (local_games) {
     initValue = JSON.parse(local_games);
   }
-  const [games, setGames] = createStore(initValue);
+  const [games, setGames] = createStore<GameFollow>(initValue);
   createEffect(() => {localStorage.setItem("games", JSON.stringify(games))})
   return [games, setGames];
 };
@@ -16,8 +26,4 @@ export const createTwitchImage = (name: string, width: number, height: number): 
   return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
 }
 
-export interface Game {
-  id: string,
-  name: string,
-  box_art_url: string,
-}
+
