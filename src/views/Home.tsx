@@ -1,6 +1,6 @@
 import { Component, createResource, createSignal, createEffect, For, Show } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
-import { Category, createTwitchImage, createGamesStore } from "../common";
+import { Category, createTwitchImage, createGamesStore, IconExternalLink, IconFollow, IconUnfollow } from "../common";
 import { Link } from "solid-app-router";
 
 const fetchTopGames = async (id: string): Promise<Category[]> => {
@@ -22,13 +22,13 @@ const Home: Component = () => {
 
   const followGame = (e: MouseEvent) => {
     e.preventDefault();
-    const elem = e.target as Element;
+    const elem = e.currentTarget as Element;
     setGamesFollowed(elem.getAttribute("data-id"), elem.getAttribute("data-name"));
   };
 
   const unfollowGame = (e: MouseEvent) => {
     e.preventDefault();
-    const elem = e.target as Element;
+    const elem = e.currentTarget as Element;
     setGamesFollowed(elem.getAttribute("data-id"), undefined);
   };
 
@@ -51,12 +51,12 @@ const Home: Component = () => {
                           <img class="block w-16" src={img_url} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
                           <p class="ml-3 text-lg">{game.name}</p>
                         </div>
-                        <div>
+                        <div class="flex flex-col justify-between">
                           <Show when={!Object.keys(gamesFollowed).includes(game.id)}
-                            fallback={<button class="js-unfollowGame h-1/2" onClick={unfollowGame} data-id={game.id} title="Remove bookmark">bk remove</button>}>
-                            <button class="js-followGame h-1/2" onClick={followGame} data-name={game.name} data-id={game.id} title="Add bookmark">bk add</button>
+                            fallback={<button class="text-trueGray-400 p-1.5 w-8 hover:text-black" onClick={unfollowGame} data-id={game.id} title="Remove bookmark"><IconUnfollow /></button>}>
+                            <button class="text-trueGray-400 p-1.5 w-8 hover:text-black" onClick={followGame} data-name={game.name} data-id={game.id} title="Add bookmark"><IconFollow /></button>
                           </Show>
-                          <Link class="block h-1/2" href={`https://www.twitch.tv${game_link}`} external title={`Open ${game.name} in Twitch`}>Twitch [E]</Link>
+                          <Link class="text-trueGray-400 p-2 w-8 hover:text-black" href={`https://www.twitch.tv${game_link}`} title="Open game in Twitch" onClick={(e: Event) => e.stopPropagation()}><IconExternalLink /></Link>
                         </div>
                       </Link>
 
