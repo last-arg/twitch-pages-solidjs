@@ -1,4 +1,5 @@
-import { Component, createResource, createSignal, For } from 'solid-js';
+import { Component, createResource, createSignal, createEffect, For } from 'solid-js';
+import { createStore, Store } from "solid-js/store";
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Game, createTwitchImage } from "../common";
 import { Link } from "solid-app-router";
@@ -15,25 +16,31 @@ const fetchTopGames = async (id): Promise<Game[]> => {
   }
 };
 
-const handleGameItemEvents = (e) => {
-  if (e.target.classList.contains("js-addBookmark")) {
-    e.preventDefault()
-    // TODO: add bookmark
-    console.log("TODO: add bookmark")
-  } else if (e.target.classList.contains("js-removeBookmark")) {
-    e.preventDefault()
-    // TODO: remove bookmark
-    console.log("TODO: remove bookmark")
-  } else if (e.target.classList.contains("js-openTwitchLink")) {
-    e.preventDefault()
+const createGamesStore = () => {
+  let initValue = {};
+  const local_games = localStorage.getItem("games")
+  if (local_games) {
+    initValue = JSON.parse(local_games);
   }
+  const [games, setGames] = createStore(initValue);
+  createEffect(() => {localStorage.setItem("games", JSON.stringify(games))})
+  return [games, setGames];
 };
 
 const Home: Component = () => {
   // TODO?: make resource into route data?
   const [topGames] = createResource(fetchTopGames);
-  // TODO: placefolder data
-  const bookmarkedGames = ["511224", "27471"];
+  const [gamesFollowed, setGamesFollowed] = createGamesStore()
+
+  const followGame = (e) => {
+    e.preventDefault();
+    setGamesFollowed(e.target.getAttribute("data-id"), e.target.getAttribute("data-name"));
+  };
+
+  const unfollowGame = (e) => {
+    e.preventDefault();
+    setGamesFollowed(e.target.getAttribute("data-id"), undefined);
+  };
 
   return (
     <>
@@ -49,17 +56,17 @@ const Home: Component = () => {
                 return (
                   <li class="w-1/3 pb-2 pr-2">
                     <div class="bg-purple-50">
-                      <Link class="flex border-2 border-purple-200 rounded-sm hover:text-purple-800 hover:border-purple-500" href={game_link} title={game.name} onClick={handleGameItemEvents}>
+                      <Link class="flex border-2 border-purple-200 rounded-sm hover:text-purple-800 hover:border-purple-500" href={game_link} title={game.name}>
                         <div class="flex-grow flex items-center">
                           <img class="block w-16" src={img_url} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
                           <p class="ml-3 text-lg">{game.name}</p>
                         </div>
                         <div>
-                          <Show when={!bookmarkedGames.includes(game.id)} fallback={<button class="js-removeBookmark h-1/2" title="Remove bookmark">bk remove</button>}>
-                            <button class="js-addBookmark h-1/2" title="Add bookmark">bk add</button>
+                          <Show when={!Object.keys(gamesFollowed).includes(game.id)}
+                            fallback={<button class="js-unfollowGame h-1/2" onClick={unfollowGame} data-id={game.id} title="Remove bookmark">bk remove</button>}>
+                            <button class="js-followGame h-1/2" onClick={followGame} data-name={game.name} data-id={game.id} title="Add bookmark">bk add</button>
                           </Show>
-                          
-                          <Link class="js-openTwitchLink block h-1/2" href={`https://www.twitch.tv${game_link}`} external title={`Open ${game.name} in Twitch`}>Twitch [E]</Link>
+                          <Link class="block h-1/2" href={`https://www.twitch.tv${game_link}`} external title={`Open ${game.name} in Twitch`}>Twitch [E]</Link>
                         </div>
                       </Link>
 
