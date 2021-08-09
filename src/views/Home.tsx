@@ -1,9 +1,9 @@
 import { Component, createResource, createSignal, createEffect, For, Show } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
-import { Game, createTwitchImage, createGamesStore } from "../common";
+import { Category, createTwitchImage, createGamesStore } from "../common";
 import { Link } from "solid-app-router";
 
-const fetchTopGames = async (id): Promise<Game[]> => {
+const fetchTopGames = async (id): Promise<Category[]> => {
   const url = "https://api.twitch.tv/helix/games/top?first=10";
   if (import.meta.env.DEV) {
     return (await (await fetch("/tmp/top_games.json")).json()).data;

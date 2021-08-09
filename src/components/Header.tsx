@@ -1,9 +1,9 @@
 import { Component, createResource, createSignal, createEffect, For, Switch, Match, Show } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
-import { Game, createTwitchImage } from "../common";
+import { Category, createTwitchImage } from "../common";
 import { Link } from 'solid-app-router';
 
-const searchGames = async (search_term): Promise<Game[]> => {
+const searchGames = async (search_term): Promise<Category[]> => {
   const trimmed_term = search_term.trim();
   if (trimmed_term.length === 0) {
     return [];

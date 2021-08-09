@@ -1,7 +1,7 @@
 import { createStore, Store, SetStoreFunction } from "solid-js/store";
 import { createEffect } from 'solid-js';
 
-export interface Game {
+export interface Category {
   id: string,
   name: string,
   box_art_url: string,

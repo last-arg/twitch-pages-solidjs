@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, createEffect, For, Show, Switch, Match, PropsWithChildren, Resource } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useRouter } from 'solid-app-router';
-import { Game, createTwitchImage } from "../common";
+import { Category, createTwitchImage } from "../common";
 
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
@@ -132,7 +132,7 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
   );
 };
 
-const Game: Component = (props: PropsWithChildren<{category: Resource<Game>}>) => {
+const CategoryView: Component = (props: PropsWithChildren<{category: Resource<Category>}>) => {
   const [router] = useRouter();
   const cat_name = decodeURIComponent(router.params.name as string);
 
@@ -153,4 +153,4 @@ const Game: Component = (props: PropsWithChildren<{category: Resource<Game>}>) =
   );
 };
 
-export default Game;
+export default CategoryView;
