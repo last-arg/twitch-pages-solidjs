@@ -10,13 +10,6 @@ const createLiveUserImageUrl = (url_template: string, w: number, h: number): str
   return url_template.replace("{width}", w).replace("{height}", h);
 };
 
-const redirectIfInvalidCategory = (category) => {
-    if (category.length === 0) {
-      console.info(`Could not find category/game '${category.name}'. Redirecting to 'Not Found' page`);
-      window.location.replace("/not-found");
-    }
-};
-
 const CategoryTitle: Component = (props) => {
   const name = props.name;
   const placeholder = props.placeholder || false;
@@ -141,9 +134,14 @@ const Game: Component = (props) => {
       <Show when={!props.category.loading} fallback={<CategoryTitle name={cat_name} placeholder={true} />}>
         <CategoryTitle name={cat_name} />
       </Show>
-      <Show when={!props.category.loading && props.category() !== undefined} fallback={<p>Not Found</p>}>
-        <CategoryStreams category_id={props.category().id}/>
-      </Show>
+      <Switch fallback={<p>Not Found</p>}>
+        <Match when={props.category.loading}>
+          <p>Loading...</p>
+        </Match>
+        <Match when={!props.category.loading && props.category() !== undefined}>
+          <CategoryStreams category_id={props.category().id}/>
+        </Match>
+      </Switch>
     </>
   );
 };
