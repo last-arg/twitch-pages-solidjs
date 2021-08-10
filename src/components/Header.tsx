@@ -12,13 +12,11 @@ const SidebarGames = () => {
 
   return(
     <ul class="flex flex-col">
-      <For each={gamesFollowed.games}>{(game) => {
-        return (
-          <li class="mt-2 text-gray-700">
-            <CategoryCard id={game.id} name={game.name} is_followed={game_ids.includes(game.id)} img_class="w-12" />
-          </li>
-        );
-      }}</For> 
+      <For each={gamesFollowed.games}>{(game) =>
+        <li class="mt-2 text-gray-700">
+          <CategoryCard id={game.id} name={game.name} is_followed={game_ids.includes(game.id)} img_class="w-12" />
+        </li>
+      }</For> 
     </ul>
   );
 };
@@ -33,7 +31,7 @@ const searchGames = async (search_term: string): Promise<Category[]> => {
 };
 
 const SidebarSearch = (props: PropsWithChildren<{searchValue: string}>) => {
-  const [games, setGames] = createResource(() => props.searchValue, searchGames);
+  const [games] = createResource(() => props.searchValue, searchGames);
 
   return (
     <Switch>
@@ -46,18 +44,11 @@ const SidebarSearch = (props: PropsWithChildren<{searchValue: string}>) => {
       <Match when={games().length > 0}>{() => {
         const game_ids = games().map((item) => item.id);
         return (<ul>
-          <For each={games()}>
-            {(game) => {
-              const encoded_name = encodeURI(game.name);
-              let img_url = createTwitchImage(game.name, IMG_WIDTH, IMG_HEIGHT);
-              const game_link = `/directory/game/${encoded_name}`;
-              return (
-                <li class="mt-2">
-                  <CategoryCard id={game.id} name={game.name} is_followed={game_ids.includes(game.id)} img_class="w-12" />
-                </li>
-              );
-            }}
-          </For>
+          <For each={games()}>{(game) =>
+            <li class="mt-2">
+              <CategoryCard id={game.id} name={game.name} is_followed={game_ids.includes(game.id)} img_class="w-12" />
+            </li>
+          }</For>
         </ul>);
       }}</Match>
     </Switch>
