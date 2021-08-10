@@ -3,6 +3,10 @@ import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Category, createTwitchImage } from "../common";
 import { Link } from 'solid-app-router';
 
+// TODO: sidebar games. with undo (if misclick)
+// const SidebarGames = () => {
+// }
+
 const searchGames = async (search_term: string): Promise<Category[]> => {
   const trimmed_term = search_term.trim();
   if (trimmed_term.length === 0) {
@@ -12,12 +16,8 @@ const searchGames = async (search_term: string): Promise<Category[]> => {
   return (await (await fetch(url, HEADER_OPTS)).json()).data;
 };
 
-// TODO: sidebar games. with undo (if misclick)
-// const SidebarGames = () => {
-// }
-
 const SidebarSearch = (props: PropsWithChildren<{searchValue: string}>) => {
-  const [games] = createResource(props.searchValue, searchGames);
+  const [games, setGames] = createResource(() => props.searchValue, searchGames);
 
   return (
     <Switch>
@@ -75,19 +75,16 @@ const Header: Component = () => {
     clearTimeout(searchTimeout);
     const value: string = (e.currentTarget as HTMLInputElement).value;
     location.hash = value;
-    searchTimeout = setTimeout((value: string) => {
+    searchTimeout = setTimeout(() => {
       setSearchValue(value)
-    }, 400, value);
+    }, 400);
   };
 
   const inputBlur = () => {
-    console.log("loose focus")
     if (searchValue().length == 0) {
       setSidebar(Sidebar.Closed)
     }
   };
-
-  createEffect(() => console.log(sidebar(), Sidebar.Closed));
 
   return (
     <div class="relative">
