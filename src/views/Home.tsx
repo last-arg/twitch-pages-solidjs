@@ -22,12 +22,15 @@ const Home: Component = () => {
 
   const followGame = (category: Category, e: MouseEvent) => {
     e.preventDefault();
-    setGamesFollowed(category.id, category.name);
+    setGamesFollowed("games", (games) => [...games, {id: category.id, name: category.name}]);
   };
 
   const unfollowGame = (id: string, e: MouseEvent) => {
     e.preventDefault();
-    setGamesFollowed(id, undefined);
+    setGamesFollowed("games", (games) => {
+      const index = games.findIndex((cat) => cat.id === id)
+      return [...games.slice(0, index), ...games.slice(index+1)];
+    });
   };
 
   return (
@@ -50,7 +53,7 @@ const Home: Component = () => {
                           <p class="ml-3 text-lg">{game.name}</p>
                         </div>
                         <div class="flex flex-col justify-between">
-                          <Show when={!Object.keys(gamesFollowed).includes(game.id)}
+                          <Show when={!gamesFollowed.games.map((item) => item.id).includes(game.id)}
                             fallback={<button class="text-trueGray-400 p-1.5 w-8 hover:text-black" onClick={[unfollowGame, game.id]} title="Remove bookmark"><IconUnfollow /></button>}>
                             <button class="text-trueGray-400 p-1.5 w-8 hover:text-black" onClick={[followGame, game]} title="Add bookmark"><IconFollow /></button>
                           </Show>

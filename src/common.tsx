@@ -10,13 +10,19 @@ export interface Category {
 export interface GameFollow {
   [id: string]: string
 }
-const createGamesStore = (): [get: Store<GameFollow>, set: SetStoreFunction<GameFollow>] => {
-  let initValue = {};
+
+interface GamesLocal {
+  games: ({id: string, name: string})[]
+}
+
+const createGamesStore = (): [get: Store<GamesLocal>, set: SetStoreFunction<GamesLocal>] => {
+  let initValue: GamesLocal = {games:[]};
   const local_games = localStorage.getItem("games")
-  if (local_games !== undefined) {
+  if (local_games) {
     initValue = JSON.parse(local_games);
   }
-  const [games, setGames] = createStore<GameFollow>(initValue );
+  console.log(initValue)
+  const [games, setGames] = createStore<GamesLocal>(initValue);
   createEffect(() => {localStorage.setItem("games", JSON.stringify(games))})
   return [games, setGames];
 };

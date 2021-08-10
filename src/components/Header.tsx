@@ -3,24 +3,28 @@ import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Category, createTwitchImage, IconExternalLink, IconFollow, IconUnfollow, rootGameStore } from "../common";
 import { Link } from 'solid-app-router';
 
-// TODO: sidebar games. with undo (if misclick)
+// TODO: sort/insert games aplhabetically
 const SidebarGames = () => {
   const [gamesFollowed, setGamesFollowed] = rootGameStore
 
   const followGame = (category: {id: string, name: string}, e: MouseEvent) => {
     e.preventDefault();
-    setGamesFollowed(category.id, category.name);
+    setGamesFollowed("games", (games) => [...games, {id: category.id, name: category.name}]);
   };
 
   const unfollowGame = (id: string, e: MouseEvent) => {
     e.preventDefault();
-    setGamesFollowed(id, undefined);
+    setGamesFollowed("games", (games) => {
+      const index = games.findIndex((cat) => cat.id === id)
+      return [...games.slice(0, index), ...games.slice(index+1)];
+    });
   };
 
   return(
     <ul class="flex flex-col">
-      <For each={Object.keys(gamesFollowed)}>{(id) => {
-        const name = gamesFollowed[id];
+      <For each={gamesFollowed.games}>{(game) => {
+        const id = game.id;
+        const name = game.name;
         const encoded_name = encodeURI(name);
         let img_url = createTwitchImage(encoded_name, IMG_WIDTH, IMG_HEIGHT);
         const game_link = `/directory/game/${encoded_name}`;
@@ -33,7 +37,7 @@ const SidebarGames = () => {
                   <p class="ml-3 text-lg line-clamp-2">{name}</p>
                 </div>
                 <div class="flex flex-col justify-between">
-                  <Show when={!Object.keys(gamesFollowed).includes(id)}
+                  <Show when={!gamesFollowed.games.map((item) => item.id).includes(id)}
                     fallback={<button class="text-trueGray-400 p-1.5 w-8 hover:text-black" onClick={[unfollowGame, id]} title="Remove bookmark"><IconUnfollow /></button>}>
                     <button class="text-trueGray-400 p-1.5 w-8 hover:text-black" onClick={[followGame, {id, name}]} title="Add bookmark"><IconFollow /></button>
                   </Show>
