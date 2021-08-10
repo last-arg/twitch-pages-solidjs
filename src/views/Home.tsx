@@ -1,6 +1,6 @@
 import { Component, createResource, createSignal, createEffect, For, Show } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
-import { Category, createTwitchImage, createGamesStore, IconExternalLink, IconFollow, IconUnfollow } from "../common";
+import { Category, createTwitchImage, IconExternalLink, IconFollow, IconUnfollow, rootGameStore } from "../common";
 import { Link } from "solid-app-router";
 
 const fetchTopGames = async (id: string): Promise<Category[]> => {
@@ -18,7 +18,7 @@ const fetchTopGames = async (id: string): Promise<Category[]> => {
 const Home: Component = () => {
   // TODO?: make resource into route data?
   const [topGames] = createResource(fetchTopGames);
-  const [gamesFollowed, setGamesFollowed] = createGamesStore()
+  const [gamesFollowed, setGamesFollowed] = rootGameStore
 
   const followGame = (category: Category, e: MouseEvent) => {
     e.preventDefault();
@@ -44,7 +44,7 @@ const Home: Component = () => {
                 return (
                   <li class="w-1/3 pb-2 pr-2">
                     <div class="bg-purple-50">
-                      <Link class="flex border-2 border-purple-200 rounded-sm hover:text-purple-800 hover:border-purple-500" href={game_link} title={game.name} onClick={(e: Event) => e.preventDefault()}>
+                      <Link class="flex border-2 border-purple-200 rounded-sm hover:text-purple-800 hover:border-purple-500" href={game_link} title={game.name}>
                         <div class="flex-grow flex items-center">
                           <img class="block w-16" src={img_url} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
                           <p class="ml-3 text-lg">{game.name}</p>
