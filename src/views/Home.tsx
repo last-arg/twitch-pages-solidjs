@@ -20,16 +20,14 @@ const Home: Component = () => {
   const [topGames] = createResource(fetchTopGames);
   const [gamesFollowed, setGamesFollowed] = createGamesStore()
 
-  const followGame = (e: MouseEvent) => {
+  const followGame = (category: Category, e: MouseEvent) => {
     e.preventDefault();
-    const elem = e.currentTarget as Element;
-    setGamesFollowed(elem.getAttribute("data-id"), elem.getAttribute("data-name"));
+    setGamesFollowed(category.id, category.name);
   };
 
-  const unfollowGame = (e: MouseEvent) => {
+  const unfollowGame = (id: string, e: MouseEvent) => {
     e.preventDefault();
-    const elem = e.currentTarget as Element;
-    setGamesFollowed(elem.getAttribute("data-id"), undefined);
+    setGamesFollowed(id, undefined);
   };
 
   return (
@@ -39,22 +37,22 @@ const Home: Component = () => {
         <ul class="flex flex-wrap -mr-2">
           <Show when={!topGames.loading} fallback={<li>Loading...</li>}>
             <For each={topGames()}>
-              {(game) => {
+              {(game: Category) => {
                 const encoded_name = encodeURI(game.name);
                 let img_url = createTwitchImage(encoded_name, IMG_WIDTH, IMG_HEIGHT);
                 const game_link = `/directory/game/${encoded_name}`;
                 return (
                   <li class="w-1/3 pb-2 pr-2">
                     <div class="bg-purple-50">
-                      <Link class="flex border-2 border-purple-200 rounded-sm hover:text-purple-800 hover:border-purple-500" href={game_link} title={game.name}>
+                      <Link class="flex border-2 border-purple-200 rounded-sm hover:text-purple-800 hover:border-purple-500" href={game_link} title={game.name} onClick={(e: Event) => e.preventDefault()}>
                         <div class="flex-grow flex items-center">
                           <img class="block w-16" src={img_url} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
                           <p class="ml-3 text-lg">{game.name}</p>
                         </div>
                         <div class="flex flex-col justify-between">
                           <Show when={!Object.keys(gamesFollowed).includes(game.id)}
-                            fallback={<button class="text-trueGray-400 p-1.5 w-8 hover:text-black" onClick={unfollowGame} data-id={game.id} title="Remove bookmark"><IconUnfollow /></button>}>
-                            <button class="text-trueGray-400 p-1.5 w-8 hover:text-black" onClick={followGame} data-name={game.name} data-id={game.id} title="Add bookmark"><IconFollow /></button>
+                            fallback={<button class="text-trueGray-400 p-1.5 w-8 hover:text-black" onClick={[unfollowGame, game.id]} title="Remove bookmark"><IconUnfollow /></button>}>
+                            <button class="text-trueGray-400 p-1.5 w-8 hover:text-black" onClick={[followGame, game]} title="Add bookmark"><IconFollow /></button>
                           </Show>
                           <Link class="text-trueGray-400 p-2 w-8 hover:text-black" href={`https://www.twitch.tv${game_link}`} title="Open game in Twitch" onClick={(e: Event) => e.stopPropagation()}><IconExternalLink /></Link>
                         </div>

@@ -12,6 +12,10 @@ const searchGames = async (search_term: string): Promise<Category[]> => {
   return (await (await fetch(url, HEADER_OPTS)).json()).data;
 };
 
+// TODO: sidebar games. with undo (if misclick)
+// const SidebarGames = () => {
+// }
+
 const SidebarSearch = (props: PropsWithChildren<{searchValue: string}>) => {
   const [games] = createResource(props.searchValue, searchGames);
 
