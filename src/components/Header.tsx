@@ -5,7 +5,7 @@ import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
 
 
-// TODO: sort/insert games aplhabetically
+// TODO: sort/insert games alphabetically
 const SidebarGames = () => {
   const [gamesFollowed] = rootGameStore
   const game_ids = gamesFollowed.games.map((item) => item.id);
@@ -21,7 +21,7 @@ const SidebarGames = () => {
       }}</For> 
     </ul>
   );
-}
+};
 
 const searchGames = async (search_term: string): Promise<Category[]> => {
   const trimmed_term = search_term.trim();
@@ -73,26 +73,28 @@ enum Sidebar {
 
 // TODO: If sidebar content exceeds height display a button or gradient at bottom
 const Header: Component = () => {
+  let search_input: HTMLInputElement;
   const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
-  // const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
-  const [sidebar, setSidebar] = createSignal(Sidebar.Games);
+  const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
   let searchTimeout: number = 0;
+
+  const resetSearch = () => {
+    location.hash = "";
+    search_input.focus();
+  };
 
   const submitSearch = (e: Event) => {
     e.preventDefault();
     clearTimeout(searchTimeout);
-    const value: string = (e.currentTarget as HTMLInputElement)
-      .querySelector<HTMLInputElement>("input[type=search]").value;
-    setSearchValue(value);
+    setSearchValue(search_input.value);
   };
 
-  const inputSearch = (e: Event) => {
+  const inputSearch = () => {
     clearTimeout(searchTimeout);
-    const value: string = (e.currentTarget as HTMLInputElement).value;
-    location.hash = value;
-    searchTimeout = setTimeout(() => {
+    location.hash = search_input.value;
+    searchTimeout = setTimeout((value: string) => {
       setSearchValue(value)
-    }, 400);
+    }, 400, search_input.value);
   };
 
   const inputBlur = () => {
@@ -112,8 +114,9 @@ const Header: Component = () => {
           <h1 class="text-white">
             <Link href="/" title="Home">Home</Link>
           </h1>
-          <form onSubmit={submitSearch}>
+          <form onSubmit={submitSearch} onReset={resetSearch}>
             <input
+              ref={search_input}
               type="search"
               class="border bg-blue-100"
               placeholder="Search for game"
@@ -123,6 +126,7 @@ const Header: Component = () => {
               onBlur={inputBlur}
             />
             <button type="submit">Search</button>
+            <button type="reset">Clear</button>
           </form>
         </div>
         <div>
