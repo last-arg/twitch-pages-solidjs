@@ -70,6 +70,8 @@ const Header: Component = () => {
   let searchTimeout: number = 0;
 
   const resetSearch = () => {
+    clearTimeout(searchTimeout);
+    setSearchValue("")
     location.hash = "";
     search_input.focus();
   };
