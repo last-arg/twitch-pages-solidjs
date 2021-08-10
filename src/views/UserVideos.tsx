@@ -9,8 +9,9 @@ const UserVideos: Component = (props) => {
 
   // TODO: make sure valid/existing user
   // TODO: get user videos
-  // TODO: if live link to twitch.tv user page
+  // TODO: if live link to twitch.tv user's video page
   // TODO?: use twitch user display name instead?
+  // TODO: button un/follow stream
 
   return (
     <>

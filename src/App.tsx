@@ -25,7 +25,6 @@ const routes = [
 ];
 
 const App: Component = () => {
-  // TODO?: handle localStorage data (followed games and streams) here?
   return (
     <>
       <Router routes={routes}>
