@@ -138,7 +138,7 @@ const Header: Component = () => {
         <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto">
           <div class="flex justify-between">
             <h2>Results</h2>
-            <button onClick={() => {setSidebar(Sidebar.Closed)}} title="close">Close</button>
+            <button onClick={[setSidebar, Sidebar.Closed]} title="Close sidebar">Close</button>
           </div>
           <Switch>
             <Match when={sidebar() == Sidebar.Search}>
