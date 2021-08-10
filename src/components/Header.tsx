@@ -101,26 +101,34 @@ const Header: Component = () => {
     }
   };
 
+  const toggleSidebar = (button_state: Sidebar) => {
+    setSidebar(sidebar() === button_state ? Sidebar.Closed : button_state)
+  };
+
   return (
     <div class="relative">
-      <header class="bg-gray-700 p-1 shadow flex relative z-10">
-        <h1 class="text-white">
-          <Link href="/" title="Home">Home</Link>
-        </h1>
-        <form onSubmit={submitSearch}>
-          <input
-            type="search"
-            class="border bg-blue-100"
-            placeholder="Search for game"
-            value={searchValue()}
-            onInput={inputSearch}
-            onFocus={() => {setSidebar(Sidebar.Search)}}
-            onBlur={inputBlur}
-          />
-          <button type="submit">Search</button>
-        </form>
-        <button>Games</button>
-        <button>Streams</button>
+      <header class="bg-gray-700 p-1 shadow flex flex-nowrap justify-between relative z-10">
+        <div class="flex">
+          <h1 class="text-white">
+            <Link href="/" title="Home">Home</Link>
+          </h1>
+          <form onSubmit={submitSearch}>
+            <input
+              type="search"
+              class="border bg-blue-100"
+              placeholder="Search for game"
+              value={searchValue()}
+              onInput={inputSearch}
+              onFocus={[setSidebar, Sidebar.Search]}
+              onBlur={inputBlur}
+            />
+            <button type="submit">Search</button>
+          </form>
+        </div>
+        <div>
+          <button onClick={[toggleSidebar, Sidebar.Games]}>Games</button>
+          <button onClick={[toggleSidebar, Sidebar.Streams]} class="ml-4">Streams</button>
+        </div>
       </header>
       <Show when={sidebar() != Sidebar.Closed}>
         <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto">
@@ -134,6 +142,9 @@ const Header: Component = () => {
             </Match>
             <Match when={sidebar() == Sidebar.Games}>
               <SidebarGames />
+            </Match>
+            <Match when={sidebar() == Sidebar.Streams}>
+              <p>Streams</p>
             </Match>
           </Switch>
         </div>
