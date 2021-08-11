@@ -21,7 +21,6 @@ const createGamesStore = (): [get: Store<GamesLocal>, set: SetStoreFunction<Game
   if (local_games) {
     initValue = JSON.parse(local_games);
   }
-  console.log(initValue)
   const [games, setGames] = createStore<GamesLocal>(initValue);
   createEffect(() => {localStorage.setItem("games", JSON.stringify(games))})
   return [games, setGames];

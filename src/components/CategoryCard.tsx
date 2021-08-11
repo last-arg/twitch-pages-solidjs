@@ -17,11 +17,7 @@ const CategoryCard = (props: PropsWithChildren<{id: string, name: string, is_fol
   const followGame = (category: {id: string, name: string}, e: MouseEvent) => {
     e.preventDefault();
     setGamesFollowed("games", (games) => {
-      const index = games.findIndex((item) => {
-        console.log(item.name, name)
-        return name <= item.name;
-      })
-
+      const index = games.findIndex((item) => name <= item.name)
       if (index === -1) {
         return [...games, {id: category.id, name: category.name}]
       } else {
