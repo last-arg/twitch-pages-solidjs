@@ -5,7 +5,6 @@ import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
 
 
-// TODO: sort/insert games alphabetically
 const SidebarGames = () => {
   const [gamesFollowed] = rootGameStore
   const game_ids = gamesFollowed.games.map((item) => item.id);

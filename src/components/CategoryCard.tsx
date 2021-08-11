@@ -12,11 +12,23 @@ const CategoryCard = (props: PropsWithChildren<{id: string, name: string, is_fol
   let img_url = createTwitchImage(encoded_name, IMG_WIDTH, IMG_HEIGHT);
   const game_link = `/directory/game/${encoded_name}`;
 
-  const setGamesFollowed = rootGameStore[1]
+  const setGamesFollowed = rootGameStore[1];
 
   const followGame = (category: {id: string, name: string}, e: MouseEvent) => {
     e.preventDefault();
-    setGamesFollowed("games", (games) => [...games, {id: category.id, name: category.name}]);
+    setGamesFollowed("games", (games) => {
+      const index = games.findIndex((item) => {
+        console.log(item.name, name)
+        return name <= item.name;
+      })
+
+      if (index === -1) {
+        return [...games, {id: category.id, name: category.name}]
+      } else {
+        return [...games.slice(0, index), {id: category.id, name: category.name}, ...games.slice(index)];
+      }
+
+    });
   };
 
   const unfollowGame = (id: string, e: MouseEvent) => {
