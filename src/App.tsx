@@ -1,6 +1,5 @@
 import { Component, lazy } from 'solid-js';
-import { Router, Route} from 'solid-app-router';
-import CategoryData from './views/Category.Data';
+import { Router, useRoutes } from 'solid-app-router';
 import Header from './components/Header';
 
 const routes = [
@@ -10,8 +9,7 @@ const routes = [
   },
   {
     path: '/directory/game/:name',
-    component: lazy(() => import('./views/Category')),
-    data: CategoryData
+    component: lazy(() => import('./views/Category'))
   },
   {
     path: '/:name/videos',
@@ -26,11 +24,12 @@ const routes = [
 
 // TODO: Games sidebar link won't navigate to another stream from game/category's page
 const App: Component = () => {
+  const Routes = useRoutes(routes)
   return (
     <>
-      <Router routes={routes}>
+      <Router>
         <Header />
-        <Route />
+        <Routes />
       </Router>
     </>
   );
