@@ -1,4 +1,4 @@
-import { Component, createResource, createSignal, For, Switch, Match, Show, PropsWithChildren } from 'solid-js';
+import { Component, createEffect, createResource, createSignal, For, Switch, Match, Show, PropsWithChildren } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Category, createTwitchImage, rootGameStore } from "../common";
 import { Link } from 'solid-app-router';
@@ -7,16 +7,18 @@ import CategoryCard from "../components/CategoryCard";
 
 const SidebarGames = () => {
   const [gamesFollowed] = rootGameStore
-  const game_ids = gamesFollowed.games.map((item) => item.id);
 
   return(
-    <ul class="flex flex-col">
-      <For each={gamesFollowed.games}>{(game) =>
-        <li class="mt-2 text-gray-700">
-          <CategoryCard id={game.id} name={game.name} is_followed={game_ids.includes(game.id)} img_class="w-12" />
-        </li>
-      }</For> 
-    </ul>
+    <ul class="flex flex-col">{() => {
+      let game_ids = gamesFollowed.games.map((item) => item.id);
+      return (
+        <For each={gamesFollowed.games}>{(game) =>
+          <li class="mt-2 text-gray-700">
+            <CategoryCard id={game.id} name={game.name} is_followed={game_ids.includes(game.id)} img_class="w-12" />
+          </li>
+        }</For>
+      );
+    }}</ul>
   );
 };
 

@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, createEffect, For, Show, Switch, Match, PropsWithChildren, Resource } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useRouter } from 'solid-app-router';
-import { Category, createTwitchImage, IconExternalLink } from "../common";
+import { Category, createTwitchImage, IconExternalLink, rootGameStore } from "../common";
 
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
@@ -12,6 +12,7 @@ const createLiveUserImageUrl = (url_template: string, w: number, h: number): str
 
 interface TitleProps {
   name: string,
+  id?: string,
   placeholder?: boolean
 }
 
@@ -26,6 +27,8 @@ const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
       link_href = "https://www.twitch.tv/directory/game/" + encodeURIComponent(name);
   }
 
+  const [gamesFollowed, setGamesFollowed] = rootGameStore
+
   return (
     <h1 class="flex text-xl">
       <Link  class="group hover:text-purple-800 hover:underline" href={link_href} external>
@@ -35,6 +38,14 @@ const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
           <span class="text-trueGray-400 group-hover:text-purple-800 -ml-4 w-4"><IconExternalLink /></span>
         </span>
       </Link>
+      <Show when={props.id}>{() => {
+        const gameIds = gamesFollowed.games.map(({id}) => id)
+        return (
+          <Show when={gameIds.includes(props.id)} fallback={<button>follow</button>}>
+            <button>unfollow</button>
+          </Show>
+        );
+      }}</Show>
     </h1>
   );
 };
@@ -59,7 +70,7 @@ const fetchStreams = async (props): Promise<StreamResponse> => {
   const cursor = props.cursor || "";
   const count = 4;
   const url = `https://api.twitch.tv/helix/streams?game_id=${props.id}&first=${count}&after=${cursor}`;
-  if (!import.meta.env.DEV) {
+  if (import.meta.env.DEV) {
     return (await (await fetch("/tmp/top_category.json")).json());
   } else {
     if (import.meta.env.VITE_TWITCH_ACCESS_TOKEN === undefined) {
@@ -132,7 +143,7 @@ const CategoryView = (props: PropsWithChildren<{category: Resource<Category>}>) 
   return (
     <>
       <Show when={!props.category.loading} fallback={<CategoryTitle name={cat_name} placeholder={true} />}>
-        <CategoryTitle name={cat_name} />
+        <CategoryTitle name={props.category().name} id={props.category().id} />
       </Show>
       <Switch fallback={<p>Not Found</p>}>
         <Match when={props.category.loading}>
