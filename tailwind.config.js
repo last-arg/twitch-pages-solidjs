@@ -11,7 +11,13 @@ module.exports = {
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],
       },
-
+      width: {
+        // TODO?: replace 1rem with w-4?
+        "full-1rem": "calc(100% - 1rem)",
+      },
+      colors: {
+        "transparent": "transparent",
+      },
     },
   },
   variants: {},

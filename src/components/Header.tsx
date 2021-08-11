@@ -103,7 +103,7 @@ const Header: Component = () => {
 
   return (
     <div class="relative">
-      <header class="bg-gray-700 p-1 shadow flex flex-nowrap justify-between relative z-10">
+      <header class="bg-gray-700 p-1 shadow flex flex-nowrap justify-between relative z-20">
         <div class="flex">
           <h1 class="text-white">
             <Link href="/" title="Home">Home</Link>
@@ -129,7 +129,7 @@ const Header: Component = () => {
         </div>
       </header>
       <Show when={sidebar() != Sidebar.Closed}>
-        <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto">
+        <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto z-10">
           <div class="flex justify-between">
             <h2>Results</h2>
             <button onClick={[setSidebar, Sidebar.Closed]} title="Close sidebar">Close</button>

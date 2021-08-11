@@ -103,30 +103,39 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
 
   return (
     <>
-      <ul class="flex flex-wrap">
+      <ul class="flex flex-wrap -mx-2">
         <For each={allStreams()}>{(stream: Stream) => {
           const twitch_stream_url = `https://www.twitch.tv/${stream.user_login}`;
 
           return (
-            <li class="w-1/3">
-              <Link href={twitch_stream_url} title={`Go to ${stream.user_name}'s stream`} external>
-                <img
-                  src={createLiveUserImageUrl(stream.thumbnail_url, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT)}
-                  width={IMG_STREAM_WIDTH} height={IMG_STREAM_HEIGHT}
-                />
-              </Link>
-              <p class="truncate">
-                <Link href={twitch_stream_url} title={stream.title}>
-                  {stream.title}
+            <li class="w-1/3 px-2 py-3">
+              <div class="">
+                <Link class="group" href={twitch_stream_url} title={stream.title} external>
+                  <div class="relative z-0">
+                    <img
+                      src={createLiveUserImageUrl(stream.thumbnail_url, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT)}
+                      width={IMG_STREAM_WIDTH} height={IMG_STREAM_HEIGHT}
+                    />
+                    <p class="absolute bottom-0 left-0 bg-trueGray-800 text-trueGray-100 text-sm px-1 rounded-sm mb-1 ml-1">{stream.viewer_count}</p>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <p class="truncate flex-shrink w-full-1rem">{stream.title}</p>
+                    <span class="block w-4 ml-2 text-trueGray-400 group-hover:text-purple-700"><IconExternalLink /></span>
+                  </div>
                 </Link>
-              </p>
-              <p>
-                {stream.viewer_count}
-              </p>
-              <p>
-                <Link href={`/${stream.user_login}/videos`}>{stream.user_name}</Link>
-                <Link href={`${twitch_stream_url}/videos`} external>[Twitch videos]</Link>
-              </p>
+                <div class="flex mt-1">
+                  <Link href={`/${stream.user_login}/videos`}>
+                    <img class="w-14" src="https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png" width="300" height="300"/>
+                  </Link>
+                  <div class="flex flex-col justify-between ml-2">
+                    <Link href={`/${stream.user_login}/videos`}>{stream.user_name}</Link>
+                    <Link class="flex items-center group" href={`${twitch_stream_url}/videos`} external>
+                      <p>Videos on Twitch</p>
+                      <span class="w-4 ml-1 text-trueGray-400 group-hover:text-purple-700"><IconExternalLink /></span>
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </li>
         )}}</For>
       </ul>
@@ -142,10 +151,12 @@ const CategoryView = (props: PropsWithChildren<{category: Resource<Category>}>) 
   const cat_name = decodeURIComponent(router.params.name as string);
 
   return (
-    <>
-      <Show when={!props.category.loading} fallback={<CategoryTitle name={cat_name} placeholder={true} />}>
-        <CategoryTitle name={props.category().name} id={props.category().id} />
-      </Show>
+    <main class="px-2">
+      <div class="mt-3">
+        <Show when={!props.category.loading} fallback={<CategoryTitle name={cat_name} placeholder={true} />}>
+          <CategoryTitle name={props.category().name} id={props.category().id} />
+        </Show>
+      </div>
       <Switch fallback={<p>Not Found</p>}>
         <Match when={props.category.loading}>
           <p>Loading...</p>
@@ -154,7 +165,7 @@ const CategoryView = (props: PropsWithChildren<{category: Resource<Category>}>) 
           <CategoryStreams category_id={props.category().id} />
         </Match>
       </Switch>
-    </>
+    </main>
   );
 };
 
