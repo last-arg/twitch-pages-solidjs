@@ -2,6 +2,7 @@ import { Component, createResource, createSignal, createEffect, For, Show, Switc
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useRouter } from 'solid-app-router';
 import { Category, createTwitchImage, IconExternalLink, rootGameStore } from "../common";
+import ButtonToggleFollow from "../components/ButtonToggleFollow";
 
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
@@ -30,7 +31,7 @@ const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
   const [gamesFollowed, setGamesFollowed] = rootGameStore
 
   return (
-    <h1 class="flex text-xl">
+    <h1 class="flex items-center text-xl">
       <Link  class="group hover:text-purple-800 hover:underline" href={link_href} external>
         <span class="flex items-center">
           <img class="w-10 mr-3 bg-gray-200" src={img_url} alt="" title={name} width={IMG_WIDTH} height={IMG_HEIGHT} />
@@ -41,9 +42,9 @@ const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
       <Show when={props.id}>{() => {
         const gameIds = gamesFollowed.games.map(({id}) => id)
         return (
-          <Show when={gameIds.includes(props.id)} fallback={<button>follow</button>}>
-            <button>unfollow</button>
-          </Show>
+          <span class="block ml-8 pl-1 border-l">
+            <ButtonToggleFollow name={props.name} id={props.id} isFollowed={gameIds.includes(props.id)}/>
+          </span>
         );
       }}</Show>
     </h1>

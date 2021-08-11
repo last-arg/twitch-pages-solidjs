@@ -24,6 +24,7 @@ const routes = [
   }
 ];
 
+// TODO: Games sidebar link won't navigate to another stream from game/category's page
 const App: Component = () => {
   return (
     <>
