@@ -128,25 +128,21 @@ const Header: Component = () => {
           <button onClick={[toggleSidebar, Sidebar.Streams]} class="ml-4">Streams</button>
         </div>
       </header>
-      <Show when={sidebar() != Sidebar.Closed}>
-        <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto z-10">
-          <div class="flex justify-between">
-            <h2>Results</h2>
-            <button onClick={[setSidebar, Sidebar.Closed]} title="Close sidebar">Close</button>
-          </div>
-          <Switch>
-            <Match when={sidebar() == Sidebar.Search}>
-              <SidebarSearch searchValue={searchValue()}/>
-            </Match>
-            <Match when={sidebar() == Sidebar.Games}>
-              <SidebarGames />
-            </Match>
-            <Match when={sidebar() == Sidebar.Streams}>
-              <p>Streams</p>
-            </Match>
-          </Switch>
+      <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto z-10" classList={{hidden: sidebar() === Sidebar.Closed}}>
+        <div class="flex justify-between">
+          <h2>Results</h2>
+          <button onClick={[setSidebar, Sidebar.Closed]} title="Close sidebar">Close</button>
         </div>
-      </Show>
+        <div classList={{hidden: sidebar() !== Sidebar.Search}}>
+          <SidebarSearch searchValue={searchValue()}/>
+        </div>
+        <div classList={{hidden: sidebar() !== Sidebar.Games}}>
+          <SidebarGames />
+        </div>
+        <div classList={{hidden: sidebar() !== Sidebar.Streams}}>
+          <p>Streams</p>
+        </div>
+      </div>
     </div>
   );
 };
