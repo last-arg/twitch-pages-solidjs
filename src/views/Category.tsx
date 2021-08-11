@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, createEffect, For, Show, Switch, Match, PropsWithChildren, Resource } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useParams, useData } from 'solid-app-router';
-import { Category, createTwitchImage, IconExternalLink, rootGameStore } from "../common";
+import { Category, createTwitchImage, IconExternalLink, IconFollow, IconUnfollow, rootGameStore } from "../common";
 import ButtonToggleFollow from "../components/ButtonToggleFollow";
 
 const IMG_STREAM_WIDTH = 440;
@@ -106,6 +106,7 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
       <ul class="flex flex-wrap -mx-2">
         <For each={allStreams()}>{(stream: Stream) => {
           const twitch_stream_url = `https://www.twitch.tv/${stream.user_login}`;
+          const is_followed = false
 
           return (
             <li class="w-1/3 px-2 py-3">
@@ -128,11 +129,19 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
                     <img class="w-14" src="https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png" width="300" height="300"/>
                   </Link>
                   <div class="flex flex-col justify-between ml-2">
-                    <Link href={`/${stream.user_login}/videos`}>{stream.user_name}</Link>
-                    <Link class="flex items-center group" href={`${twitch_stream_url}/videos`}>
-                      <p>Videos on Twitch</p>
-                      <span class="w-4 ml-1 text-trueGray-400 group-hover:text-purple-700"><IconExternalLink /></span>
-                    </Link>
+                    <div class="flex items-center">
+                      <Link class="" href={`/${stream.user_login}/videos`}>{stream.user_name}</Link>
+                      <span class="text-trueGray-400 mr-2 ml-4 border-l h-full"></span>
+                        <button class="w-4 text-trueGray-400 hover:text-trueGray-800" title={`${is_followed ? "Unfollow" : "Follow"} streamer`} onClick={() => console.log("TODO: un/follow streamer")}>
+                          <Show when={!is_followed} fallback={<IconUnfollow />}><IconFollow /></Show>
+                        </button>
+                    </div>
+                    <div>
+                      <Link class="flex items-center group" href={`${twitch_stream_url}/videos`}>
+                        <p>Videos on Twitch</p>
+                        <span class="w-4 ml-1 text-trueGray-400 group-hover:text-purple-700"><IconExternalLink /></span>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
