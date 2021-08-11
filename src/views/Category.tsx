@@ -79,16 +79,20 @@ interface StreamProps {
 }
 
 const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
-  const [category, setCategory] = createSignal<CategoryState>({next_cursor: null, streams: []});
-  const [streams] = createResource({id: props.category_id}, fetchStreams);
+  const [cursor, setCursor] = createSignal(null);
+  const [allStreams, setAllStreams] = createSignal<Stream[]>([]);
+  const [streams] = createResource(() => {return {id: props.category_id, cursor: cursor()}}, fetchStreams);
 
-  createEffect(() =>
-    !streams.loading && setCategory({streams: streams().data, cursor: streams().pagination.cursor}))
+  createEffect(() => {
+    if (!streams.loading) {
+      setAllStreams((prev) => [...prev, ...streams().data])
+    }
+  })
 
   return (
-    <Show when={!streams.loading} fallback={<p>Loading...</p>}>
+    <>
       <ul class="flex flex-wrap">
-        <For each={category().streams}>{(stream: Stream) => {
+        <For each={allStreams()}>{(stream: Stream) => {
           const twitch_stream_url = `https://www.twitch.tv/${stream.user_login}`;
 
           return (
@@ -114,12 +118,10 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
             </li>
         )}}</For>
       </ul>
-      <Show when={streams().pagination.cursor}>
-        <button onClick={async () => {
-          fetchStreams({id: props.category_id, cursor: streams().pagination.cursor})}
-        }>Load more streams</button>
+      <Show when={!streams.loading && streams().pagination.cursor} fallback={<p>Loading...</p>}>
+        <button onClick={async () => setCursor(streams().pagination.cursor)}>Load more streams</button>
       </Show>
-    </Show>
+    </>
   );
 };
 
