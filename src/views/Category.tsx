@@ -160,15 +160,10 @@ const CategoryView = () => {
   const params = useParams();
   const fallbackName = decodeURIComponent(useParams().name)
   const [category] = createResource(() => decodeURIComponent(params.name), fetchCategory);
-        // <Show when={!category.loading} fallback={<CategoryTitle name={decodeURIComponent(useParams().name)} placeholder={true} />}>
-        //   <CategoryTitle name={category().name} id={category().id} />
-        // </Show>
+
   return (
     <main class="px-2">
-      <div class="mt-3">
-
-        <CategoryTitle category={category} fallbackName={fallbackName} />
-      </div>
+      <CategoryTitle category={category} fallbackName={fallbackName} />
       <Switch fallback={<p>Not Found</p>}>
         <Match when={category.loading}>
           <p>Loading...</p>
