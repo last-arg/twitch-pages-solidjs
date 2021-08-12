@@ -4,7 +4,6 @@ import { rootGameStore, IconFollow, IconUnfollow } from '../common';
 // TODO?: replace html element button with input checkbox?
 const ButtonGameFollow = (props: PropsWithChildren<{isFollowed: boolean, id: string, name: string, classExtra: string}>) => {
   const classExtra = props.classExtra || "";
-  console.log("button")
 
   const toggleFollow = (category: {id: string, name: string, isFollowed: boolean}, e: MouseEvent) => {
     e.preventDefault();
