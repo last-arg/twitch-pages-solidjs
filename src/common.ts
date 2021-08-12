@@ -96,6 +96,9 @@ export interface LocalImages {
 // 2) somekind of interval: hours, days, ...
 export const localImages = createMutable({
   images: JSON.parse(window.localStorage.getItem("images") ?? "{}") as LocalImages,
+  get getAll() {
+    return this.images
+  },
   get(key: string): string {
     return this.images[key] ?? ""
   },
@@ -109,7 +112,8 @@ export const localImages = createMutable({
   }
 })
 
-const fetchAndSetProfileImages = async (user_ids: string[]) => {
+export const fetchAndSetProfileImages = async (user_ids: string[]) => {
+  if (user_ids.length === 0) return
   const profiles = await fetchUsers(user_ids)
   let images: LocalImages = {}
   for (let p of profiles) {

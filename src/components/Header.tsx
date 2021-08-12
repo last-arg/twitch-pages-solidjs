@@ -1,6 +1,6 @@
-import { Component, createResource, createSignal, For, Switch, Match, Show, PropsWithChildren } from 'solid-js';
+import { Component, createResource, createEffect, createSignal, For, Switch, Match, Show, PropsWithChildren, untrack } from 'solid-js';
 import { HEADER_OPTS } from "../config";
-import { Category, localGames, localStreams, localImages } from "../common";
+import { Category, localGames, localStreams, localImages, fetchAndSetProfileImages } from "../common";
 import { IconExternalLink } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
@@ -24,9 +24,13 @@ const SidebarGames = () => {
 };
 
 const SidebarStreams = () => {
-  // TODO: check if user is live
-  // TODO: display if live
-  // TODO: display if game streamer is playing
+  // TODO: is user live
+  // TODO: if live what game playing
+
+  const user_ids = localStreams.streams.map(({user_id}) => user_id)
+  const image_keys = Object.keys(localImages.images)
+  fetchAndSetProfileImages(user_ids.filter((user_id) => !image_keys.includes(user_id)))
+
   return(
     <ul>
       <For each={localStreams.streams} fallback={<li>No streams</li>}>{(stream) =>

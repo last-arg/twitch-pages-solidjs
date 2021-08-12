@@ -1,12 +1,15 @@
-import { createResource, createSignal, createEffect, For, Show, Switch, Match, PropsWithChildren } from 'solid-js';
+import { createResource, createSignal, createEffect, For, Show, Switch, Match, PropsWithChildren, untrack } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useParams } from 'solid-app-router';
-import { Category, createTwitchImage } from "../common";
+import { Category, createTwitchImage, localImages, fetchAndSetProfileImages } from "../common";
 import { IconExternalLink, IconFollow, IconUnfollow } from "../icons";
 import ButtonGameFollow from "../components/ButtonGameFollow";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
-import {Stream} from "../stream";
+import { Stream } from "../stream";
 
+// TODO: use fallback for profile images or <empty string>
+// Currently using <empty string>
+const profile_img_url_fallback = "https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png"
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
 
@@ -64,7 +67,7 @@ const fetchStreams = async (props: {id: string, cursor?: string}): Promise<Strea
   const cursor = props.cursor ?? "";
   const count = 4;
   const url = `https://api.twitch.tv/helix/streams?game_id=${props.id}&first=${count}&after=${cursor}`;
-  if (import.meta.env.DEV) {
+  if (!import.meta.env.DEV) {
     return (await (await fetch("/tmp/top_category.json")).json());
   } else {
     if (import.meta.env.VITE_TWITCH_ACCESS_TOKEN === undefined) {
@@ -86,6 +89,12 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
   createEffect(() => {
     if (!streams.loading) {
       setAllStreams((prev) => [...prev, ...streams().data])
+
+      untrack(() => {
+        const user_ids = streams().data.map(({user_id}) => user_id)
+        const image_keys = Object.keys(localImages.images)
+        fetchAndSetProfileImages(user_ids.filter((user_id) => !image_keys.includes(user_id)))
+      })
     }
   })
 
@@ -96,7 +105,7 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
           const twitch_stream_url = `https://www.twitch.tv/${stream.user_login}`;
           return (
             <li class="w-1/3 px-2 py-3">
-              <div class="">
+              <div>
                 <Link class="group" href={twitch_stream_url} title={stream.title}>
                   <div class="relative z-0">
                     <img
@@ -112,7 +121,7 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
                 </Link>
                 <div class="flex mt-1">
                   <Link href={`/${stream.user_login}/videos`}>
-                    <img class="w-14" src="https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png" width="300" height="300"/>
+                    <img class="w-14" src={localImages.get(stream.user_id)} width="300" height="300"/>
                   </Link>
                   <div class="flex flex-col justify-between ml-2">
                     <div class="flex items-center">
