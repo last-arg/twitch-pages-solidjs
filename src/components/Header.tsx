@@ -102,8 +102,8 @@ const Header: Component = () => {
   };
 
   return (
-    <div class="relative">
-      <header class="bg-gray-700 p-1 shadow flex flex-nowrap justify-between relative z-20">
+    <div class="fixed top-0 left-0 w-full z-10">
+      <header class="bg-gray-700 p-1 shadow flex flex-nowrap justify-between">
         <div class="flex">
           <h1 class="text-white">
             <Link href="/" title="Home">Home</Link>
@@ -128,7 +128,7 @@ const Header: Component = () => {
           <button onClick={[toggleSidebar, Sidebar.Streams]} class="ml-4">Streams</button>
         </div>
       </header>
-      <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto z-10" classList={{hidden: sidebar() === Sidebar.Closed}}>
+      <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto -z-10" classList={{hidden: sidebar() === Sidebar.Closed}}>
         <div class="flex justify-between">
           <h2>Results</h2>
           <button onClick={[setSidebar, Sidebar.Closed]} title="Close sidebar">Close</button>

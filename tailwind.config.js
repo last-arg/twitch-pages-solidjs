@@ -18,6 +18,9 @@ module.exports = {
       colors: {
         "transparent": "transparent",
       },
+      zIndex: {
+        "-10": "-10",
+      },
     },
   },
   variants: {},
