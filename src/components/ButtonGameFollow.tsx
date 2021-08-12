@@ -1,36 +1,25 @@
-import { Show, PropsWithChildren, createSignal } from 'solid-js';
-import { rootGameStore } from '../common';
+import { Show, PropsWithChildren, createSignal, createEffect } from 'solid-js';
+import { localGames } from '../common';
 import { IconFollow, IconUnfollow } from '../icons';
 
 // TODO?: replace html element button with input checkbox?
-const ButtonGameFollow = (props: PropsWithChildren<{isFollowed: boolean, id: string, name: string, classExtra: string}>) => {
+const ButtonGameFollow = (props: PropsWithChildren<{id: string, name: string, classExtra: string}>) => {
   const classExtra = props.classExtra || "";
+  const [isFollowed, setIsFollowed] = createSignal<boolean>(localGames.isFollowed(props.id))
+  createEffect(() => setIsFollowed(localGames.isFollowed(props.id)))
 
-  const toggleFollow = (category: {id: string, name: string, isFollowed: boolean}, e: MouseEvent) => {
+  const toggleFollow = (category: {id: string, name: string}, e: MouseEvent) => {
     e.preventDefault();
-    const setGamesFollowed = rootGameStore[1];
-    if (props.isFollowed) {
-      // unfollow game
-      setGamesFollowed("games", (games) => {
-        const index = games.findIndex((cat) => cat.id === category.id)
-        return [...games.slice(0, index), ...games.slice(index+1)];
-      });
+    if (isFollowed()) {
+      localGames.unfollowGame(category.id)
     } else {
-      // follow game
-      setGamesFollowed("games", (games) => {
-        const index = games.findIndex((item: {name: string}) => category.name <= item.name)
-        if (index === -1) {
-          return [...games, {id: category.id, name: category.name}]
-        } else {
-          return [...games.slice(0, index), {id: category.id, name: category.name}, ...games.slice(index)];
-        }
-      });
+      localGames.followGame({id: category.id, name: category.name})
     }
   }
 
   return (
-    <button class={`text-trueGray-400 hover:text-black ${classExtra}`} onClick={[toggleFollow, {id: props.id, name: props.name}]} title={`${props.isFollowed ? "Unfollow" : "Follow"} game`}>
-      <Show when={!props.isFollowed} fallback={<IconUnfollow />}><IconFollow /></Show>
+    <button class={`text-trueGray-400 hover:text-black ${classExtra}`} onClick={[toggleFollow, {id: props.id, name: props.name}]} title={`${isFollowed() ? "Unfollow" : "Follow"} game`}>
+      <Show when={!isFollowed()} fallback={<IconUnfollow />}><IconFollow /></Show>
     </button>
   );
 };

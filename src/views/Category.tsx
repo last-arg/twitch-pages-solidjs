@@ -1,7 +1,7 @@
-import { Component, createResource, createSignal, createEffect, For, Show, Switch, Match, PropsWithChildren, Resource } from 'solid-js';
+import { createResource, createSignal, createEffect, For, Show, Switch, Match, PropsWithChildren } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
-import { Link, useParams, useData } from 'solid-app-router';
-import { Category, createTwitchImage, rootGameStore } from "../common";
+import { Link, useParams } from 'solid-app-router';
+import { Category, createTwitchImage } from "../common";
 import { IconExternalLink, IconFollow, IconUnfollow } from "../icons";
 import ButtonGameFollow from "../components/ButtonGameFollow";
 
@@ -31,9 +31,6 @@ const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
     }
   })
 
-  const [gamesFollowed, setGamesFollowed] = rootGameStore
-  const gameIds = gamesFollowed.games.map(({id}) => id)
-
   return (
     <h1 class="flex items-center text-xl">
       <Link class="group hover:text-purple-800 hover:underline" href={data().linkHref}>
@@ -45,10 +42,9 @@ const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
       </Link>
       <span class="text-trueGray-400 ml-8 mr-2 border-l h-full w-0">&nbsp;</span>
       <Show when={data().id}>{(cat_id) => {
-        const [isFollowed, setIsFollowed] = createSignal<boolean>(gameIds.includes(cat_id))
-        createEffect(() => setIsFollowed(gamesFollowed.games.map(({id}) => id).includes(cat_id)))
+
         return (
-          <ButtonGameFollow classExtra="w-5 h-5" name={data().name} id={cat_id} isFollowed={isFollowed()}/>
+          <ButtonGameFollow classExtra="w-5 h-5" name={data().name} id={cat_id}/>
         );
       }}</Show>
     </h1>
@@ -71,8 +67,8 @@ interface StreamResponse {
   }
 }
 
-const fetchStreams = async (props): Promise<StreamResponse> => {
-  const cursor = props.cursor || "";
+const fetchStreams = async (props: {id: string, cursor?: string}): Promise<StreamResponse> => {
+  const cursor = props.cursor ?? "";
   const count = 4;
   const url = `https://api.twitch.tv/helix/streams?game_id=${props.id}&first=${count}&after=${cursor}`;
   if (import.meta.env.DEV) {
@@ -84,11 +80,6 @@ const fetchStreams = async (props): Promise<StreamResponse> => {
     return (await (await fetch(url, HEADER_OPTS)).json());
   }
 };
-
-interface CategoryState {
-  next_cursor?: string,
-  streams: Stream[],
-}
 
 interface StreamProps {
   category_id: string
