@@ -123,7 +123,7 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
                     <div>
                       <Link class="flex items-center group" href={`${twitch_stream_url}/videos`}>
                         <p>Videos on Twitch</p>
-                        <span class="w-4 ml-1 text-trueGray-400 group-hover:text-purple-700"><IconExternalLink /></span>
+                        <span class="block w-4 ml-1 text-trueGray-400 group-hover:text-purple-700"><IconExternalLink /></span>
                       </Link>
                     </div>
                   </div>

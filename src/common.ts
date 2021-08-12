@@ -20,6 +20,7 @@ export const localGames = createMutable({
     return this.gameIds.includes(id)
   },
   followGame(game: GameFollow) {
+    // TODO: make sure games are sorted
     this.games.push(game)
     window.localStorage.setItem("games", JSON.stringify(this.games));
   },
@@ -29,7 +30,6 @@ export const localGames = createMutable({
       this.games.splice(index, 1)
       window.localStorage.setItem("games", JSON.stringify(this.games));
     }
-
   }
 });
 
@@ -48,6 +48,7 @@ export const localStreams = createMutable({
     return this.streamIds.includes(id)
   },
   follow(stream: StreamFollow) {
+    // TODO: make sure streams are sorted
     this.streams.push(stream)
     window.localStorage.setItem("streams", JSON.stringify(this.streams));
   },
@@ -57,7 +58,6 @@ export const localStreams = createMutable({
       this.streams.splice(index, 1)
       window.localStorage.setItem("streams", JSON.stringify(this.streams));
     }
-
   }
 });
 

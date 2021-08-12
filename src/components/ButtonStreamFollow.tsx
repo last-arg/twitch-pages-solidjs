@@ -8,7 +8,7 @@ const ButtonStreamFollow = (props: PropsWithChildren<Stream>) => {
   createEffect(() => setIsFollowed(localStreams.isFollowed(props.user_id)))
 
   const toggleStreamFollow = (stream: Stream, e: MouseEvent) => {
-    e.stopPropagation()
+    e.preventDefault()
     if (isFollowed()) {
       localStreams.unfollow(stream.user_id)
     } else {

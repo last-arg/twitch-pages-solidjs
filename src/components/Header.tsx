@@ -1,13 +1,15 @@
 import { Component, createResource, createSignal, For, Switch, Match, Show, PropsWithChildren } from 'solid-js';
 import { HEADER_OPTS } from "../config";
-import { Category, localGames } from "../common";
+import { Category, localGames, localStreams } from "../common";
+import { IconExternalLink } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
+import ButtonStreamFollow from "../components/ButtonStreamFollow";
 
 
 const SidebarGames = () => {
   return(
-    <ul class="flex flex-col">
+    <ul>
       <For each={localGames.games}>{(game) => {
         return (
           <Show when={game}>
@@ -17,6 +19,34 @@ const SidebarGames = () => {
           </Show>
         );
       }}</For>
+    </ul>
+  );
+};
+
+const SidebarStreams = () => {
+  // TODO: check if user is live
+  // TODO: display if live
+  // TODO: display if game streamer is playing
+  return(
+    <ul>
+      <For each={localStreams.streams} fallback={<li>No streams</li>}>{(stream) =>
+        <Show when={stream}>
+          <li class="mt-2 text-gray-700">
+            <Link class="flex items-center justify-between pr-2" href={`/${stream.user_login}/videos`} title={stream.user_name}>
+              <div class="flex items-center">
+                <img class="w-8 bg-gray-700" src="" width="300" height="300" />
+                <span class="ml-2 truncate">{stream.user_name}</span>
+              </div>
+              <div class="flex items-center">
+                <ButtonStreamFollow {...stream} />
+                <Link class="group" href={`https://www.twitch.tv/${stream.user_login}/videos`} title="Videos on Twitch">
+                  <span class="block w-4 ml-1 text-trueGray-400 group-hover:text-purple-700"><IconExternalLink /></span>
+                </Link>
+              </div>
+            </Link>
+          </li>
+        </Show>
+      }</For>
     </ul>
   );
 };
@@ -66,6 +96,7 @@ const Header: Component = () => {
   let search_input: HTMLInputElement;
   const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
   const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
+  setSidebar(Sidebar.Streams)
   let searchTimeout: number = 0;
 
   const resetSearch = () => {
@@ -138,7 +169,7 @@ const Header: Component = () => {
           <Show when={sidebar() === Sidebar.Games}><SidebarGames /></Show>
         </div>
         <div classList={{hidden: sidebar() !== Sidebar.Streams}}>
-          <p>Streams</p>
+          <Show when={sidebar() === Sidebar.Streams}><SidebarStreams /></Show>
         </div>
       </div>
     </div>
