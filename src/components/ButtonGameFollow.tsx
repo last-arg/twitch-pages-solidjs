@@ -2,7 +2,8 @@ import { Show, PropsWithChildren, createSignal } from 'solid-js';
 import { rootGameStore, IconFollow, IconUnfollow } from '../common';
 
 // TODO?: replace html element button with input checkbox?
-const ButtonGameFollow = (props: PropsWithChildren<{isFollowed: Accessor<boolean>, id: string, name: string}>) => {
+const ButtonGameFollow = (props: PropsWithChildren<{isFollowed: Accessor<boolean>, id: string, name: string, classExtra: string}>) => {
+  const classExtra = props.classExtra || "";
 
   const toggleFollow = (category: {id: string, name: string, isFollowed: boolean}, e: MouseEvent) => {
     e.preventDefault();
@@ -27,7 +28,7 @@ const ButtonGameFollow = (props: PropsWithChildren<{isFollowed: Accessor<boolean
   }
 
   return (
-    <button class="text-trueGray-400 hover:text-black" onClick={[toggleFollow, {id: props.id, name: props.name}]} title={`${props.isFollowed ? "Unfollow" : "Follow"} game`}>
+    <button class={`text-trueGray-400 hover:text-black ${classExtra}`} onClick={[toggleFollow, {id: props.id, name: props.name}]} title={`${props.isFollowed ? "Unfollow" : "Follow"} game`}>
       <Show when={!props.isFollowed} fallback={<IconUnfollow />}><IconFollow /></Show>
     </button>
   );

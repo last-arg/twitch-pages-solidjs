@@ -2,7 +2,7 @@ import { Component, createResource, createSignal, createEffect, For, Show, Switc
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useParams, useData } from 'solid-app-router';
 import { Category, createTwitchImage, IconExternalLink, IconFollow, IconUnfollow, rootGameStore } from "../common";
-import ButtonGameFollow from "../components/ButtonToggleFollow";
+import ButtonGameFollow from "../components/ButtonGameFollow";
 
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
@@ -45,9 +45,7 @@ const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
         const [isFollowed, setIsFollowed] = createSignal<boolean>(gameIds.includes(props.id))
         createEffect(() => setIsFollowed(gamesFollowed.games.map(({id}) => id).includes(props.id)))
         return (
-          <span class="block w-5 h-5 leading-none">
-            <ButtonGameFollow name={props.name} id={props.id} isFollowed={isFollowed()}/>
-          </span>
+          <ButtonGameFollow classExtra="w-5 h-5" name={props.name} id={props.id} isFollowed={isFollowed()}/>
         );
       }}</Show>
     </h1>
