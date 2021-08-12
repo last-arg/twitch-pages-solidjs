@@ -1,6 +1,6 @@
 import { Component, createResource, createSignal, For, Switch, Match, Show, PropsWithChildren } from 'solid-js';
 import { HEADER_OPTS } from "../config";
-import { Category, localGames, localStreams } from "../common";
+import { Category, localGames, localStreams, localImages } from "../common";
 import { IconExternalLink } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
@@ -34,8 +34,9 @@ const SidebarStreams = () => {
           <li class="mt-2 text-gray-700">
             <Link class="flex items-center justify-between pr-2" href={`/${stream.user_login}/videos`} title={stream.user_name}>
               <div class="flex items-center">
-                <img class="w-8 bg-gray-700" src="" width="300" height="300" />
+                <img class="w-8 bg-gray-700" src={localImages.get(stream.user_id)} width="300" height="300" />
                 <span class="ml-2 truncate">{stream.user_name}</span>
+                <span class="ml-2 truncate">{stream.user_id}</span>
               </div>
               <div class="flex items-center">
                 <ButtonStreamFollow {...stream} />

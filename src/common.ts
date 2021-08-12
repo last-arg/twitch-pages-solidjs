@@ -1,4 +1,5 @@
 import { createMutable } from "solid-js/store";
+import { HEADER_OPTS } from "./config";
 
 export interface Category {
   id: string,
@@ -51,6 +52,7 @@ export const localStreams = createMutable({
     // TODO: make sure streams are sorted
     this.streams.push(stream)
     window.localStorage.setItem("streams", JSON.stringify(this.streams));
+    fetchAndSetProfileImages([stream.user_id])
   },
   unfollow(id: string) {
     const index = this.streamIds.indexOf(id)
@@ -64,3 +66,57 @@ export const localStreams = createMutable({
 export const createTwitchImage = (name: string, width: number, height: number): string => {
   return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
 }
+
+
+// https://dev.twitch.tv/docs/api/reference#get-users
+interface User {
+  id: string,
+  display_name: string,
+  login: string,
+  profile_image_url: string,
+  view_count: number,
+}
+
+// TODO: make it work also with login names. Or make another function.
+// The other function should only need to return one user.
+// And I could trim fields/keys from fetchUsers return type
+export const fetchUsers = async (ids: string[]): Promise<User[]> => {
+  if (ids.length === 0) return []
+  const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
+  return (await (await fetch(url, HEADER_OPTS)).json()).data;
+}
+
+export interface LocalImages {
+  //    user_id: profile_image_url
+  [user_id: string]: string,
+}
+
+// TODO: remove unused images from localStorage
+// 1) when page is opened, reloaded, closed
+// 2) somekind of interval: hours, days, ...
+export const localImages = createMutable({
+  images: JSON.parse(window.localStorage.getItem("images") ?? "{}") as LocalImages,
+  get(key: string): string {
+    return this.images[key] ?? ""
+  },
+  set(key: string, value: string) {
+    this.images[key] = value;
+    window.localStorage.setItem("images", JSON.stringify(this.images));
+  },
+  setValues(images: LocalImages) {
+    Object.assign(this.images, images)
+    window.localStorage.setItem("images", JSON.stringify(this.images));
+  }
+})
+
+const fetchAndSetProfileImages = async (user_ids: string[]) => {
+  const profiles = await fetchUsers(user_ids)
+  let images: LocalImages = {}
+  for (let p of profiles) {
+    images[p.id] = p.profile_image_url
+  }
+  localImages.setValues(images)
+};
+
+// TODO: live streams data
+// TODO: Check liveness of streams between interval
