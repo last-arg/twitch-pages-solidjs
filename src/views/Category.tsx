@@ -12,40 +12,42 @@ const createLiveUserImageUrl = (url_template: string, w: number, h: number): str
 };
 
 interface TitleProps {
-  name: string,
-  id?: string,
-  placeholder?: boolean
+  fallbackName: string,
+  category: any
 }
 
 const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
-  const name = props.name;
-  const placeholder = props.placeholder ?? false;
-  let img_url = "";
-  let link_href = "#";
-
-  if (!props.placeholder) {
-      img_url = createTwitchImage(name, IMG_WIDTH, IMG_HEIGHT)
-      link_href = "https://www.twitch.tv/directory/game/" + encodeURIComponent(name);
-  }
+  const [data, setData] = createSignal({imgUrl: "", linkHref: "#", name: props.fallbackName, id: null})
+  createEffect(() => {
+    if (!props.category.loading) {
+      const name = props.category().name;
+      setData({
+        id: props.category().id,
+        name: name,
+        linkHref: "https://www.twitch.tv/directory/game/" + encodeURIComponent(name),
+        imgUrl: createTwitchImage(name, IMG_WIDTH, IMG_HEIGHT)
+      })
+    }
+  })
 
   const [gamesFollowed, setGamesFollowed] = rootGameStore
   const gameIds = gamesFollowed.games.map(({id}) => id)
 
   return (
     <h1 class="flex items-center text-xl">
-      <Link class="group hover:text-purple-800 hover:underline" href={link_href}>
+      <Link class="group hover:text-purple-800 hover:underline" href={data().linkHref}>
         <span class="flex items-center">
-          <img class="w-10 mr-3 bg-gray-200" src={img_url} alt="" title={name} width={IMG_WIDTH} height={IMG_HEIGHT} />
-          <span>{name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <img class="w-10 mr-3 bg-gray-200" src={data().imgUrl} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
+          <span>{data().name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span class="block text-trueGray-400 group-hover:text-purple-800 -ml-4 w-4"><IconExternalLink /></span>
         </span>
       </Link>
       <span class="text-trueGray-400 ml-8 mr-2 border-l h-full w-0">&nbsp;</span>
-      <Show when={props.id}>{() => {
-        const [isFollowed, setIsFollowed] = createSignal<boolean>(gameIds.includes(props.id))
-        createEffect(() => setIsFollowed(gamesFollowed.games.map(({id}) => id).includes(props.id)))
+      <Show when={data().id}>{(cat_id) => {
+        const [isFollowed, setIsFollowed] = createSignal<boolean>(gameIds.includes(cat_id))
+        createEffect(() => setIsFollowed(gamesFollowed.games.map(({id}) => id).includes(cat_id)))
         return (
-          <ButtonGameFollow classExtra="w-5 h-5" name={props.name} id={props.id} isFollowed={isFollowed()}/>
+          <ButtonGameFollow classExtra="w-5 h-5" name={data().name} id={cat_id} isFollowed={isFollowed()}/>
         );
       }}</Show>
     </h1>
@@ -164,14 +166,16 @@ const fetchCategory = async (category: string): Promise<Category> => {
 
 const CategoryView = () => {
   const params = useParams();
+  const fallbackName = decodeURIComponent(useParams().name)
   const [category] = createResource(() => decodeURIComponent(params.name), fetchCategory);
-
+        // <Show when={!category.loading} fallback={<CategoryTitle name={decodeURIComponent(useParams().name)} placeholder={true} />}>
+        //   <CategoryTitle name={category().name} id={category().id} />
+        // </Show>
   return (
     <main class="px-2">
       <div class="mt-3">
-        <Show when={!category.loading} fallback={<CategoryTitle name={decodeURIComponent(useParams().name)} placeholder={true} />}>
-          <CategoryTitle name={category().name} id={category().id} />
-        </Show>
+
+        <CategoryTitle category={category} fallbackName={fallbackName} />
       </div>
       <Switch fallback={<p>Not Found</p>}>
         <Match when={category.loading}>
