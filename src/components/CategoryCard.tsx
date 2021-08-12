@@ -2,7 +2,7 @@ import { Show, PropsWithChildren } from 'solid-js';
 import { IMG_WIDTH, IMG_HEIGHT } from '../config';
 import { createTwitchImage, rootGameStore, IconExternalLink, IconFollow, IconUnfollow } from '../common';
 import { Link } from "solid-app-router";
-import ButtonToggleFollow from "./ButtonToggleFollow";
+import ButtonGameFollow from "./ButtonToggleFollow";
 
 
 const CategoryCard = (props: PropsWithChildren<{id: string, name: string, is_followed: boolean, img_class: string}>) => {
@@ -21,7 +21,7 @@ const CategoryCard = (props: PropsWithChildren<{id: string, name: string, is_fol
           <p class="ml-3 text-lg line-clamp-2">{name}</p>
         </div>
         <div class="flex flex-col justify-between">
-          <ButtonToggleFollow name={name} id={id} isFollowed={is_followed} />
+          <ButtonGameFollow name={name} id={id} isFollowed={is_followed} />
           <Link class="text-trueGray-400 p-2 w-8 hover:text-black" href={`https://www.twitch.tv${game_link}`} title="Open game in Twitch" onClick={(e: Event) => e.stopPropagation()}><IconExternalLink /></Link>
         </div>
       </Link>

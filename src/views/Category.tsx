@@ -2,7 +2,7 @@ import { Component, createResource, createSignal, createEffect, For, Show, Switc
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useParams, useData } from 'solid-app-router';
 import { Category, createTwitchImage, IconExternalLink, IconFollow, IconUnfollow, rootGameStore } from "../common";
-import ButtonToggleFollow from "../components/ButtonToggleFollow";
+import ButtonGameFollow from "../components/ButtonToggleFollow";
 
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
@@ -29,21 +29,24 @@ const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
   }
 
   const [gamesFollowed, setGamesFollowed] = rootGameStore
+  const gameIds = gamesFollowed.games.map(({id}) => id)
 
   return (
     <h1 class="flex items-center text-xl">
-      <Link  class="group hover:text-purple-800 hover:underline" href={link_href}>
+      <Link class="group hover:text-purple-800 hover:underline" href={link_href}>
         <span class="flex items-center">
           <img class="w-10 mr-3 bg-gray-200" src={img_url} alt="" title={name} width={IMG_WIDTH} height={IMG_HEIGHT} />
-          <span class="">{name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <span class="text-trueGray-400 group-hover:text-purple-800 -ml-4 w-4"><IconExternalLink /></span>
+          <span>{name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span class="block text-trueGray-400 group-hover:text-purple-800 -ml-4 w-4"><IconExternalLink /></span>
         </span>
       </Link>
+      <span class="text-trueGray-400 ml-8 mr-2 border-l h-full w-0">&nbsp;</span>
       <Show when={props.id}>{() => {
-        const gameIds = gamesFollowed.games.map(({id}) => id)
+        const [isFollowed, setIsFollowed] = createSignal<boolean>(gameIds.includes(props.id))
+        createEffect(() => setIsFollowed(gamesFollowed.games.map(({id}) => id).includes(props.id)))
         return (
-          <span class="block ml-8 pl-1 border-l">
-            <ButtonToggleFollow name={props.name} id={props.id} isFollowed={gameIds.includes(props.id)}/>
+          <span class="block w-5 h-5 leading-none">
+            <ButtonGameFollow name={props.name} id={props.id} isFollowed={isFollowed()}/>
           </span>
         );
       }}</Show>
@@ -91,7 +94,7 @@ interface StreamProps {
 }
 
 const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
-  const [cursor, setCursor] = createSignal(null);
+  const [cursor, setCursor] = createSignal<string | null>(null);
   const [allStreams, setAllStreams] = createSignal<Stream[]>([]);
   const [streams] = createResource(() => {return {id: props.category_id, cursor: cursor()}}, fetchStreams);
 
@@ -130,11 +133,11 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
                   </Link>
                   <div class="flex flex-col justify-between ml-2">
                     <div class="flex items-center">
-                      <Link class="" href={`/${stream.user_login}/videos`}>{stream.user_name}</Link>
+                      <Link href={`/${stream.user_login}/videos`}>{stream.user_name}</Link>
                       <span class="text-trueGray-400 mr-2 ml-4 border-l h-full"></span>
-                        <button class="w-4 text-trueGray-400 hover:text-trueGray-800" title={`${is_followed ? "Unfollow" : "Follow"} streamer`} onClick={() => console.log("TODO: un/follow streamer")}>
-                          <Show when={!is_followed} fallback={<IconUnfollow />}><IconFollow /></Show>
-                        </button>
+                      <button class="w-4 text-trueGray-400 hover:text-trueGray-800" title={`${is_followed ? "Unfollow" : "Follow"} streamer`} onClick={() => console.log("TODO: un/follow streamer")}>
+                        <Show when={!is_followed} fallback={<IconUnfollow />}><IconFollow /></Show>
+                      </button>
                     </div>
                     <div>
                       <Link class="flex items-center group" href={`${twitch_stream_url}/videos`}>

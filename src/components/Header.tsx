@@ -137,7 +137,7 @@ const Header: Component = () => {
           <SidebarSearch searchValue={searchValue()}/>
         </div>
         <div classList={{hidden: sidebar() !== Sidebar.Games}}>
-          <SidebarGames />
+          <Show when={sidebar() === Sidebar.Games}><SidebarGames /></Show>
         </div>
         <div classList={{hidden: sidebar() !== Sidebar.Streams}}>
           <p>Streams</p>
