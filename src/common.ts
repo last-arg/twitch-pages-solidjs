@@ -33,6 +33,34 @@ export const localGames = createMutable({
   }
 });
 
+export interface StreamFollow {
+  user_id: string,
+  user_login: string,
+  user_name: string,
+}
+
+export const localStreams = createMutable({
+  streams: JSON.parse(window.localStorage.getItem("streams") ?? "[]") as StreamFollow[],
+  get streamIds(): string[] {
+    return this.streams.map((stream: StreamFollow) => stream.user_id)
+  },
+  isFollowed(id: string): boolean {
+    return this.streamIds.includes(id)
+  },
+  follow(stream: StreamFollow) {
+    this.streams.push(stream)
+    window.localStorage.setItem("streams", JSON.stringify(this.streams));
+  },
+  unfollow(id: string) {
+    const index = this.streamIds.indexOf(id)
+    if (index !== -1) {
+      this.streams.splice(index, 1)
+      window.localStorage.setItem("streams", JSON.stringify(this.streams));
+    }
+
+  }
+});
+
 export const createTwitchImage = (name: string, width: number, height: number): string => {
   return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
 }

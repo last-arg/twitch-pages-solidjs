@@ -4,6 +4,8 @@ import { Link, useParams } from 'solid-app-router';
 import { Category, createTwitchImage } from "../common";
 import { IconExternalLink, IconFollow, IconUnfollow } from "../icons";
 import ButtonGameFollow from "../components/ButtonGameFollow";
+import ButtonStreamFollow from "../components/ButtonStreamFollow";
+import {Stream} from "../stream";
 
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
@@ -51,15 +53,6 @@ const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
   );
 };
 
-interface Stream {
-  user_login: string,
-  user_name: string,
-  type: string, // "" (empty string is an error)
-  viewer_count: number,
-  thumbnail_url: string,
-  title: string,
-}
-
 interface StreamResponse {
   data: Stream[],
   pagination: {
@@ -101,8 +94,6 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
       <ul class="flex flex-wrap -mx-2">
         <For each={allStreams()}>{(stream: Stream) => {
           const twitch_stream_url = `https://www.twitch.tv/${stream.user_login}`;
-          const is_followed = false
-
           return (
             <li class="w-1/3 px-2 py-3">
               <div class="">
@@ -127,9 +118,7 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
                     <div class="flex items-center">
                       <Link href={`/${stream.user_login}/videos`}>{stream.user_name}</Link>
                       <span class="text-trueGray-400 mr-2 ml-4 border-l h-full"></span>
-                      <button class="w-4 text-trueGray-400 hover:text-trueGray-800" title={`${is_followed ? "Unfollow" : "Follow"} streamer`} onClick={() => console.log("TODO: un/follow streamer")}>
-                        <Show when={!is_followed} fallback={<IconUnfollow />}><IconFollow /></Show>
-                      </button>
+                      <ButtonStreamFollow {...stream} />
                     </div>
                     <div>
                       <Link class="flex items-center group" href={`${twitch_stream_url}/videos`}>
