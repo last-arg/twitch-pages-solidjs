@@ -1,7 +1,8 @@
 import { Component, createResource, createSignal, createEffect, For, Show, Switch, Match, PropsWithChildren, Resource } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useParams, useData } from 'solid-app-router';
-import { Category, createTwitchImage, IconExternalLink, IconFollow, IconUnfollow, rootGameStore } from "../common";
+import { Category, createTwitchImage, rootGameStore } from "../common";
+import { IconExternalLink, IconFollow, IconUnfollow } from "../icons";
 import ButtonGameFollow from "../components/ButtonGameFollow";
 
 const IMG_STREAM_WIDTH = 440;

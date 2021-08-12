@@ -1,6 +1,7 @@
 import { Show, PropsWithChildren } from 'solid-js';
 import { IMG_WIDTH, IMG_HEIGHT } from '../config';
-import { createTwitchImage, rootGameStore, IconExternalLink, IconFollow, IconUnfollow } from '../common';
+import { createTwitchImage, rootGameStore } from '../common';
+import { IconExternalLink, IconFollow, IconUnfollow } from '../icons';
 import { Link } from "solid-app-router";
 import ButtonGameFollow from "./ButtonGameFollow";
 
