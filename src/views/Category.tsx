@@ -82,7 +82,7 @@ interface StreamProps {
 const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
   const [cursor, setCursor] = createSignal<string | null>(null);
   const [allStreams, setAllStreams] = createSignal<Stream[]>([]);
-  const [streams] = createResource<StreamResponse, StreamParams>(() => {return {id: props.category_id, cursor: cursor()} as StreamParams }, fetchStreams);
+  const [streams] = createResource<StreamResponse, StreamParams>(() => {return {id: props.category_id, cursor: cursor()} as StreamParams }, fetchStreams, {initialValue: {data: [], pagination: {}}});
 
   createEffect(() => {
     if (!streams.loading) {
@@ -164,7 +164,7 @@ const fetchCategory = async (category: string): Promise<Category> => {
 const CategoryView = () => {
   const params = useParams();
   const fallbackName = decodeURIComponent(useParams().name)
-  const [category] = createResource<Category, string>(() => decodeURIComponent(params.name), fetchCategory);
+  const [category] = createResource<Category | undefined, string>(() => decodeURIComponent(params.name), fetchCategory);
 
   return (
     <main class="px-2">
@@ -174,7 +174,7 @@ const CategoryView = () => {
           <p>Loading...</p>
         </Match>
         <Match when={!category.loading && category()}>
-          <CategoryStreams category_id={category().id} />
+          <CategoryStreams category_id={category()!.id} />
         </Match>
       </Switch>
 

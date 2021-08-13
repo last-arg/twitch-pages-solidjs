@@ -62,18 +62,18 @@ const searchGames = async (search_term: string): Promise<Category[]> => {
     return [];
   }
   const url = `https://api.twitch.tv/helix/search/categories?first=10&query=${trimmed_term}`;
-  return (await (await fetch(url, HEADER_OPTS)).json()).data;
+  return (await (await fetch(url, HEADER_OPTS)).json()).data as Category[];
 };
 
 const SidebarSearch = (props: PropsWithChildren<{searchValue: string}>) => {
-  const [games] = createResource(() => props.searchValue, searchGames);
+  const [games] = createResource<Category[], string>(() => props.searchValue, searchGames, {initialValue: []});
 
   return (
     <Switch>
       <Match when={games.loading} >
         <p>Searching...</p>
       </Match>
-      <Match when={games().length === 0}>
+      <Match when={(games() as Category[]).length === 0}>
         <p>No results found</p>
       </Match>
       <Match when={games().length > 0}>{() => {
@@ -98,30 +98,32 @@ enum Sidebar {
 
 // TODO: If sidebar content exceeds height display a button or gradient at bottom
 const Header: Component = () => {
-  let search_input: HTMLInputElement;
   const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
   const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
   let searchTimeout: number = 0;
 
-  const resetSearch = () => {
+  const resetSearch = (e: Event) => {
     clearTimeout(searchTimeout);
     setSearchValue("")
     location.hash = "";
-    search_input.focus();
+    const elem = e.currentTarget as HTMLInputElement;
+    elem.focus();
   };
 
   const submitSearch = (e: Event) => {
     e.preventDefault();
     clearTimeout(searchTimeout);
-    setSearchValue(search_input.value);
+    const elem = e.currentTarget as HTMLInputElement;
+    setSearchValue(elem.value);
   };
 
-  const inputSearch = () => {
+  const inputSearch = (e: InputEvent) => {
     clearTimeout(searchTimeout);
-    location.hash = search_input.value;
+    const elem = e.currentTarget as HTMLInputElement;
+    location.hash = elem.value;
     searchTimeout = setTimeout((value: string) => {
       setSearchValue(value)
-    }, 400, search_input.value);
+    }, 400, elem.value);
   };
 
   const inputBlur = () => {
@@ -143,7 +145,6 @@ const Header: Component = () => {
           </h1>
           <form onSubmit={submitSearch} onReset={resetSearch}>
             <input
-              ref={search_input}
               type="search"
               class="border bg-blue-100"
               placeholder="Search for game"
