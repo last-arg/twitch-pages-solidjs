@@ -81,7 +81,7 @@ export const fetchUsers = async (ids: string[]): Promise<User[]> => {
 }
 
 // {user_id: profile_image_url}
-export type LocalImages = Record<string, string>
+export type LocalImages = Record<User["id"], User["profile_image_url"]>
 
 // TODO: remove unused images from localStorage
 // 1) when page is opened, reloaded, closed
@@ -108,8 +108,8 @@ export const fetchAndSetProfileImages = async (user_ids: string[]) => {
   if (user_ids.length === 0) return
   const profiles = await fetchUsers(user_ids)
   let images: LocalImages = {}
-  for (let p of profiles) {
-    images[p.id] = p.profile_image_url
+  for (let {id, profile_image_url} of profiles) {
+    images[id] = profile_image_url
   }
   localImages.setValues(images)
 };
