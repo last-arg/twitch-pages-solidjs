@@ -62,6 +62,7 @@ export const createTwitchImage = (name: string, width: number, height: number): 
   return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
 }
 
+// TODO?: move to user.ts file?
 // https://dev.twitch.tv/docs/api/reference#get-users
 interface User {
   id: string,
@@ -86,6 +87,7 @@ export type LocalImages = Record<User["id"], User["profile_image_url"]>
 // TODO: remove unused images from localStorage
 // 1) when page is opened, reloaded, closed
 // 2) somekind of interval: hours, days, ...
+// Probably interval
 export const localImages = createMutable({
   images: JSON.parse(window.localStorage.getItem("images") ?? "{}") as LocalImages,
   get getAll() {

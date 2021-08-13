@@ -46,12 +46,9 @@ const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
         </span>
       </Link>
       <span class="text-trueGray-400 ml-8 mr-2 border-l h-full w-0">&nbsp;</span>
-      <Show when={data().id}>{(cat_id) => {
-
-        return (
-          <ButtonGameFollow classExtra="w-5 h-5" name={data().name} id={cat_id}/>
-        );
-      }}</Show>
+      <Show when={data().id}>{(cat_id: string) =>
+        <ButtonGameFollow classExtra="w-5 h-5" name={data().name} id={cat_id}/>
+      }</Show>
     </h1>
   );
 };
@@ -63,10 +60,11 @@ interface StreamResponse {
   }
 }
 
-const fetchStreams = async (props: {id: string, cursor?: string}): Promise<StreamResponse> => {
-  const cursor = props.cursor ?? "";
+type StreamParams = {id: string, cursor?: string}
+const fetchStreams = async (params: StreamParams): Promise<StreamResponse> => {
+  const cursor = params.cursor ?? "";
   const count = 4;
-  const url = `https://api.twitch.tv/helix/streams?game_id=${props.id}&first=${count}&after=${cursor}`;
+  const url = `https://api.twitch.tv/helix/streams?game_id=${params.id}&first=${count}&after=${cursor}`;
   if (!import.meta.env.DEV) {
     return (await (await fetch("/tmp/top_category.json")).json());
   } else {
@@ -84,14 +82,14 @@ interface StreamProps {
 const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
   const [cursor, setCursor] = createSignal<string | null>(null);
   const [allStreams, setAllStreams] = createSignal<Stream[]>([]);
-  const [streams] = createResource(() => {return {id: props.category_id, cursor: cursor()}}, fetchStreams);
+  const [streams] = createResource<StreamResponse, StreamParams>(() => {return {id: props.category_id, cursor: cursor()} as StreamParams }, fetchStreams);
 
   createEffect(() => {
     if (!streams.loading) {
       setAllStreams((prev) => [...prev, ...streams().data])
 
       untrack(() => {
-        const user_ids = streams().data.map(({user_id}) => user_id)
+        const user_ids = streams().data.map(({user_id}: {user_id: string}) => user_id)
         const image_keys = Object.keys(localImages.images)
         fetchAndSetProfileImages(user_ids.filter((user_id: string) => !image_keys.includes(user_id)))
       })
@@ -142,12 +140,13 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
         )}}</For>
       </ul>
       <Show when={!streams.loading && streams().pagination.cursor} fallback={<p>Loading...</p>}>
-        <button onClick={async () => setCursor(streams().pagination.cursor)}>Load more streams</button>
+        <button onClick={() => setCursor(streams().pagination.cursor)}>Load more streams</button>
       </Show>
     </>
   );
 };
 
+// TODO: return can be undefined
 const fetchCategory = async (category: string): Promise<Category> => {
   const url = `https://api.twitch.tv/helix/games?name=${category}`;
   const result = (await (await fetch(url, HEADER_OPTS)).json()).data;
@@ -157,7 +156,7 @@ const fetchCategory = async (category: string): Promise<Category> => {
 const CategoryView = () => {
   const params = useParams();
   const fallbackName = decodeURIComponent(useParams().name)
-  const [category] = createResource(() => decodeURIComponent(params.name), fetchCategory);
+  const [category] = createResource<Category, string>(() => decodeURIComponent(params.name), fetchCategory);
 
   return (
     <main class="px-2">
