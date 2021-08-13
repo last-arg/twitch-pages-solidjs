@@ -7,7 +7,8 @@
     "esModuleInterop": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "sourceMap": true,
   },
   "include": ["src/**/*.tsx", "src/**/*.tsx"],
   "exclude": ["node_modules"]

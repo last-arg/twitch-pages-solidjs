@@ -1,13 +1,12 @@
 import { createSignal, createEffect, Show, PropsWithChildren } from 'solid-js';
-import { localStreams } from "../common";
+import { localStreams, StreamFollow } from "../common";
 import { IconFollow, IconUnfollow } from "../icons";
-import { Stream } from "../stream";
 
-const ButtonStreamFollow = (props: PropsWithChildren<Stream>) => {
+const ButtonStreamFollow = (props: PropsWithChildren<StreamFollow>) => {
   const [isFollowed, setIsFollowed] = createSignal<boolean>(localStreams.isFollowed(props.user_id))
   createEffect(() => setIsFollowed(localStreams.isFollowed(props.user_id)))
 
-  const toggleStreamFollow = (stream: Stream, e: MouseEvent) => {
+  const toggleStreamFollow = (stream: StreamFollow, e: MouseEvent) => {
     e.preventDefault()
     if (isFollowed()) {
       localStreams.unfollow(stream.user_id)

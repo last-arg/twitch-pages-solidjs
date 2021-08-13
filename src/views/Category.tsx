@@ -93,7 +93,7 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
       untrack(() => {
         const user_ids = streams().data.map(({user_id}) => user_id)
         const image_keys = Object.keys(localImages.images)
-        fetchAndSetProfileImages(user_ids.filter((user_id) => !image_keys.includes(user_id)))
+        fetchAndSetProfileImages(user_ids.filter((user_id: string) => !image_keys.includes(user_id)))
       })
     }
   })
@@ -166,7 +166,7 @@ const CategoryView = () => {
         <Match when={category.loading}>
           <p>Loading...</p>
         </Match>
-        <Match when={!category.loading && category() !== undefined}>
+        <Match when={!category.loading && category()}>
           <CategoryStreams category_id={category().id} />
         </Match>
       </Switch>
