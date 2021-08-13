@@ -101,7 +101,6 @@ const Header: Component = () => {
   let search_input: HTMLInputElement;
   const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
   const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
-  setSidebar(Sidebar.Streams)
   let searchTimeout: number = 0;
 
   const resetSearch = () => {

@@ -139,9 +139,17 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
             </li>
         )}}</For>
       </ul>
-      <Show when={!streams.loading && streams().pagination.cursor} fallback={<p>Loading...</p>}>
-        <button onClick={() => setCursor(streams().pagination.cursor)}>Load more streams</button>
-      </Show>
+      <Switch>
+        <Match when={streams.loading}>
+          <p>Loading streams...</p>
+        </Match>
+        <Match when={!streams.loading && streams().pagination.cursor}>
+          <button onClick={() => setCursor(streams().pagination.cursor ?? null)}>Load more streams</button>
+        </Match>
+        <Match when={!streams.loading && allStreams.length === 0}>
+          <p>Found no streams</p>
+        </Match>
+      </Switch>
     </>
   );
 };
@@ -169,6 +177,7 @@ const CategoryView = () => {
           <CategoryStreams category_id={category().id} />
         </Match>
       </Switch>
+
     </main>
   );
 };
