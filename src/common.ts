@@ -76,6 +76,7 @@ interface User {
 // The other function should only need to return one user.
 // And I could trim fields/keys from fetchUsers return type
 export const fetchUsers = async (ids: string[]): Promise<User[]> => {
+  // TODO: twitch user_id limit is 100
   if (ids.length === 0) return []
   const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
   return (await (await fetch(url, HEADER_OPTS)).json()).data;
@@ -87,15 +88,19 @@ export type LocalImages = Record<User["id"], {
   last_access: number,
 }>
 
+const getLocalLastUpdate = (key: string): number => {
+  const storedLastUpdate = window.localStorage.getItem(key)
+  if (storedLastUpdate) {
+    return parseInt(storedLastUpdate, 10)
+  }
+  const now = Date.now()
+  window.localStorage.setItem(key, now.toString());
+  return now
+};
+
 export const localImages = createMutable({
   images: JSON.parse(window.localStorage.getItem("images") ?? "{}") as LocalImages,
-  lastUpdateDate: (() => {
-    const storedLastUpdate = window.localStorage.getItem("last_image_update")
-    if (storedLastUpdate) {
-      return parseInt(storedLastUpdate, 10)
-    }
-    return Date.now()
-  })(),
+  lastUpdateDate: getLocalLastUpdate("last_image_update"),
   get getAll() {
     return this.images
   },
@@ -118,15 +123,11 @@ export const localImages = createMutable({
     window.localStorage.setItem("images", JSON.stringify(this.images));
   },
   clean() {
-    // TODO: when to run function clean
-    // 1) when page has finished loading
-    // 2) on App unmount
-
     // Remove images that haven't been accessed more than a week
     const weekInMilliseconds = 518400000
     const nowDate = Date.now()
-    const updateInterval = new Date(nowDate - this.lastUpdateDate)
-    if (updateInterval.getUTCDate() >= 0) {
+    const timePassedSinceLast = nowDate - this.lastUpdateDate
+    if (timePassedSinceLast >= weekInMilliseconds) {
       let has_changed = false
       for (let user_id of Object.keys(this.images)) {
         if ((nowDate - this.images[user_id].last_access) > weekInMilliseconds) {
@@ -157,5 +158,45 @@ export const fetchAndSetProfileImages = async (user_ids: string[]) => {
   localImages.setValues(images)
 };
 
-// TODO: live streams data
-// TODO: Check liveness of streams between interval
+// https://dev.twitch.tv/docs/api/reference#get-streams
+const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
+  // TODO: twitch user_id limit is 100
+  if (userIds.length === 0) return []
+  const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=100`;
+  return (await (await fetch(url, HEADER_OPTS)).json()).data;
+};
+
+const TWITCH_MAX_COUNT = 100
+type LiveObject = Stream["game_name"]
+type LocalLive = Record<Stream["user_id"], LiveObject>
+
+export const localLiveStreams = createMutable({
+  data: JSON.parse(window.localStorage.getItem("live_streams") ?? "{}") as LocalLive,
+  lastUpdate: getLocalLastUpdate("last_live_update"),
+  get(user_id: string): LiveObject {
+    return this.data[user_id]
+  },
+  async updateAll() {
+    const five_min_ms = 300000
+    const timeSinceLastUpdate = Date.now() - this.lastUpdate
+    console.log(timeSinceLastUpdate, timeSinceLastUpdate > five_min_ms)
+    if (timeSinceLastUpdate > five_min_ms) {
+      const user_ids = localStreams.streams.map(({user_id}:{user_id: string}) => user_id)
+      const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_COUNT)
+      let new_data: LocalLive = {}
+      for (let i = 0; i < batch_count; i+=1) {
+        const ids_batch = user_ids.slice(i * TWITCH_MAX_COUNT, i * TWITCH_MAX_COUNT + TWITCH_MAX_COUNT)
+        const streams = await fetchStreamsByUserIds(ids_batch)
+        for (let {user_id, game_name, type} of streams) {
+          if (type === "live") {
+            new_data[user_id] = game_name 
+          }
+        }
+      }
+      window.localStorage.setItem("live_streams", JSON.stringify(new_data));
+      this.data = new_data
+    }
+    window.localStorage.setItem("last_live_update", this.lastUpdate.toString());
+  },
+});
+

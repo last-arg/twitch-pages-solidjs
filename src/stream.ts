@@ -7,4 +7,5 @@ export interface Stream {
   thumbnail_url: string,
   title: string,
   game_id: string,
+  game_name: string,
 }

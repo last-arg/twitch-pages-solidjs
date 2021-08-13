@@ -18,7 +18,6 @@ const fetchTopGames = async (id: string): Promise<Category[]> => {
 };
 
 const Home: Component = () => {
-  // TODO?: make resource into route data?
   const [topGames] = createResource(fetchTopGames);
 
   return (

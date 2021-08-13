@@ -155,7 +155,7 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
 };
 
 // TODO: return can be undefined
-const fetchCategory = async (category: string): Promise<Category> => {
+const fetchCategory = async (category: string): Promise<Category | undefined> => {
   const url = `https://api.twitch.tv/helix/games?name=${category}`;
   const result = (await (await fetch(url, HEADER_OPTS)).json()).data;
   return result[0];

@@ -5,6 +5,7 @@ import { IconExternalLink } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
+import { Stream } from "../stream";
 
 
 const SidebarGames = () => {
@@ -24,9 +25,6 @@ const SidebarGames = () => {
 };
 
 const SidebarStreams = () => {
-  // TODO: is user live
-  // TODO: if live what game playing
-
   const user_ids = localStreams.streams.map(({user_id}) => user_id)
   const image_keys = Object.keys(localImages.images)
   fetchAndSetProfileImages(user_ids.filter((user_id) => !image_keys.includes(user_id)))
@@ -96,7 +94,6 @@ enum Sidebar {
   Streams,
 }
 
-// TODO: If sidebar content exceeds height display a button or gradient at bottom
 const Header: Component = () => {
   const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
   const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
