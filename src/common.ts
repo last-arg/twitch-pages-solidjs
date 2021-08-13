@@ -2,6 +2,8 @@ import { createMutable } from "solid-js/store";
 import { HEADER_OPTS } from "./config";
 import {Stream} from "./stream";
 
+const TWITCH_MAX_QUERY_PARAMS = 100
+
 // TODO?: move into category.ts file?
 export interface Category {
   id: string,
@@ -159,14 +161,13 @@ export const fetchAndSetProfileImages = async (user_ids: string[]) => {
 };
 
 // https://dev.twitch.tv/docs/api/reference#get-streams
+// NOTE: Twitch API has a limit 100 on how many user_ids can be added into one request
 const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
-  // TODO: twitch user_id limit is 100
   if (userIds.length === 0) return []
   const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=100`;
   return (await (await fetch(url, HEADER_OPTS)).json()).data;
 };
 
-const TWITCH_MAX_COUNT = 100
 type LiveObject = Stream["game_name"]
 type LocalLive = Record<Stream["user_id"], LiveObject>
 
@@ -182,10 +183,10 @@ export const localLiveStreams = createMutable({
     console.log(timeSinceLastUpdate, timeSinceLastUpdate > five_min_ms)
     if (timeSinceLastUpdate > five_min_ms) {
       const user_ids = localStreams.streams.map(({user_id}:{user_id: string}) => user_id)
-      const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_COUNT)
+      const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_PARAMS)
       let new_data: LocalLive = {}
       for (let i = 0; i < batch_count; i+=1) {
-        const ids_batch = user_ids.slice(i * TWITCH_MAX_COUNT, i * TWITCH_MAX_COUNT + TWITCH_MAX_COUNT)
+        const ids_batch = user_ids.slice(i * TWITCH_MAX_QUERY_PARAMS, i * TWITCH_MAX_QUERY_PARAMS + TWITCH_MAX_QUERY_PARAMS)
         const streams = await fetchStreamsByUserIds(ids_batch)
         for (let {user_id, game_name, type} of streams) {
           if (type === "live") {
