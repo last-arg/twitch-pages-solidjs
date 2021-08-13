@@ -1,16 +1,15 @@
 import { createMutable } from "solid-js/store";
 import { HEADER_OPTS } from "./config";
+import {Stream} from "./stream";
 
+// TODO?: move into category.ts file?
 export interface Category {
   id: string,
   name: string,
   box_art_url: string,
 }
 
-interface GameFollow {
-  id: string,
-  name: string,
-}
+type GameFollow = Pick<Category, "id" | "name">
 
 export const localGames = createMutable({
   games: JSON.parse(window.localStorage.getItem("games") ?? "[]") as GameFollow[],
@@ -34,11 +33,7 @@ export const localGames = createMutable({
   }
 });
 
-export interface StreamFollow {
-  user_id: string,
-  user_login: string,
-  user_name: string,
-}
+export type StreamFollow = Pick<Stream, "user_id" | "user_login" | "user_name">
 
 export const localStreams = createMutable({
   streams: JSON.parse(window.localStorage.getItem("streams") ?? "[]") as StreamFollow[],
@@ -67,7 +62,6 @@ export const createTwitchImage = (name: string, width: number, height: number): 
   return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
 }
 
-
 // https://dev.twitch.tv/docs/api/reference#get-users
 interface User {
   id: string,
@@ -86,10 +80,8 @@ export const fetchUsers = async (ids: string[]): Promise<User[]> => {
   return (await (await fetch(url, HEADER_OPTS)).json()).data;
 }
 
-export interface LocalImages {
-  //    user_id: profile_image_url
-  [user_id: string]: string,
-}
+// {user_id: profile_image_url}
+export type LocalImages = Record<string, string>
 
 // TODO: remove unused images from localStorage
 // 1) when page is opened, reloaded, closed
