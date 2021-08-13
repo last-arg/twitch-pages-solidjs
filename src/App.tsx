@@ -24,6 +24,7 @@ const routes = [
 
 const App: Component = () => {
   const Routes = useRoutes(routes)
+
   return (
     <>
       <Router>

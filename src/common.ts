@@ -82,36 +82,77 @@ export const fetchUsers = async (ids: string[]): Promise<User[]> => {
 }
 
 // {user_id: profile_image_url}
-export type LocalImages = Record<User["id"], User["profile_image_url"]>
+export type LocalImages = Record<User["id"], {
+  url: User["profile_image_url"],
+  last_access: number,
+}>
 
-// TODO: remove unused images from localStorage
-// 1) when page is opened, reloaded, closed
-// 2) somekind of interval: hours, days, ...
-// Probably interval
 export const localImages = createMutable({
   images: JSON.parse(window.localStorage.getItem("images") ?? "{}") as LocalImages,
+  lastUpdateDate: (() => {
+    const storedLastUpdate = window.localStorage.getItem("last_image_update")
+    if (storedLastUpdate) {
+      return parseInt(storedLastUpdate, 10)
+    }
+    return Date.now()
+  })(),
   get getAll() {
     return this.images
   },
   get(key: string): string {
-    return this.images[key] ?? ""
+    if (this.images[key]) {
+      this.images[key].last_access = Date.now()
+      return this.images[key].url
+    }
+    return ""
   },
   set(key: string, value: string) {
-    this.images[key] = value;
+    this.images[key] = {
+      url: value,
+      last_access: Date.now(),
+    };
     window.localStorage.setItem("images", JSON.stringify(this.images));
   },
   setValues(images: LocalImages) {
     Object.assign(this.images, images)
     window.localStorage.setItem("images", JSON.stringify(this.images));
+  },
+  clean() {
+    // TODO: when to run function clean
+    // 1) when page has finished loading
+    // 2) on App unmount
+
+    // Remove images that haven't been accessed more than a week
+    const weekInMilliseconds = 518400000
+    const nowDate = Date.now()
+    const updateInterval = new Date(nowDate - this.lastUpdateDate)
+    if (updateInterval.getUTCDate() >= 0) {
+      let has_changed = false
+      for (let user_id of Object.keys(this.images)) {
+        if ((nowDate - this.images[user_id].last_access) > weekInMilliseconds) {
+          has_changed = true
+          delete this.images[user_id]
+        }
+      }
+
+      if (has_changed) {
+        window.localStorage.setItem("images", JSON.stringify(this.images));
+      }
+    }
+    this.lastUpdateDate = nowDate
   }
 })
 
 export const fetchAndSetProfileImages = async (user_ids: string[]) => {
   if (user_ids.length === 0) return
   const profiles = await fetchUsers(user_ids)
+  const last_access = Date.now()
   let images: LocalImages = {}
   for (let {id, profile_image_url} of profiles) {
-    images[id] = profile_image_url
+    images[id] = {
+      url: profile_image_url,
+      last_access: last_access,
+    }
   }
   localImages.setValues(images)
 };
