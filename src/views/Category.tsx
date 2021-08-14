@@ -2,7 +2,7 @@ import { createResource, createSignal, createEffect, For, Show, Switch, Match, u
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useParams } from 'solid-app-router';
 import { createTwitchImage, localImages, fetchAndSetProfileImages } from "../common";
-import { IconExternalLink, IconFollow, IconUnfollow } from "../icons";
+import { IconExternalLink } from "../icons";
 import ButtonGameFollow from "../components/ButtonGameFollow";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
 import { Stream } from "../stream";

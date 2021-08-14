@@ -1,4 +1,4 @@
-import { Component, createResource, createSignal, createEffect, For, Show, Switch, Match } from 'solid-js';
+import { Component, createResource, createSignal, createEffect, For, Switch, Match } from 'solid-js';
 import { HEADER_OPTS } from "../config";
 import { Category } from "../category";
 import CategoryCard from "../components/CategoryCard";
@@ -51,13 +51,13 @@ const Home: Component = () => {
       </ul>
       <Switch>
         <Match when={topGames.loading}>
-          <p>Loading streams...</p>
+          <p>Loading games...</p>
         </Match>
         <Match when={!topGames.loading && topGames().pagination.cursor}>
-          <button onClick={() => setCursor(topGames().pagination.cursor ?? "")}>Load more streams</button>
+          <button onClick={() => setCursor(topGames().pagination.cursor ?? "")}>Load more games</button>
         </Match>
         <Match when={!topGames.loading && category().length === 0}>
-          <p>Found no streams</p>
+          <p>Found no games</p>
         </Match>
       </Switch>
     </main>
