@@ -177,6 +177,14 @@ export const localLiveStreams = createMutable({
   get(user_id: string): LiveObject {
     return this.data[user_id]
   },
+  set(user_id: string, value: LiveObject) {
+    this.data[user_id] = value
+    window.localStorage.setItem("live_streams", JSON.stringify(this.data));
+  },
+  remove(user_id: string) {
+    delete this.data[user_id]
+    window.localStorage.setItem("live_streams", JSON.stringify(this.data));
+  },
   async updateAll() {
     const five_min_ms = 300000
     const timeSinceLastUpdate = Date.now() - this.lastUpdate
