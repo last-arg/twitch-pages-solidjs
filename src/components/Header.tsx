@@ -138,6 +138,12 @@ const Header: Component = () => {
     }
   }
 
+  const sidebarTitles = {
+    [Sidebar.Games]: "Games",
+    [Sidebar.Search]: "Search",
+    [Sidebar.Streams]: "Streams",
+  };
+
   return (
     <div class="fixed top-0 left-0 w-full z-10">
       <header class="bg-gray-700 p-1 shadow flex flex-nowrap justify-between">
@@ -166,7 +172,7 @@ const Header: Component = () => {
       </header>
       <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto -z-10" classList={{hidden: sidebar() === Sidebar.Closed}}>
         <div class="flex justify-between">
-          <h2>Results</h2>
+          <h2>{sidebarTitles[sidebar()]}</h2>
           <button onClick={[setSidebar, Sidebar.Closed]} title="Close sidebar">Close</button>
         </div>
         <Switch fallback={<p>Something went wrong</p>}>
