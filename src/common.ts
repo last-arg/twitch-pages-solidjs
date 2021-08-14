@@ -74,16 +74,6 @@ interface User {
   view_count: number,
 }
 
-// TODO: make it work also with login names. Or make another function.
-// The other function should only need to return one user.
-// And I could trim fields/keys from fetchUsers return type
-export const fetchUsers = async (ids: string[]): Promise<User[]> => {
-  // TODO: twitch user_id limit is 100
-  if (ids.length === 0) return []
-  const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
-  return (await (await fetch(url, HEADER_OPTS)).json()).data;
-}
-
 // {user_id: profile_image_url}
 export type LocalImages = Record<User["id"], {
   url: User["profile_image_url"],
@@ -148,18 +138,31 @@ export const localImages = createMutable({
   }
 })
 
+const fetchUsers = async (ids: string[]): Promise<User[]> => {
+  if (ids.length === 0) return []
+  const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
+  return (await (await fetch(url, HEADER_OPTS)).json()).data;
+}
+
+
 export const fetchAndSetProfileImages = async (user_ids: string[]) => {
   if (user_ids.length === 0) return
-  const profiles = await fetchUsers(user_ids)
   const last_access = Date.now()
-  let images: LocalImages = {}
-  for (let {id, profile_image_url} of profiles) {
-    images[id] = {
-      url: profile_image_url,
-      last_access: last_access,
+  const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_PARAMS)
+
+  for (let i = 0; i < batch_count; i+=1) {
+    const start = i * TWITCH_MAX_QUERY_PARAMS
+    const end = start + TWITCH_MAX_QUERY_PARAMS
+    const profiles = await fetchUsers(user_ids.slice(start, end))
+    let new_data: LocalImages = {}
+    for (let {id, profile_image_url} of profiles) {
+      new_data[id] = {
+        url: profile_image_url,
+        last_access: last_access,
+      }
     }
+    localImages.setValues(new_data)
   }
-  localImages.setValues(images)
 };
 
 // https://dev.twitch.tv/docs/api/reference#get-streams
@@ -191,7 +194,8 @@ export const localLiveStreams = createMutable({
   },
   async updateAll() {
     const five_min_ms = 300000
-    const timeSinceLastUpdate = Date.now() - this.lastUpdate
+    const dateNow = Date.now()
+    const timeSinceLastUpdate = dateNow - this.lastUpdate
     if (timeSinceLastUpdate > five_min_ms) {
       const user_ids = localStreams.streams.map(({user_id}:{user_id: string}) => user_id)
       const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_PARAMS)
@@ -209,8 +213,8 @@ export const localLiveStreams = createMutable({
         this.data = new_data
         window.localStorage.setItem(key_live_streams, JSON.stringify(this.data));
       }
+      window.localStorage.setItem(key_live_streams_last_update, dateNow.toString());
     }
-    window.localStorage.setItem(key_live_streams_last_update, this.lastUpdate.toString());
   },
 });
 
