@@ -100,9 +100,11 @@ const getLocalLastUpdate = (key: string): number => {
   return now
 };
 
+const key_images = "images"
+const key_images_last_update = `${key_images}_last_update`
 export const localImages = createMutable({
-  images: JSON.parse(window.localStorage.getItem("images") ?? "{}") as LocalImages,
-  lastUpdateDate: getLocalLastUpdate("last_image_update"),
+  images: JSON.parse(window.localStorage.getItem(key_images) ?? "{}") as LocalImages,
+  lastUpdate: getLocalLastUpdate(key_images_last_update),
   get getAll() {
     return this.images
   },
@@ -118,17 +120,17 @@ export const localImages = createMutable({
       url: value,
       last_access: Date.now(),
     };
-    window.localStorage.setItem("images", JSON.stringify(this.images));
+    window.localStorage.setItem(key_images, JSON.stringify(this.images));
   },
   setValues(images: LocalImages) {
     Object.assign(this.images, images)
-    window.localStorage.setItem("images", JSON.stringify(this.images));
+    window.localStorage.setItem(key_images, JSON.stringify(this.images));
   },
   clean() {
     // Remove images that haven't been accessed more than a week
     const weekInMilliseconds = 518400000
     const nowDate = Date.now()
-    const timePassedSinceLast = nowDate - this.lastUpdateDate
+    const timePassedSinceLast = nowDate - this.lastUpdate
     if (timePassedSinceLast >= weekInMilliseconds) {
       let has_changed = false
       for (let user_id of Object.keys(this.images)) {
@@ -139,10 +141,10 @@ export const localImages = createMutable({
       }
 
       if (has_changed) {
-        window.localStorage.setItem("images", JSON.stringify(this.images));
+        window.localStorage.setItem(key_images, JSON.stringify(this.images));
       }
     }
-    this.lastUpdateDate = nowDate
+    this.lastUpdate = nowDate
   }
 })
 
@@ -171,19 +173,21 @@ const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
 type LiveObject = Stream["game_name"]
 type LocalLive = Record<Stream["user_id"], LiveObject>
 
+const key_live_streams = "streams_live"
+const key_live_streams_last_update = `${key_live_streams}_last_update`
 export const localLiveStreams = createMutable({
-  data: JSON.parse(window.localStorage.getItem("live_streams") ?? "{}") as LocalLive,
-  lastUpdate: getLocalLastUpdate("last_live_update"),
+  data: JSON.parse(window.localStorage.getItem(key_live_streams) ?? "{}") as LocalLive,
+  lastUpdate: getLocalLastUpdate(key_live_streams_last_update),
   get(user_id: string): LiveObject {
     return this.data[user_id]
   },
   set(user_id: string, value: LiveObject) {
     this.data[user_id] = value
-    window.localStorage.setItem("live_streams", JSON.stringify(this.data));
+    window.localStorage.setItem(key_live_streams, JSON.stringify(this.data));
   },
   remove(user_id: string) {
     delete this.data[user_id]
-    window.localStorage.setItem("live_streams", JSON.stringify(this.data));
+    window.localStorage.setItem(key_live_streams, JSON.stringify(this.data));
   },
   async updateAll() {
     const five_min_ms = 300000
@@ -202,10 +206,10 @@ export const localLiveStreams = createMutable({
           }
         }
       }
-      window.localStorage.setItem("live_streams", JSON.stringify(new_data));
+      window.localStorage.setItem(key_live_streams, JSON.stringify(new_data));
       this.data = new_data
     }
-    window.localStorage.setItem("last_live_update", this.lastUpdate.toString());
+    window.localStorage.setItem(key_live_streams_last_update, this.lastUpdate.toString());
   },
 });
 
