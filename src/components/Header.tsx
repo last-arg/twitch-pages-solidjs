@@ -100,14 +100,14 @@ const Header: Component = () => {
     clearTimeout(searchTimeout);
     setSearchValue("")
     location.hash = "";
-    const elem = e.currentTarget as HTMLInputElement;
+    const elem = (e.currentTarget as HTMLElement).querySelector("input[type=search]") as HTMLInputElement;
     elem.focus();
   };
 
   const submitSearch = (e: Event) => {
     e.preventDefault();
     clearTimeout(searchTimeout);
-    const elem = e.currentTarget as HTMLInputElement;
+    const elem = (e.currentTarget as HTMLElement).querySelector("input[type=search]") as HTMLInputElement;
     setSearchValue(elem.value);
   };
 
