@@ -2,7 +2,6 @@ import { Show, PropsWithChildren, createSignal, createEffect } from 'solid-js';
 import { localGames } from '../common';
 import { IconFollow, IconUnfollow } from '../icons';
 
-// TODO?: replace html element button with input checkbox?
 const ButtonGameFollow = (props: PropsWithChildren<{id: string, name: string, classExtra: string}>) => {
   const classExtra = props.classExtra || "";
   const [isFollowed, setIsFollowed] = createSignal<boolean>(localGames.isFollowed(props.id))
