@@ -1,6 +1,6 @@
 import { Component, createResource, createEffect, createSignal, For, Switch, Match, Show, PropsWithChildren, untrack } from 'solid-js';
 import { HEADER_OPTS } from "../config";
-import { Category, localGames, localStreams, localImages, fetchAndSetProfileImages } from "../common";
+import { Category, localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams } from "../common";
 import { IconExternalLink } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
@@ -133,6 +133,12 @@ const Header: Component = () => {
     setSidebar(sidebar() === button_state ? Sidebar.Closed : button_state)
   };
 
+  const streamsLiveUpdate = () => {
+    if (sidebar() == Sidebar.Closed) {
+      localLiveStreams.updateAll()
+    }
+  }
+
   return (
     <div class="fixed top-0 left-0 w-full z-10">
       <header class="bg-gray-700 p-1 shadow flex flex-nowrap justify-between">
@@ -156,7 +162,7 @@ const Header: Component = () => {
         </div>
         <div>
           <button onClick={[toggleSidebar, Sidebar.Games]}>Games</button>
-          <button onClick={[toggleSidebar, Sidebar.Streams]} class="ml-4">Streams</button>
+          <button class="ml-4" onClick={[toggleSidebar, Sidebar.Streams]} onMouseDown={streamsLiveUpdate}>Streams</button>
         </div>
       </header>
       <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto -z-10" classList={{hidden: sidebar() === Sidebar.Closed}}>

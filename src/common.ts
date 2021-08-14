@@ -192,7 +192,6 @@ export const localLiveStreams = createMutable({
   async updateAll() {
     const five_min_ms = 300000
     const timeSinceLastUpdate = Date.now() - this.lastUpdate
-    console.log(timeSinceLastUpdate, timeSinceLastUpdate > five_min_ms)
     if (timeSinceLastUpdate > five_min_ms) {
       const user_ids = localStreams.streams.map(({user_id}:{user_id: string}) => user_id)
       const batch_count = Math.ceil(user_ids.length / TWITCH_MAX_QUERY_PARAMS)
@@ -206,8 +205,10 @@ export const localLiveStreams = createMutable({
           }
         }
       }
-      window.localStorage.setItem(key_live_streams, JSON.stringify(new_data));
-      this.data = new_data
+      if (batch_count > 0) {
+        this.data = new_data
+        window.localStorage.setItem(key_live_streams, JSON.stringify(this.data));
+      }
     }
     window.localStorage.setItem(key_live_streams_last_update, this.lastUpdate.toString());
   },
