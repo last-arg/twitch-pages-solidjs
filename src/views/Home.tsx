@@ -1,6 +1,6 @@
 import { Component, createResource, createSignal, createEffect, For, Show, Switch, Match } from 'solid-js';
 import { HEADER_OPTS } from "../config";
-import { Category } from "../common";
+import { Category } from "../category";
 import CategoryCard from "../components/CategoryCard";
 
 type CategoryResponse = {

@@ -1,10 +1,11 @@
 import { Component, createResource, createSignal, For, Switch, Match, Show, PropsWithChildren, Resource } from 'solid-js';
 import { HEADER_OPTS } from "../config";
-import { Category, localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams } from "../common";
+import { localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams } from "../common";
 import { IconExternalLink } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
+import { Category } from "../category";
 
 const SidebarGames = () => {
   return(

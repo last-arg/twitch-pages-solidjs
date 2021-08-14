@@ -1,10 +1,13 @@
 import { createMutable } from "solid-js/store";
 import { HEADER_OPTS } from "./config";
 import {Stream} from "./stream";
+import {Category} from "./category";
 
 const TWITCH_MAX_QUERY_PARAMS = 100
 
-const getInsertIndex = (key: string, value: string, arr: (GameFollow | StreamFollow)[]): number => {
+function getInsertIndex(key: string, value: string, arr: StreamFollow[]): number
+function getInsertIndex(key: string, value: string, arr: GameFollow[]): number
+function getInsertIndex(key: string, value: string, arr: any): number {
   let insert_index = 0
   for (let obj of arr) {
     if (value < obj[key]) {
@@ -15,15 +18,7 @@ const getInsertIndex = (key: string, value: string, arr: (GameFollow | StreamFol
   return insert_index
 }
 
-// TODO?: move into category.ts file?
-export interface Category {
-  id: string,
-  name: string,
-  box_art_url: string,
-}
-
 type GameFollow = Pick<Category, "id" | "name">
-
 export const localGames = createMutable({
   games: JSON.parse(window.localStorage.getItem("games") ?? "[]") as GameFollow[],
   get gameIds(): string[] {

@@ -1,11 +1,12 @@
 import { createResource, createSignal, createEffect, For, Show, Switch, Match, PropsWithChildren, untrack } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useParams } from 'solid-app-router';
-import { Category, createTwitchImage, localImages, fetchAndSetProfileImages } from "../common";
+import { createTwitchImage, localImages, fetchAndSetProfileImages } from "../common";
 import { IconExternalLink, IconFollow, IconUnfollow } from "../icons";
 import ButtonGameFollow from "../components/ButtonGameFollow";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
 import { Stream } from "../stream";
+import { Category } from "../category";
 
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
