@@ -1,41 +1,65 @@
-import { Component, createResource, For, Show } from 'solid-js';
+import { Component, createResource, createSignal, createEffect, For, Show, Switch, Match } from 'solid-js';
 import { HEADER_OPTS } from "../config";
 import { Category } from "../common";
 import CategoryCard from "../components/CategoryCard";
 
-const fetchTopGames = async (id: string): Promise<Category[]> => {
-  // TODO: implement fetching more top games.
-  // Need cursor also
-  const url = "https://api.twitch.tv/helix/games/top?first=10";
-  if (import.meta.env.DEV) {
-    return (await (await fetch("/tmp/top_games.json")).json()).data;
+type CategoryResponse = {
+  data: Category[],
+  pagination: {
+    cursor?: string
+  },
+}
+
+const topGamesLimit = 5
+
+const fetchTopGames = async (cursor: string): Promise<CategoryResponse> => {
+  const url = `https://api.twitch.tv/helix/games/top?first=${topGamesLimit}&after=${cursor}`;
+  if (!import.meta.env.DEV) {
+    return (await (await fetch("/tmp/top_games.json")).json());
   } else {
     if (import.meta.env.VITE_TWITCH_ACCESS_TOKEN === undefined) {
       throw "No Twitch access token found";
     }
-    return (await (await fetch(url, HEADER_OPTS)).json()).data;
+    return (await (await fetch(url, HEADER_OPTS)).json());
   }
 };
 
 const Home: Component = () => {
-  const [topGames] = createResource(fetchTopGames);
+  const [cursor, setCursor] = createSignal("")
+  const [category, setCategory] = createSignal<Category[]>([]);
+  const [topGames] = createResource(() => cursor(), fetchTopGames,
+    {initialValue: {data: [], pagination: {}}});
+
+
+  createEffect(() => {
+    if (!topGames.loading) {
+      setCategory((prev) => [...prev, ...topGames().data])
+    }
+  })
 
   return (
     <main class="px-2">
       <h2>Top games</h2>
-        <ul class="flex flex-wrap -mr-2">
-          <Show when={!topGames.loading} fallback={<li>Loading...</li>}>{() => {
-            return (<For each={topGames()}>
-              {(game: Category) => {
-                return (
-                  <li class="w-1/3 pb-2 pr-2">
-                    <CategoryCard id={game.id} name={game.name} img_class="w-16"/>
-                  </li>
-                );
-              }}
-            </For>);
-          }}</Show>
-        </ul>
+      <ul class="flex flex-wrap -mr-2">
+        <For each={category()}>
+          {(c: Category) => 
+            <li class="w-1/3 pb-2 pr-2">
+              <CategoryCard id={c.id} name={c.name} img_class="w-16"/>
+            </li>
+          }
+        </For>
+      </ul>
+      <Switch>
+        <Match when={topGames.loading}>
+          <p>Loading streams...</p>
+        </Match>
+        <Match when={!topGames.loading && topGames().pagination.cursor}>
+          <button onClick={() => setCursor(topGames().pagination.cursor ?? "")}>Load more streams</button>
+        </Match>
+        <Match when={!topGames.loading && category().length === 0}>
+          <p>Found no streams</p>
+        </Match>
+      </Switch>
     </main>
   );
 };

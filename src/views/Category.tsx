@@ -86,9 +86,12 @@ interface StreamProps {
 }
 
 const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
-  const [cursor, setCursor] = createSignal<string | null>(null);
+  const [cursor, setCursor] = createSignal<string>("");
   const [allStreams, setAllStreams] = createSignal<Stream[]>([]);
-  const [streams] = createResource<StreamResponse, StreamParams>(() => {return {id: props.category_id, cursor: cursor()} as StreamParams }, fetchStreams, {initialValue: {data: [], pagination: {}}});
+  const [streams] = createResource<StreamResponse, StreamParams>(
+    () => {return {id: props.category_id, cursor: cursor()} as StreamParams },
+    fetchStreams,
+    {initialValue: {data: [], pagination: {}}});
 
   createEffect(() => {
     if (!streams.loading) {
@@ -150,7 +153,7 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
           <p>Loading streams...</p>
         </Match>
         <Match when={!streams.loading && streams().pagination.cursor}>
-          <button onClick={() => setCursor(streams().pagination.cursor ?? null)}>Load more streams</button>
+          <button onClick={() => setCursor(streams().pagination.cursor ?? "")}>Load more streams</button>
         </Match>
         <Match when={!streams.loading && allStreams.length === 0}>
           <p>Found no streams</p>
