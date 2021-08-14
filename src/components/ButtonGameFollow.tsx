@@ -17,7 +17,7 @@ const ButtonGameFollow = (props: PropsWithChildren<{id: string, name: string, cl
   }
 
   return (
-    <button class={`text-trueGray-400 hover:text-black ${classExtra}`} onClick={[toggleFollow, {id: props.id, name: props.name}]} title={`${isFollowed() ? "Unfollow" : "Follow"} game`}>
+    <button type="button" class={`text-trueGray-400 hover:text-black ${classExtra}`} onClick={[toggleFollow, {id: props.id, name: props.name}]} title={`${isFollowed() ? "Unfollow" : "Follow"} game`} aria-pressed={isFollowed() ? "true" : "false"}>
       <Show when={!isFollowed()} fallback={<IconUnfollow />}><IconFollow /></Show>
     </button>
   );
