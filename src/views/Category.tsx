@@ -18,23 +18,29 @@ const createLiveUserImageUrl = (url_template: string, w: number, h: number): str
 };
 
 interface TitleProps {
-  fallbackName: string,
-  category: any
+  fallbackTitle: string,
+  category?: Category,
 }
 
+type TitleSignal = {imgUrl: string, linkHref: string, name: string, id?: string }
 const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
-  const [data, setData] = createSignal({imgUrl: "", linkHref: "#", name: props.fallbackName, id: null})
+  const params = useParams()
+  const titleDefault = {imgUrl: "", linkHref: "#", name: decodeURIComponent(params.name), id: undefined}
+  const [data, setData] = createSignal<TitleSignal>(titleDefault)
+
   createEffect(() => {
-    if (!props.category.loading) {
-      const name = props.category().name;
+    if (props.category) {
+      const name = props.category.name;
       setData({
-        id: props.category().id,
+        id: props.category.id,
         name: name,
         linkHref: "https://www.twitch.tv/directory/game/" + encodeURIComponent(name),
         imgUrl: createTwitchImage(name, IMG_WIDTH, IMG_HEIGHT)
       })
     }
   })
+
+  createEffect(() => params.name && setData(titleDefault))
 
   return (
     <h1 class="flex items-center text-xl">
@@ -163,12 +169,12 @@ const fetchCategory = async (category: string): Promise<Category | undefined> =>
 
 const CategoryView = () => {
   const params = useParams();
-  const fallbackName = decodeURIComponent(useParams().name)
-  const [category] = createResource<Category | undefined, string>(() => decodeURIComponent(params.name), fetchCategory);
+  const [category] = createResource<Category | undefined, string>(
+    () => decodeURIComponent(params.name), fetchCategory);
 
   return (
     <main class="px-2">
-      <CategoryTitle category={category} fallbackName={fallbackName} />
+      <CategoryTitle category={category()} fallbackTitle={decodeURIComponent(params.name)} />
       <Switch fallback={<p>Not Found</p>}>
         <Match when={category.loading}>
           <p>Loading...</p>
