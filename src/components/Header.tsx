@@ -1,4 +1,4 @@
-import { Component, createResource, createSignal, For, Switch, Match, Show, PropsWithChildren } from 'solid-js';
+import { Component, createResource, createSignal, For, Switch, Match, Show, PropsWithChildren, Resource } from 'solid-js';
 import { HEADER_OPTS } from "../config";
 import { Category, localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams } from "../common";
 import { IconExternalLink } from "../icons";
@@ -61,20 +61,20 @@ const searchGames = async (search_term: string): Promise<Category[]> => {
   return (await (await fetch(url, HEADER_OPTS)).json()).data as Category[];
 };
 
-const SidebarSearch = (props: PropsWithChildren<{searchValue: string}>) => {
-  const [games] = createResource<Category[], string>(() => props.searchValue, searchGames, {initialValue: []});
+const SidebarSearch = (props: PropsWithChildren<{games: Resource<Category[]>}>) => {
+  console.log("search sidebar")
 
   return (
     <Switch>
-      <Match when={games.loading} >
+      <Match when={props.games.loading} >
         <p>Searching...</p>
       </Match>
-      <Match when={(games() as Category[]).length === 0}>
+      <Match when={props.games().length === 0}>
         <p>No results found</p>
       </Match>
-      <Match when={games().length > 0}>{() => {
+      <Match when={props.games().length > 0}>{() => {
         return (<ul>
-          <For each={games()}>{(game) =>
+          <For each={props.games()}>{(game) =>
             <li class="mt-2">
               <CategoryCard id={game.id} name={game.name} img_class="w-12" />
             </li>
@@ -95,6 +95,7 @@ enum Sidebar {
 const Header: Component = () => {
   const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
   const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
+  const [games] = createResource<Category[], string>(() => searchValue(), searchGames, {initialValue: []});
   let searchTimeout: number = 0;
 
   const resetSearch = (e: Event) => {
@@ -168,15 +169,17 @@ const Header: Component = () => {
           <h2>Results</h2>
           <button onClick={[setSidebar, Sidebar.Closed]} title="Close sidebar">Close</button>
         </div>
-        <div classList={{hidden: sidebar() !== Sidebar.Search}}>
-          <SidebarSearch searchValue={searchValue()}/>
-        </div>
-        <div classList={{hidden: sidebar() !== Sidebar.Games}}>
-          <Show when={sidebar() === Sidebar.Games}><SidebarGames /></Show>
-        </div>
-        <div classList={{hidden: sidebar() !== Sidebar.Streams}}>
-          <Show when={sidebar() === Sidebar.Streams}><SidebarStreams /></Show>
-        </div>
+        <Switch fallback={<p>Something went wrong</p>}>
+          <Match when={sidebar() === Sidebar.Search}>
+            <SidebarSearch games={games}/>
+          </Match>
+          <Match when={sidebar() === Sidebar.Games}>
+            <SidebarGames />
+          </Match>
+          <Match when={sidebar() === Sidebar.Streams}>
+            <SidebarStreams />
+          </Match>
+        </Switch>
       </div>
     </div>
   );
