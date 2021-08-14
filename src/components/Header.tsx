@@ -1,4 +1,4 @@
-import { Component, createResource, createSignal, For, Switch, Match, Show, PropsWithChildren, Resource } from 'solid-js';
+import { Component, createResource, createSignal, For, Switch, Match, Show, Resource } from 'solid-js';
 import { HEADER_OPTS } from "../config";
 import { localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams } from "../common";
 import { IconExternalLink } from "../icons";
@@ -62,7 +62,7 @@ const searchGames = async (search_term: string): Promise<Category[]> => {
   return (await (await fetch(url, HEADER_OPTS)).json()).data as Category[];
 };
 
-const SidebarSearch = (props: PropsWithChildren<{games: Resource<Category[]>}>) => {
+const SidebarSearch: Component<{games: Resource<Category[]>}> = (props) => {
   return (
     <Switch>
       <Match when={props.games.loading} >
@@ -91,7 +91,7 @@ enum Sidebar {
   Streams,
 }
 
-const Header: Component = () => {
+const Header = () => {
   const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
   const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
   const [games] = createResource<Category[], string>(() => searchValue(), searchGames, {initialValue: []});

@@ -1,11 +1,11 @@
-import { createSignal, createEffect, Show, PropsWithChildren } from 'solid-js';
+import { createSignal, createEffect, Show, Component } from 'solid-js';
 import { localStreams, localLiveStreams, StreamFollow, fetchAndSetProfileImages } from "../common";
 import { IconFollow, IconUnfollow } from "../icons";
 import { Stream } from "../stream";
 
 type ButtonProps = StreamFollow & Partial<Pick<Stream, "game_name">>
 
-const ButtonStreamFollow = (props: PropsWithChildren<ButtonProps>) => {
+const ButtonStreamFollow: Component<ButtonProps> = (props) => {
   const [isFollowed, setIsFollowed] = createSignal<boolean>(localStreams.isFollowed(props.user_id))
   createEffect(() => setIsFollowed(localStreams.isFollowed(props.user_id)))
 

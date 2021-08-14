@@ -1,12 +1,11 @@
-import { PropsWithChildren } from 'solid-js';
+import { Component } from 'solid-js';
 import { IMG_WIDTH, IMG_HEIGHT } from '../config';
 import { createTwitchImage } from '../common';
 import { IconExternalLink } from '../icons';
 import { Link } from "solid-app-router";
 import ButtonGameFollow from "./ButtonGameFollow";
 
-
-const CategoryCard = (props: PropsWithChildren<{id: string, name: string, img_class: string}>) => {
+const CategoryCard: Component<{id: string, name: string, img_class: string}> = (props) => {
   const id = props.id;
   const name = props.name;
   const encoded_name = encodeURI(name);

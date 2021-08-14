@@ -1,8 +1,8 @@
-import { Show, PropsWithChildren, createSignal, createEffect } from 'solid-js';
+import { Show, Component, createSignal, createEffect } from 'solid-js';
 import { localGames } from '../common';
 import { IconFollow, IconUnfollow } from '../icons';
 
-const ButtonGameFollow = (props: PropsWithChildren<{id: string, name: string, classExtra: string}>) => {
+const ButtonGameFollow: Component<{id: string, name: string, classExtra: string}> = (props) => {
   const classExtra = props.classExtra || "";
   const [isFollowed, setIsFollowed] = createSignal<boolean>(localGames.isFollowed(props.id))
   createEffect(() => setIsFollowed(localGames.isFollowed(props.id)))

@@ -1,4 +1,4 @@
-import { createResource, createSignal, createEffect, For, Show, Switch, Match, PropsWithChildren, untrack } from 'solid-js';
+import { createResource, createSignal, createEffect, For, Show, Switch, Match, untrack, Component } from 'solid-js';
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useParams } from 'solid-app-router';
 import { createTwitchImage, localImages, fetchAndSetProfileImages } from "../common";
@@ -6,7 +6,7 @@ import { IconExternalLink, IconFollow, IconUnfollow } from "../icons";
 import ButtonGameFollow from "../components/ButtonGameFollow";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
 import { Stream } from "../stream";
-import { Category } from "../category";
+import { Category, fetchCategory } from "../category";
 
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
@@ -21,7 +21,7 @@ interface TitleProps {
 }
 
 type TitleSignal = {imgUrl: string, linkHref: string, name: string, id?: string }
-const CategoryTitle = (props: PropsWithChildren<TitleProps>) => {
+const CategoryTitle: Component<TitleProps> = (props) => {
   const params = useParams()
   const titleDefault = {imgUrl: "", linkHref: "#", name: decodeURIComponent(params.name), id: undefined}
   const [data, setData] = createSignal<TitleSignal>(titleDefault)
@@ -83,7 +83,7 @@ interface StreamProps {
   category_id: string
 }
 
-const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
+const CategoryStreams: Component<StreamProps> = (props) => {
   const [cursor, setCursor] = createSignal<string>("");
   const [allStreams, setAllStreams] = createSignal<Stream[]>([]);
   const [streams] = createResource<StreamResponse, StreamParams>(
@@ -161,12 +161,6 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
       </Switch>
     </>
   );
-};
-
-const fetchCategory = async (category: string): Promise<Category | undefined> => {
-  const url = `https://api.twitch.tv/helix/games?name=${category}`;
-  const result = (await (await fetch(url, HEADER_OPTS)).json()).data;
-  return result[0];
 };
 
 const CategoryView = () => {
