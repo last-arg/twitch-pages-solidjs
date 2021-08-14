@@ -62,8 +62,6 @@ const searchGames = async (search_term: string): Promise<Category[]> => {
 };
 
 const SidebarSearch = (props: PropsWithChildren<{games: Resource<Category[]>}>) => {
-  console.log("search sidebar")
-
   return (
     <Switch>
       <Match when={props.games.loading} >
@@ -142,6 +140,7 @@ const Header: Component = () => {
     [Sidebar.Games]: "Games",
     [Sidebar.Search]: "Search",
     [Sidebar.Streams]: "Streams",
+    [Sidebar.Closed]: null,
   };
 
   return (
