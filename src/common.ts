@@ -4,6 +4,17 @@ import {Stream} from "./stream";
 
 const TWITCH_MAX_QUERY_PARAMS = 100
 
+const getInsertIndex = (key: string, value: string, arr: (GameFollow | StreamFollow)[]): number => {
+  let insert_index = 0
+  for (let obj of arr) {
+    if (value < obj[key]) {
+      break;
+    }
+    insert_index += 1
+  }
+  return insert_index
+}
+
 // TODO?: move into category.ts file?
 export interface Category {
   id: string,
@@ -22,8 +33,7 @@ export const localGames = createMutable({
     return this.gameIds.includes(id)
   },
   followGame(game: GameFollow) {
-    // TODO: make sure games are sorted
-    this.games.push(game)
+    this.games.splice(getInsertIndex("name", game.name, this.games), 0, game)
     window.localStorage.setItem("games", JSON.stringify(this.games));
   },
   unfollowGame(id: string) {
@@ -46,10 +56,8 @@ export const localStreams = createMutable({
     return this.streamIds.includes(id)
   },
   follow(stream: StreamFollow) {
-    // TODO: make sure streams are sorted
-    this.streams.push(stream)
+    this.streams.splice(getInsertIndex("user_name", stream.user_name, this.streams), 0, stream)
     window.localStorage.setItem("streams", JSON.stringify(this.streams));
-    fetchAndSetProfileImages([stream.user_id])
   },
   unfollow(id: string) {
     const index = this.streamIds.indexOf(id)
@@ -143,7 +151,6 @@ const fetchUsers = async (ids: string[]): Promise<User[]> => {
   const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
   return (await (await fetch(url, HEADER_OPTS)).json()).data;
 }
-
 
 export const fetchAndSetProfileImages = async (user_ids: string[]) => {
   if (user_ids.length === 0) return

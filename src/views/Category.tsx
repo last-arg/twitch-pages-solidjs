@@ -105,6 +105,8 @@ const CategoryStreams = (props: PropsWithChildren<StreamProps>) => {
     }
   })
 
+  // TODO: add category filtering
+
   return (
     <>
       <ul class="flex flex-wrap -mx-2">

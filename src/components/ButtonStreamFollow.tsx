@@ -1,5 +1,5 @@
 import { createSignal, createEffect, Show, PropsWithChildren } from 'solid-js';
-import { localStreams, localLiveStreams, StreamFollow } from "../common";
+import { localStreams, localLiveStreams, StreamFollow, fetchAndSetProfileImages } from "../common";
 import { IconFollow, IconUnfollow } from "../icons";
 import { Stream } from "../stream";
 
@@ -23,6 +23,7 @@ const ButtonStreamFollow = (props: PropsWithChildren<ButtonProps>) => {
       if (stream.game_name) {
         localLiveStreams.set(stream.user_id, stream.game_name)
       }
+      fetchAndSetProfileImages([stream.user_id])
     }
   }
 
