@@ -7,9 +7,6 @@ import ButtonGameFollow from "../components/ButtonGameFollow";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
 import { Stream } from "../stream";
 
-// TODO: use fallback for profile images or <empty string>
-// Currently using <empty string>
-const profile_img_url_fallback = "https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png"
 const IMG_STREAM_WIDTH = 440;
 const IMG_STREAM_HEIGHT = 248;
 
