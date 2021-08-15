@@ -5,7 +5,8 @@
   "scripts": {
     "start": "vite",
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "watch:tsc": "tsc --noEmit --strict -w"
   },
   "license": "MIT",
   "devDependencies": {
