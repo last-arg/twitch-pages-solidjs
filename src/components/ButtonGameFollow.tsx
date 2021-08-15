@@ -10,8 +10,8 @@ const createButtonAttr = (id: string): ButtonAttr => {
   return { title, "aria-pressed": isFollowed }
 }
 
-const ButtonGameFollow: Component<{id: string, name: string, classExtra: string = ""}> = (props) => {
-  const classExtra = props.classExtra;
+const ButtonGameFollow: Component<{id: string, name: string, classExtra: string}> = (props) => {
+  const classExtra = props.classExtra || "";
   const [buttonAttr, setButtonAttr] = createSignal<ButtonAttr>(createButtonAttr(props.id))
   createEffect(() => setButtonAttr(createButtonAttr(props.id)))
 
