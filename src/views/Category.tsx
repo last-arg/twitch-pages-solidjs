@@ -119,7 +119,7 @@ const CategoryStreams: Component<StreamProps> = (props) => {
                       src={createLiveUserImageUrl(stream.thumbnail_url, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT)}
                       width={IMG_STREAM_WIDTH} height={IMG_STREAM_HEIGHT}
                     />
-                    <p class="absolute bottom-0 left-0 bg-trueGray-800 text-trueGray-100 text-sm px-1 rounded-sm mb-1 ml-1">{stream.viewer_count}</p>
+                    <p class="absolute bottom-0 left-0 bg-trueGray-800 text-trueGray-100 text-sm px-1 rounded-sm mb-1 ml-1">{stream.viewer_count} viewers</p>
                   </div>
                   <div class="flex justify-between items-center">
                     <p class="truncate flex-shrink w-full-1rem">{stream.title}</p>
