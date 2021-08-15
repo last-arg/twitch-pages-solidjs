@@ -2,6 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-a:hover {
-  @apply text-purple-700 underline;
-}

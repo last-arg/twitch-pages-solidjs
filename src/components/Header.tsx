@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, For, Switch, Match, Show, Resource } from 'solid-js';
 import { HEADER_OPTS } from "../config";
-import { localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams } from "../common";
-import { IconExternalLink } from "../icons";
+import { localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams} from "../common";
+import { IconExternalLink, IconLookingClass, IconGameController, IconPeople } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
@@ -121,6 +121,9 @@ const Header = () => {
     }, 400, elem.value);
   };
 
+  // TODO: click on Games or Stream button when input is focused and empty.
+  // The sidebar will flash
+  // Use a timeout?
   const inputBlur = () => {
     if (searchValue().length == 0) {
       setSidebar(Sidebar.Closed)
@@ -144,30 +147,54 @@ const Header = () => {
     [Sidebar.Closed]: null,
   };
 
+  const buttonClass = "text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-4 border-gray-900"
+
   return (
     <div class="fixed top-0 left-0 w-full z-10">
-      <header class="bg-gray-700 p-1 shadow flex flex-nowrap justify-between">
-        <div class="flex">
-          <h1 class="text-white">
-            <Link href="/" title="Home">Home</Link>
-          </h1>
-          <form onSubmit={submitSearch} onReset={resetSearch}>
+      <header class="bg-gray-700 shadow flex flex-nowrap justify-between">
+        <h1>
+          <Link class={`ml-5 ${buttonClass}`} href="/" title="Home">Home</Link>
+        </h1>
+        <div class="flex flex-nowrap">
+          <form class="bg-gray-900 mr-5" classList={{"bg-violet-700": sidebar() === Sidebar.Search}} style="padding-bottom: 5px" onSubmit={submitSearch} onReset={resetSearch}>
             <input
               type="search"
-              class="border bg-blue-100"
+              class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 px-1 align-top"
               placeholder="Search for game"
               value={searchValue()}
               onInput={inputSearch}
               onFocus={[setSidebar, Sidebar.Search]}
               onBlur={inputBlur}
             />
-            <button type="submit">Search</button>
-            <button type="reset">Clear</button>
+            <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50" type="submit" title="Search">
+              <span class="block w-5"><IconLookingClass /></span>
+            </button>
+            <button class="hidden" type="reset">Clear</button>
           </form>
-        </div>
-        <div>
-          <button onClick={[toggleSidebar, Sidebar.Games]}>Games</button>
-          <button class="ml-4" onClick={[toggleSidebar, Sidebar.Streams]} onMouseDown={streamsLiveUpdate}>Streams</button>
+          <button
+            class={`mr-5 ${buttonClass}`}
+            classList={{
+              "border-violet-700": sidebar() === Sidebar.Games,
+              "text-gray-50": sidebar() === Sidebar.Games,
+              "text-gray-200": sidebar() !== Sidebar.Games,
+            }}
+            onClick={[toggleSidebar, Sidebar.Games]}
+            title="Games"
+          >
+            <span class="block w-5"><IconGameController /></span>
+          </button>
+          <button
+            class={`mr-5 ${buttonClass} ${sidebar() === Sidebar.Streams ? "text-gray-50" : "text-gray-200"}`}
+            classList={{
+              "border-violet-700": sidebar() === Sidebar.Streams,
+              "text-gray-50": sidebar() === Sidebar.Streams,
+              "text-gray-200": sidebar() !== Sidebar.Streams,
+            }}
+            onClick={[toggleSidebar, Sidebar.Streams]} onMouseDown={streamsLiveUpdate}
+            title="Streams"
+          >
+            <span class="block w-5"><IconPeople /></span>
+          </button>
         </div>
       </header>
       <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto -z-10" classList={{hidden: sidebar() === Sidebar.Closed}}>
