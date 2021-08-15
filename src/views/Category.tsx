@@ -32,7 +32,7 @@ const CategoryTitle: Component<TitleProps> = (props) => {
       setData({
         id: props.category.id,
         name: name,
-        linkHref: "https://www.twitch.tv/directory/game/" + encodeURIComponent(name),
+        linkHref: "https://www.twitch.tv/directory/game/" + encodeURI(name),
         imgUrl: createTwitchImage(name, IMG_WIDTH, IMG_HEIGHT)
       })
     }
@@ -166,7 +166,7 @@ const CategoryStreams: Component<StreamProps> = (props) => {
 const CategoryView = () => {
   const params = useParams();
   const [category] = createResource<Category | undefined, string>(
-    () => decodeURIComponent(params.name), fetchCategory);
+    () => params.name, fetchCategory);
 
   return (
     <main class="px-2">
