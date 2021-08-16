@@ -38,12 +38,12 @@ const Home: Component = () => {
   })
 
   return (
-    <main class="px-2">
+    <main class="px-2 contain-content">
       <h2>Top games</h2>
-      <ul class="flex flex-wrap -mr-2">
+      <ul class="flex flex-wrap -mr-2 text-gray-300">
         <For each={category()}>
           {(c: Category) => 
-            <li class="contain-content w-1/3 pb-2 pr-2">
+            <li class="w-1/3 pb-2 pr-2">
               <CategoryCard id={c.id} name={c.name} img_class="w-16"/>
             </li>
           }

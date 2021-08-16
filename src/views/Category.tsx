@@ -51,7 +51,9 @@ const CategoryTitle: Component<TitleProps> = (props) => {
       </Link>
       <span class="text-trueGray-400 ml-8 mr-2 border-l h-full w-0">&nbsp;</span>
       <Show when={data().id}>{(cat_id: string) =>
-        <ButtonGameFollow classExtra="w-5 h-5" name={data().name} id={cat_id}/>
+        <span class="w-5 h-5">
+          <ButtonGameFollow name={data().name} id={cat_id}/>
+        </span>
       }</Show>
     </h1>
   );
@@ -134,7 +136,9 @@ const CategoryStreams: Component<StreamProps> = (props) => {
                     <div class="flex items-center">
                       <Link href={`/${stream.user_login}/videos`}>{stream.user_name}</Link>
                       <span class="text-trueGray-400 mr-2 ml-4 border-l h-full"></span>
-                      <ButtonStreamFollow {...stream} />
+                      <span class="w-5 h-5">
+                        <ButtonStreamFollow {...stream} />
+                      </span>
                     </div>
                     <div>
                       <Link class="flex items-center group" href={`${twitch_stream_url}/videos`}>

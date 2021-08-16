@@ -33,7 +33,7 @@ const SidebarStreams = () => {
       <For each={localStreams.streams} fallback={<li>No streams</li>}>{(stream) =>
         <Show when={stream}>
           <li class="mt-2 bg-gray-800 flex">
-            <Link class="flex flex-grow items-center border-l-6 border-transparent pl-1.5 hover:text-white text-gray-300 hover:border-violet-700 hover:underline" href={`/${stream.user_login}/videos`} title={stream.user_name}>
+            <Link class="flex flex-grow items-center border-l-6 border-transparent pl-1.5 hover:text-white hover:border-violet-700 hover:underline" href={`/${stream.user_login}/videos`} title={stream.user_name}>
               <img class="w-10 bg-gray-700" src={localImages.get(stream.user_id)} width="300" height="300" />
               <span class="ml-2 truncate">{stream.user_name}</span>
             </Link>
@@ -202,17 +202,17 @@ const Header = () => {
           </button>
         </div>
       </header>
-      <div class="pt-12 absolute right-0 top-0 h-screen text-gray-100 -z-10 max-w-xs w-full" classList={{hidden: sidebar() === Sidebar.Closed}}>
+      <div class="contain-content pt-12 absolute right-0 top-0 h-screen -z-10 max-w-xs w-full" classList={{hidden: sidebar() === Sidebar.Closed}}>
         <div class="flex flex-col h-full bg-gray-700">
           <div class="flex justify-between pb-4">
-            <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold">
+            <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-gray-100">
               {sidebarTitles[sidebar()]}
             </h2>
             <button class="bg-violet-700 px-2.5 text-gray-200 hover:text-gray-50" onClick={[setSidebar, Sidebar.Closed]} title="Close sidebar">
               <span class="block w-4"><IconClose /></span>
             </button>
           </div>
-          <div class="mb-2 overflow-y-auto">
+          <div class="mb-2 overflow-y-auto text-gray-300">
             <Switch fallback={<p>Something went wrong</p>}>
               <Match when={sidebar() === Sidebar.Search}>
                 <SidebarSearch games={games}/>
