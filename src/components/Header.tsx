@@ -202,7 +202,7 @@ const Header = () => {
           </button>
         </div>
       </header>
-      <div class="contain-content pt-12 absolute right-0 top-0 h-screen -z-10 max-w-xs w-full" classList={{hidden: sidebar() === Sidebar.Closed}}>
+      <div class="contain-content pt-12 absolute right-0 top-0 h-screen -z-10 max-w-xs w-full pb-2" classList={{hidden: sidebar() === Sidebar.Closed}}>
         <div class="flex flex-col h-full bg-gray-700">
           <div class="flex justify-between pb-4">
             <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-gray-100">
@@ -212,7 +212,7 @@ const Header = () => {
               <span class="block w-4"><IconClose /></span>
             </button>
           </div>
-          <div class="mb-2 overflow-y-auto text-gray-300">
+          <div class="mb-4 overflow-y-auto text-gray-300">
             <Switch fallback={<p>Something went wrong</p>}>
               <Match when={sidebar() === Sidebar.Search}>
                 <SidebarSearch games={games}/>
