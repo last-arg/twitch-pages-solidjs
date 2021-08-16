@@ -30,7 +30,7 @@ const ButtonStreamFollow: Component<ButtonProps> = (props) => {
   }
 
   return (
-    <button class="w-4 text-trueGray-400 hover:text-trueGray-800" title={`${isFollowed() ? "Unfollow" : "Follow"} streamer`} onClick={[toggleStreamFollow, props]}>
+    <button class="text-trueGray-500 hover:text-violet-500" title={`${isFollowed() ? "Unfollow" : "Follow"} streamer`} onClick={[toggleStreamFollow, props]}>
       <Show when={!isFollowed()} fallback={<IconUnfollow />}><IconFollow /></Show>
     </button>
   );

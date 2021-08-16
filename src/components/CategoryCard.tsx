@@ -13,18 +13,17 @@ const CategoryCard: Component<{id: string, name: string, img_class: string}> = (
   const game_link = `/directory/game/${encoded_name}`;
 
   return (
-    <div class="bg-purple-50 text-gray-700">
-      <Link class="flex border-2 border-purple-200 rounded-sm hover:text-purple-800 hover:border-purple-500" href={game_link} title={name}>
-        <div class="flex-grow flex items-center">
+    <div class="bg-gray-800 flex">
+      <Link class="flex flex-grow hover:text-gray-50 hover:underline border-l-6 border-transparent hover:border-violet-700" href={game_link} title={name}>
+        <div class="flex-grow flex items-center ml-1.5">
           <img class={`${props.img_class}`} src={img_url} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
-          <p class="ml-3 text-lg line-clamp-2">{name}</p>
-        </div>
-        <div class="flex flex-col justify-between py-1.5 pr-1.5">
-          <ButtonGameFollow classExtra="w-5 h-5" name={name} id={id} />
-          <Link class="text-trueGray-400 w-5 h-5 hover:text-black" href={`https://www.twitch.tv${game_link}`} title="Open game in Twitch" onClick={(e: Event) => e.stopPropagation()}><IconExternalLink /></Link>
+          <p class="mx-3 text-lg line-clamp-2">{name}</p>
         </div>
       </Link>
-
+      <div class="flex flex-col justify-between py-1.5 px-1.5 border-l-2 border-gray-700">
+        <ButtonGameFollow classExtra="w-5 h-5" name={name} id={id} />
+        <Link class="text-trueGray-500 w-5 h-5 hover:text-violet-500" href={`https://www.twitch.tv${game_link}`} title="Open game in Twitch" onClick={(e: Event) => e.stopPropagation()}><IconExternalLink /></Link>
+      </div>
     </div>
   );
 };

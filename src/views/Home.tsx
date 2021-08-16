@@ -43,7 +43,7 @@ const Home: Component = () => {
       <ul class="flex flex-wrap -mr-2">
         <For each={category()}>
           {(c: Category) => 
-            <li class="w-1/3 pb-2 pr-2">
+            <li class="contain-content w-1/3 pb-2 pr-2">
               <CategoryCard id={c.id} name={c.name} img_class="w-16"/>
             </li>
           }

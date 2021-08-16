@@ -2,3 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.contain-content {
+  contain: content
+}
+
+.contain-strict {
+  contain: strict
+}

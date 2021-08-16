@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, For, Switch, Match, Show, Resource } from 'solid-js';
 import { HEADER_OPTS } from "../config";
 import { localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams} from "../common";
-import { IconExternalLink, IconLookingClass, IconGameController, IconPeople } from "../icons";
+import { IconExternalLink, IconLookingClass, IconGameController, IconPeople, IconClose } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
@@ -9,11 +9,11 @@ import { Category } from "../category";
 
 const SidebarGames = () => {
   return(
-    <ul>
+    <ul class="-mb-2">
       <For each={localGames.games}>{(game) => {
         return (
           <Show when={game}>
-            <li class="mt-2 text-gray-700">
+            <li class="mb-2">
               <CategoryCard id={game.id} name={game.name} img_class="w-12" />
             </li>
           </Show>
@@ -29,23 +29,22 @@ const SidebarStreams = () => {
   fetchAndSetProfileImages(user_ids.filter((user_id) => !image_keys.includes(user_id)))
 
   return(
-    <ul>
+    <ul class="-mt-2">
       <For each={localStreams.streams} fallback={<li>No streams</li>}>{(stream) =>
         <Show when={stream}>
-          <li class="mt-2 text-gray-700">
-            <Link class="flex items-center justify-between pr-2" href={`/${stream.user_login}/videos`} title={stream.user_name}>
-              <div class="flex items-center">
-                <img class="w-8 bg-gray-700" src={localImages.get(stream.user_id)} width="300" height="300" />
-                <span class="ml-2 truncate">{stream.user_name}</span>
-                <span class="ml-2 truncate">{stream.user_id}</span>
-              </div>
-              <div class="flex items-center">
-                <ButtonStreamFollow {...stream} />
-                <Link class="group" href={`https://www.twitch.tv/${stream.user_login}/videos`} title="Videos on Twitch">
-                  <span class="block w-4 ml-1 text-trueGray-400 group-hover:text-purple-700"><IconExternalLink /></span>
-                </Link>
-              </div>
+          <li class="mt-2 bg-gray-800 flex">
+            <Link class="flex flex-grow items-center border-l-6 border-transparent pl-1.5 hover:text-white text-gray-300 hover:border-violet-700 hover:underline" href={`/${stream.user_login}/videos`} title={stream.user_name}>
+              <img class="w-10 bg-gray-700" src={localImages.get(stream.user_id)} width="300" height="300" />
+              <span class="ml-2 truncate">{stream.user_name}</span>
             </Link>
+            <div class="flex items-center border-l-2 border-gray-700">
+              <span class="leading-none w-5 mx-1.5">
+                <ButtonStreamFollow {...stream} />
+              </span>
+              <Link class="mx-1.5 group" href={`https://www.twitch.tv/${stream.user_login}/videos`} title="Videos on Twitch">
+                <span class="block w-5 text-trueGray-500 group-hover:text-purple-500"><IconExternalLink /></span>
+              </Link>
+            </div>
           </li>
         </Show>
       }</For>
@@ -72,7 +71,7 @@ const SidebarSearch: Component<{games: Resource<Category[]>}> = (props) => {
         <p>No results found</p>
       </Match>
       <Match when={props.games().length > 0}>{() => {
-        return (<ul>
+        return (<ul class="-mt-2">
           <For each={props.games()}>{(game) =>
             <li class="mt-2">
               <CategoryCard id={game.id} name={game.name} img_class="w-12" />
@@ -94,6 +93,7 @@ enum Sidebar {
 const Header = () => {
   const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
   const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
+  setSidebar(Sidebar.Streams)
   const [games] = createResource<Category[], string>(() => searchValue(), searchGames, {initialValue: []});
   let searchTimeout: number = 0;
 
@@ -110,12 +110,16 @@ const Header = () => {
     clearTimeout(searchTimeout);
     const elem = (e.currentTarget as HTMLElement).querySelector("input[type=search]") as HTMLInputElement;
     setSearchValue(elem.value);
+    if (sidebar() !== Sidebar.Search) {
+      setSidebar(Sidebar.Search)
+    }
   };
 
   const inputSearch = (e: InputEvent) => {
     clearTimeout(searchTimeout);
     const elem = e.currentTarget as HTMLInputElement;
     location.hash = elem.value;
+    // TODO: add requestIdleCallback with setTimeout fallback
     searchTimeout = setTimeout((value: string) => {
       setSearchValue(value)
     }, 400, elem.value);
@@ -141,22 +145,23 @@ const Header = () => {
   }
 
   const sidebarTitles = {
-    [Sidebar.Games]: "Games",
-    [Sidebar.Search]: "Search",
-    [Sidebar.Streams]: "Streams",
+    [Sidebar.Games]: () => <> <span class="block w-4 mr-2"><IconGameController /></span>Games</>,
+    [Sidebar.Search]: () => <> <span class="block w-4 mr-2"><IconLookingClass /></span>Search</>,
+    [Sidebar.Streams]: () => <> <span class="block w-4 mr-2"><IconPeople /></span>Streams</>,
     [Sidebar.Closed]: null,
   };
 
-  const buttonClass = "text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-4 border-gray-900"
+  const buttonClass = "text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
 
+  // TODO: change bottom bar/border to 5px
   return (
     <div class="fixed top-0 left-0 w-full z-10">
-      <header class="bg-gray-700 shadow flex flex-nowrap justify-between">
+      <header class="bg-gray-700 shadow flex flex-nowrap justify-between contain-content">
         <h1>
           <Link class={`ml-5 ${buttonClass}`} href="/" title="Home">Home</Link>
         </h1>
         <div class="flex flex-nowrap">
-          <form class="bg-gray-900 mr-5" classList={{"bg-violet-700": sidebar() === Sidebar.Search}} style="padding-bottom: 5px" onSubmit={submitSearch} onReset={resetSearch}>
+          <form class="mr-5 border-b-5 border-gray-900" classList={{"border-violet-700": sidebar() === Sidebar.Search}} onSubmit={submitSearch} onReset={resetSearch}>
             <input
               type="search"
               class="bg-gray-200 h-full border-t border-gray-900 hover:bg-gray-50 px-1 align-top"
@@ -197,22 +202,30 @@ const Header = () => {
           </button>
         </div>
       </header>
-      <div class="absolute right-0 top-0 h-screen text-gray-100 bg-gray-600 pt-10 w-1/4 overflow-y-auto -z-10" classList={{hidden: sidebar() === Sidebar.Closed}}>
-        <div class="flex justify-between">
-          <h2>{sidebarTitles[sidebar()]}</h2>
-          <button onClick={[setSidebar, Sidebar.Closed]} title="Close sidebar">Close</button>
+      <div class="pt-12 absolute right-0 top-0 h-screen text-gray-100 -z-10 max-w-xs w-full" classList={{hidden: sidebar() === Sidebar.Closed}}>
+        <div class="flex flex-col h-full bg-gray-700">
+          <div class="flex justify-between pb-4">
+            <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold">
+              {sidebarTitles[sidebar()]}
+            </h2>
+            <button class="bg-violet-700 px-2.5 text-gray-200 hover:text-gray-50" onClick={[setSidebar, Sidebar.Closed]} title="Close sidebar">
+              <span class="block w-4"><IconClose /></span>
+            </button>
+          </div>
+          <div class="mb-2 overflow-y-auto">
+            <Switch fallback={<p>Something went wrong</p>}>
+              <Match when={sidebar() === Sidebar.Search}>
+                <SidebarSearch games={games}/>
+              </Match>
+              <Match when={sidebar() === Sidebar.Games}>
+                <SidebarGames />
+              </Match>
+              <Match when={sidebar() === Sidebar.Streams}>
+                <SidebarStreams />
+              </Match>
+            </Switch>
+          </div>
         </div>
-        <Switch fallback={<p>Something went wrong</p>}>
-          <Match when={sidebar() === Sidebar.Search}>
-            <SidebarSearch games={games}/>
-          </Match>
-          <Match when={sidebar() === Sidebar.Games}>
-            <SidebarGames />
-          </Match>
-          <Match when={sidebar() === Sidebar.Streams}>
-            <SidebarStreams />
-          </Match>
-        </Switch>
       </div>
     </div>
   );

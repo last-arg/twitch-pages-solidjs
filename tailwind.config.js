@@ -21,6 +21,10 @@ module.exports = {
       zIndex: {
         "-10": "-10",
       },
+      borderWidth: {
+        "5": "5px",
+        "6": "6px",
+      },
     },
   },
   variants: {},
