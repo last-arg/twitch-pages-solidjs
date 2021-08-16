@@ -119,7 +119,6 @@ const Header = () => {
     clearTimeout(searchTimeout);
     const elem = e.currentTarget as HTMLInputElement;
     location.hash = elem.value;
-    // TODO: add requestIdleCallback with setTimeout fallback
     searchTimeout = setTimeout((value: string) => {
       setSearchValue(value)
     }, 400, elem.value);
@@ -153,7 +152,6 @@ const Header = () => {
 
   const buttonClass = "text-gray-200 block bg-gray-900 px-3 pt-1.5 pb-0.5 hover:text-gray-50 focus:text-gray-50 border-b-5 border-gray-900"
 
-  // TODO: change bottom bar/border to 5px
   return (
     <div class="fixed top-0 left-0 w-full z-10">
       <header class="bg-gray-700 shadow flex flex-nowrap justify-between contain-content">
