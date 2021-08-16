@@ -11,7 +11,6 @@ const createButtonAttr = (id: string): ButtonAttr => {
 }
 
 const ButtonGameFollow: Component<{id: string, name: string}> = (props) => {
-  const classExtra = props.classExtra || "";
   const [buttonAttr, setButtonAttr] = createSignal<ButtonAttr>(createButtonAttr(props.id))
   createEffect(() => setButtonAttr(createButtonAttr(props.id)))
 

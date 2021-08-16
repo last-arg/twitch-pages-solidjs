@@ -65,10 +65,10 @@ const SidebarSearch: Component<{games: Resource<Category[]>}> = (props) => {
   return (
     <Switch>
       <Match when={props.games.loading} >
-        <p>Searching...</p>
+        <p class="ml-3">Searching...</p>
       </Match>
       <Match when={props.games().length === 0}>
-        <p>No results found</p>
+        <p class="ml-3">No results found</p>
       </Match>
       <Match when={props.games().length > 0}>{() => {
         return (<ul class="-mt-2">
@@ -93,7 +93,6 @@ enum Sidebar {
 const Header = () => {
   const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
   const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
-  setSidebar(Sidebar.Streams)
   const [games] = createResource<Category[], string>(() => searchValue(), searchGames, {initialValue: []});
   let searchTimeout: number = 0;
 
@@ -126,14 +125,16 @@ const Header = () => {
 
   // TODO: click on Games or Stream button when input is focused and empty.
   // The sidebar will flash
-  // Use a timeout?
+  // mousedown event happens before blur
   const inputBlur = () => {
     if (searchValue().length == 0) {
+      console.log("blur", sidebar());
       setSidebar(Sidebar.Closed)
     }
   };
 
   const toggleSidebar = (button_state: Sidebar) => {
+    console.log("toggle")
     setSidebar(sidebar() === button_state ? Sidebar.Closed : button_state)
   };
 
@@ -154,7 +155,7 @@ const Header = () => {
 
   return (
     <div class="fixed top-0 left-0 w-full z-10">
-      <header class="bg-gray-700 shadow flex flex-nowrap justify-between contain-content">
+      <header class="bg-gray-700 shadow flex flex-nowrap justify-between contain-content shadow-md">
         <h1>
           <Link class={`ml-5 ${buttonClass}`} href="/" title="Home">Home</Link>
         </h1>
@@ -182,6 +183,7 @@ const Header = () => {
               "text-gray-200": sidebar() !== Sidebar.Games,
             }}
             onClick={[toggleSidebar, Sidebar.Games]}
+            onMouseDown={() => console.log("down")}
             title="Games"
           >
             <span class="block w-5"><IconGameController /></span>
@@ -201,7 +203,7 @@ const Header = () => {
         </div>
       </header>
       <div class="contain-content pt-12 absolute right-0 top-0 h-screen -z-10 max-w-xs w-full pb-2" classList={{hidden: sidebar() === Sidebar.Closed}}>
-        <div class="flex flex-col h-full bg-gray-700">
+        <div class="flex flex-col h-full bg-gray-700 shadow-md">
           <div class="flex justify-between pb-4">
             <h2 class="flex items-center bg-violet-700 px-3 py-1 font-bold text-gray-100">
               {sidebarTitles[sidebar()]}
