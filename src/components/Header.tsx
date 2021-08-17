@@ -167,6 +167,7 @@ const Header = () => {
               onInput={inputSearch}
               onFocus={[setSidebar, Sidebar.Search]}
               onBlur={inputBlur}
+              onKeyup={(e: Event) => e.key === "Escape" && setSidebar(Sidebar.Closed)}
             />
             <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50" type="submit" title="Search">
               <IconSprite id="looking-class" class="fill-current w-5 h-5" />
