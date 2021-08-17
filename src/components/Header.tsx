@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, For, Switch, Match, Show, Resource } from 'solid-js';
 import { HEADER_OPTS } from "../config";
 import { localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams} from "../common";
-import { IconSprite, IconGameController, IconPeople, IconClose } from "../icons";
+import { IconSprite,  IconClose } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
@@ -145,7 +145,7 @@ const Header = () => {
   const sidebarTitles = {
     [Sidebar.Games]: () => <> <IconSprite id="game-controller" class="fill-current w-4 h-4 mr-2" />Games</>,
     [Sidebar.Search]: () => <> <IconSprite id="looking-class" class="fill-current w-4 h-4 mr-2" />Search</>,
-    [Sidebar.Streams]: () => <> <span class="block w-4 mr-2"><IconPeople /></span>Streams</>,
+    [Sidebar.Streams]: () => <> <IconSprite id="people" class="fill-current mr-2 w-4 h-4" />Streams</>,
     [Sidebar.Closed]: null,
   };
 
@@ -196,7 +196,7 @@ const Header = () => {
             onClick={[toggleSidebar, Sidebar.Streams]} onMouseDown={streamsLiveUpdate}
             title="Streams"
           >
-            <span class="block w-5"><IconPeople /></span>
+            <IconSprite id="people" class="fill-current w-5 h-5" />
           </button>
         </div>
       </header>
