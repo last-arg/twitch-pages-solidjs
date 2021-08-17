@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, For, Switch, Match, Show, Resource } from 'solid-js';
 import { HEADER_OPTS } from "../config";
 import { localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams} from "../common";
-import { IconSprite,  IconClose } from "../icons";
+import { IconSprite } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
@@ -207,7 +207,7 @@ const Header = () => {
               {sidebarTitles[sidebar()]}
             </h2>
             <button class="bg-violet-700 px-2.5 text-gray-200 hover:text-gray-50" onClick={[setSidebar, Sidebar.Closed]} title="Close sidebar">
-              <span class="block w-4"><IconClose /></span>
+              <IconSprite id="close" class="fill-current w-4 h-4" />
             </button>
           </div>
           <div class="mb-4 overflow-y-auto text-gray-300">
