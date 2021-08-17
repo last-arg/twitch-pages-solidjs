@@ -1,6 +1,6 @@
 import { createSignal, createEffect, Show, Component } from 'solid-js';
 import { localStreams, localLiveStreams, localImages, StreamFollow, fetchAndSetProfileImages } from "../common";
-import { IconSprite, IconUnfollow } from "../icons";
+import { IconSprite } from "../icons";
 import { Stream } from "../stream";
 
 type ButtonProps = StreamFollow & Partial<Pick<Stream, "game_name">> & {class?: string}
@@ -32,8 +32,8 @@ const ButtonStreamFollow: Component<ButtonProps> = (props) => {
 
   return (
     <button class={classStr} title={`${isFollowed() ? "Unfollow" : "Follow"} streamer`} onClick={[toggleStreamFollow, props]}>
-      <Show when={!isFollowed()} fallback={<IconUnfollow />}>
-        <IconSprite id="star-empty" class="fill-current w-5 h-5" />
+      <Show when={!isFollowed()} fallback={<IconSprite id="star-full" class="fill-current w-full h-full" />}>
+        <IconSprite id="star-empty" class="fill-current w-full h-full" />
       </Show>
     </button>
   );
