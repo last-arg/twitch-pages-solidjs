@@ -3,9 +3,10 @@ import { localStreams, localLiveStreams, localImages, StreamFollow, fetchAndSetP
 import { IconFollow, IconUnfollow } from "../icons";
 import { Stream } from "../stream";
 
-type ButtonProps = StreamFollow & Partial<Pick<Stream, "game_name">>
+type ButtonProps = StreamFollow & Partial<Pick<Stream, "game_name">> & {class?: string}
 
 const ButtonStreamFollow: Component<ButtonProps> = (props) => {
+  const classStr = props.class || ""
   const [isFollowed, setIsFollowed] = createSignal<boolean>(localStreams.isFollowed(props.user_id))
   createEffect(() => setIsFollowed(localStreams.isFollowed(props.user_id)))
 
@@ -30,7 +31,7 @@ const ButtonStreamFollow: Component<ButtonProps> = (props) => {
   }
 
   return (
-    <button class="text-trueGray-500 hover:text-violet-500" title={`${isFollowed() ? "Unfollow" : "Follow"} streamer`} onClick={[toggleStreamFollow, props]}>
+    <button class={classStr} title={`${isFollowed() ? "Unfollow" : "Follow"} streamer`} onClick={[toggleStreamFollow, props]}>
       <Show when={!isFollowed()} fallback={<IconUnfollow />}><IconFollow /></Show>
     </button>
   );

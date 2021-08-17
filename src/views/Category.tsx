@@ -136,9 +136,7 @@ const CategoryStreams: Component<StreamProps> = (props) => {
                     <div class="flex items-center">
                       <Link href={`/${stream.user_login}/videos`}>{stream.user_name}</Link>
                       <span class="text-trueGray-400 mr-2 ml-4 border-l h-full"></span>
-                      <span class="w-5 h-5">
-                        <ButtonStreamFollow {...stream} />
-                      </span>
+                      <ButtonStreamFollow class="w-5 h-5 text-trueGray-400 hover:text-violet-500" {...stream} />
                     </div>
                     <div>
                       <Link class="flex items-center group" href={`${twitch_stream_url}/videos`}>

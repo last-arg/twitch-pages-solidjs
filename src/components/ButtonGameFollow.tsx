@@ -10,7 +10,8 @@ const createButtonAttr = (id: string): ButtonAttr => {
   return { title, "aria-pressed": isFollowed }
 }
 
-const ButtonGameFollow: Component<{id: string, name: string}> = (props) => {
+const ButtonGameFollow: Component<{id: string, name: string, class?: string}> = (props) => {
+  const classStr = props.class || ""
   const [buttonAttr, setButtonAttr] = createSignal<ButtonAttr>(createButtonAttr(props.id))
   createEffect(() => setButtonAttr(createButtonAttr(props.id)))
 
@@ -24,7 +25,7 @@ const ButtonGameFollow: Component<{id: string, name: string}> = (props) => {
   }
 
   return (
-    <button type="button" class="hover:text-violet-500" onClick={[toggleFollow, {id: props.id, name: props.name}]} {...buttonAttr}>
+    <button type="button" class={classStr} onClick={[toggleFollow, {id: props.id, name: props.name}]} {...buttonAttr}>
       <Show when={!buttonAttr()["aria-pressed"]} fallback={<IconUnfollow />}>
         <IconFollow />
       </Show>

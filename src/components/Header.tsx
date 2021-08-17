@@ -38,9 +38,7 @@ const SidebarStreams = () => {
               <span class="ml-2 truncate">{stream.user_name}</span>
             </Link>
             <div class="flex items-center border-l-2 border-gray-700">
-              <span class="leading-none w-5 mx-1.5">
-                <ButtonStreamFollow {...stream} />
-              </span>
+              <ButtonStreamFollow class="w-5 mx-1.5 text-trueGray-500 hover:text-violet-500" {...stream} />
               <Link class="mx-1.5 group" href={`https://www.twitch.tv/${stream.user_login}/videos`} title="Videos on Twitch">
                 <span class="block w-5 text-trueGray-500 group-hover:text-purple-500"><IconExternalLink /></span>
               </Link>
