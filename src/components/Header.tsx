@@ -143,7 +143,7 @@ const Header = () => {
   }
 
   const sidebarTitles = {
-    [Sidebar.Games]: () => <> <span class="block w-4 mr-2"><IconGameController /></span>Games</>,
+    [Sidebar.Games]: () => <> <IconSprite id="game-controller" class="fill-current w-4 h-4 mr-2" />Games</>,
     [Sidebar.Search]: () => <> <IconSprite id="looking-class" class="fill-current w-4 h-4 mr-2" />Search</>,
     [Sidebar.Streams]: () => <> <span class="block w-4 mr-2"><IconPeople /></span>Streams</>,
     [Sidebar.Closed]: null,
@@ -184,7 +184,7 @@ const Header = () => {
             onMouseDown={() => console.log("down")}
             title="Games"
           >
-            <span class="block w-5"><IconGameController /></span>
+            <IconSprite id="game-controller" class="fill-current w-5 h-5" />
           </button>
           <button
             class={`mr-5 ${buttonClass} ${sidebar() === Sidebar.Streams ? "text-gray-50" : "text-gray-200"}`}
