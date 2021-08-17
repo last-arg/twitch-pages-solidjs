@@ -1,6 +1,6 @@
 import { Show, Component, createSignal, createEffect } from 'solid-js';
 import { localGames } from '../common';
-import { IconFollow, IconUnfollow } from '../icons';
+import { IconSprite, IconUnfollow } from '../icons';
 
 type ButtonAttr = {title: string, "aria-pressed": boolean}
 
@@ -27,7 +27,7 @@ const ButtonGameFollow: Component<{id: string, name: string, class?: string}> = 
   return (
     <button type="button" class={classStr} onClick={[toggleFollow, {id: props.id, name: props.name}]} {...buttonAttr}>
       <Show when={!buttonAttr()["aria-pressed"]} fallback={<IconUnfollow />}>
-        <IconFollow />
+        <IconSprite id="star-empty" class="fill-current w-5 h-5" />
       </Show>
     </button>
   );

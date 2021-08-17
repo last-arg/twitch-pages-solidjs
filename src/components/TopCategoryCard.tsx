@@ -22,7 +22,9 @@ const TopCategoryCard: Component<{id: string, name: string, img_class: string}> 
       </Link>
       <div class="flex flex-col justify-between py-1.5 px-1.5 border-l-2 border-white">
         <ButtonGameFollow class="w-5 h-5 text-trueGray-400 hover:text-violet-500" name={name} id={id} />
-        <Link class="text-trueGray-400 w-5 h-5 hover:text-violet-500" href={`https://www.twitch.tv${game_link}`} title="Open game in Twitch" onClick={(e: Event) => e.stopPropagation()}><IconSprite id="external-link" /></Link>
+        <Link class="text-trueGray-400 w-5 h-5 hover:text-violet-500" href={`https://www.twitch.tv${game_link}`} title="Open game in Twitch" onClick={(e: Event) => e.stopPropagation()}>
+          <IconSprite id="external-link" class="fill-current w-5 h-5"/>
+        </Link>
       </div>
     </div>
   );
