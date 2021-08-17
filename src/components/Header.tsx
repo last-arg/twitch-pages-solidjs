@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, For, Switch, Match, Show, Resource } from 'solid-js';
 import { HEADER_OPTS } from "../config";
 import { localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams} from "../common";
-import { IconSprite, IconLookingClass, IconGameController, IconPeople, IconClose } from "../icons";
+import { IconSprite, IconGameController, IconPeople, IconClose } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
@@ -144,7 +144,7 @@ const Header = () => {
 
   const sidebarTitles = {
     [Sidebar.Games]: () => <> <span class="block w-4 mr-2"><IconGameController /></span>Games</>,
-    [Sidebar.Search]: () => <> <span class="block w-4 mr-2"><IconLookingClass /></span>Search</>,
+    [Sidebar.Search]: () => <> <IconSprite id="looking-class" class="fill-current w-4 h-4 mr-2" />Search</>,
     [Sidebar.Streams]: () => <> <span class="block w-4 mr-2"><IconPeople /></span>Streams</>,
     [Sidebar.Closed]: null,
   };
@@ -169,7 +169,7 @@ const Header = () => {
               onBlur={inputBlur}
             />
             <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50" type="submit" title="Search">
-              <span class="block w-5"><IconLookingClass /></span>
+              <IconSprite id="looking-class" class="fill-current w-5 h-5" />
             </button>
             <button class="hidden" type="reset">Clear</button>
           </form>
