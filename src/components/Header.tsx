@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, For, Switch, Match, Show, Resource } from 'solid-js';
 import { HEADER_OPTS } from "../config";
 import { localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams} from "../common";
-import { IconExternalLink, IconLookingClass, IconGameController, IconPeople, IconClose } from "../icons";
+import { IconSprite, IconLookingClass, IconGameController, IconPeople, IconClose } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
@@ -40,7 +40,7 @@ const SidebarStreams = () => {
             <div class="flex items-center border-l-2 border-gray-700">
               <ButtonStreamFollow class="w-5 mx-1.5 text-trueGray-500 hover:text-violet-500" {...stream} />
               <Link class="mx-1.5 group" href={`https://www.twitch.tv/${stream.user_login}/videos`} title="Videos on Twitch">
-                <span class="block w-5 text-trueGray-500 group-hover:text-purple-500"><IconExternalLink /></span>
+                <IconSprite id="external-link" class="w-5 text-trueGray-500 group-hover:text-purple-500" />
               </Link>
             </div>
           </li>

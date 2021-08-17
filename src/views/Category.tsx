@@ -2,7 +2,7 @@ import { createResource, createSignal, createEffect, For, Show, Switch, Match, u
 import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
 import { Link, useParams } from 'solid-app-router';
 import { createTwitchImage, localImages, fetchAndSetProfileImages } from "../common";
-import { IconExternalLink } from "../icons";
+import { IconSprite } from "../icons";
 import ButtonGameFollow from "../components/ButtonGameFollow";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
 import { Stream } from "../stream";
@@ -46,14 +46,12 @@ const CategoryTitle: Component<TitleProps> = (props) => {
         <span class="flex items-center">
           <img class="w-10 mr-3 bg-gray-200" src={data().imgUrl} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
           <span>{data().name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <span class="block text-trueGray-400 group-hover:text-purple-800 -ml-4 w-4"><IconExternalLink /></span>
+          <IconSprite id="external-link" class="fill-current text-trueGray-400 group-hover:text-purple-800 -ml-4 w-4 h-4" />
         </span>
       </Link>
       <span class="text-trueGray-400 ml-8 mr-2 border-l h-full w-0">&nbsp;</span>
       <Show when={data().id}>{(cat_id: string) =>
-        <span class="w-5 h-5 text-trueGray-400">
-          <ButtonGameFollow name={data().name} id={cat_id}/>
-        </span>
+        <ButtonGameFollow class="w-5 h-5 text-trueGray-400 hover:text-violet-500" name={data().name} id={cat_id}/>
       }</Show>
     </h1>
   );
@@ -125,7 +123,7 @@ const CategoryStreams: Component<StreamProps> = (props) => {
                   </div>
                   <div class="flex justify-between items-center">
                     <p class="truncate flex-shrink w-full-1rem">{stream.title}</p>
-                    <span class="block w-4 ml-2 text-trueGray-400 group-hover:text-purple-700"><IconExternalLink /></span>
+                    <IconSprite id="external-link" class="w-4 h-4 ml-2 text-trueGray-400 group-hover:text-purple-700" />
                   </div>
                 </Link>
                 <div class="flex mt-1">
@@ -141,7 +139,7 @@ const CategoryStreams: Component<StreamProps> = (props) => {
                     <div>
                       <Link class="flex items-center group" href={`${twitch_stream_url}/videos`}>
                         <p>Videos on Twitch</p>
-                        <span class="block w-4 ml-1 text-trueGray-400 group-hover:text-purple-700"><IconExternalLink /></span>
+                        <IconSprite id="external-link" class="w-4 h-4 ml-1 text-trueGray-400 group-hover:text-purple-700" />
                       </Link>
                     </div>
                   </div>
