@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, createEffect, For, Switch, Match } from 'solid-js';
 import { HEADER_OPTS } from "../config";
 import { Category } from "../category";
-import CategoryCard from "../components/CategoryCard";
+import TopCategoryCard from "../components/TopCategoryCard";
 
 type CategoryResponse = {
   data: Category[],
@@ -40,11 +40,11 @@ const Home: Component = () => {
   return (
     <main class="px-2 contain-content">
       <h2>Top games</h2>
-      <ul class="flex flex-wrap -mr-2 text-gray-300">
+      <ul class="flex flex-wrap -mr-2 text-gray-700">
         <For each={category()}>
           {(c: Category) => 
             <li class="w-1/3 pb-2 pr-2">
-              <CategoryCard id={c.id} name={c.name} img_class="w-16"/>
+              <TopCategoryCard id={c.id} name={c.name} img_class="w-16"/>
             </li>
           }
         </For>

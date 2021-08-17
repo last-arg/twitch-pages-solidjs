@@ -91,7 +91,7 @@ enum Sidebar {
 }
 
 const Header = () => {
-  const [searchValue, setSearchValue] = createSignal(location.hash.slice(1));
+  const [searchValue, setSearchValue] = createSignal(decodeURIComponent(location.hash.slice(1)));
   const [sidebar, setSidebar] = createSignal(searchValue().length == 0 ? Sidebar.Closed : Sidebar.Search);
   const [games] = createResource<Category[], string>(() => searchValue(), searchGames, {initialValue: []});
   let searchTimeout: number = 0;

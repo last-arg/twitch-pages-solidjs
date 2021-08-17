@@ -51,7 +51,7 @@ const CategoryTitle: Component<TitleProps> = (props) => {
       </Link>
       <span class="text-trueGray-400 ml-8 mr-2 border-l h-full w-0">&nbsp;</span>
       <Show when={data().id}>{(cat_id: string) =>
-        <span class="w-5 h-5">
+        <span class="w-5 h-5 text-trueGray-400">
           <ButtonGameFollow name={data().name} id={cat_id}/>
         </span>
       }</Show>
