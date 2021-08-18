@@ -165,12 +165,14 @@ const VideoList: Component<{user_id: string}> = (props) => {
           </li>
           <li class={videosListItemClass}>
             <CheckButton type="highlight" />
-            <ButtonTitle type="highlight">Hightlights {videos().highlightLength}</ButtonTitle>
+            <ButtonTitle type="highlight">Hightlights ({videos().highlightLength})</ButtonTitle>
           </li>
         </ul>
         <span class="border-l mx-2">&nbsp;</span>
         <div>
-          <button type="button" class="">Toggle all</button>
+          <button type="button" class=""
+            onClick={() => setSelected({archive: true, upload: true, highlight: true})}
+          >Show all</button>
         </div>
       </div>
       <div class="mt-6">
