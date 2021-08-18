@@ -1,7 +1,8 @@
 import { createMutable } from "solid-js/store";
 import { HEADER_OPTS } from "./config";
-import {Stream} from "./stream";
-import {Category} from "./category";
+import { Stream } from "./stream";
+import { Category } from "./category";
+import { User, fetchUsers } from "./user";
 
 const TWITCH_MAX_QUERY_PARAMS = 100
 
@@ -67,16 +68,6 @@ export const createTwitchImage = (name: string, width: number, height: number): 
   return `https://static-cdn.jtvnw.net/ttv-boxart/${name}-${width}x${height}.jpg`;
 }
 
-// TODO?: move to user.ts file?
-// https://dev.twitch.tv/docs/api/reference#get-users
-interface User {
-  id: string,
-  display_name: string,
-  login: string,
-  profile_image_url: string,
-  view_count: number,
-}
-
 // {user_id: profile_image_url}
 export type LocalImages = Record<User["id"], {
   url: User["profile_image_url"],
@@ -140,12 +131,6 @@ export const localImages = createMutable({
     this.lastUpdate = nowDate
   }
 })
-
-const fetchUsers = async (ids: string[]): Promise<User[]> => {
-  if (ids.length === 0) return []
-  const url = `https://api.twitch.tv/helix/users?id=${ids.join("&id=")}`;
-  return (await (await fetch(url, HEADER_OPTS)).json()).data;
-}
 
 export const fetchAndSetProfileImages = async (user_ids: string[]) => {
   if (user_ids.length === 0) return

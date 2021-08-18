@@ -1,5 +1,5 @@
 import { createResource, createSignal, createEffect, For, Show, Switch, Match, untrack, Component } from 'solid-js';
-import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT } from "../config";
+import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT } from "../config";
 import { Link, useParams } from 'solid-app-router';
 import { createTwitchImage, localImages, fetchAndSetProfileImages } from "../common";
 import { IconSprite } from "../icons";
@@ -7,9 +7,6 @@ import ButtonGameFollow from "../components/ButtonGameFollow";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
 import { Stream } from "../stream";
 import { Category, fetchCategory } from "../category";
-
-const IMG_STREAM_WIDTH = 440;
-const IMG_STREAM_HEIGHT = 248;
 
 const createLiveUserImageUrl = (url_template: string, w: number, h: number): string => {
   return url_template.replace("{width}", w.toString()).replace("{height}", h.toString());
@@ -155,7 +152,7 @@ const CategoryStreams: Component<StreamProps> = (props) => {
         <Match when={!streams.loading && streams().pagination.cursor}>
           <button onClick={() => setCursor(streams().pagination.cursor ?? "")}>Load more streams</button>
         </Match>
-        <Match when={!streams.loading && allStreams.length === 0}>
+        <Match when={!streams.loading && allStreams().length === 0}>
           <p>Found no streams</p>
         </Match>
       </Switch>

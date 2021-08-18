@@ -9,3 +9,8 @@
 .contain-strict {
   contain: strict
 }
+
+.videos-selected [aria-pressed=true],
+.videos-selected [aria-pressed=true] span {
+  @apply bg-amber-200
+}

@@ -34,7 +34,7 @@ const SidebarStreams = () => {
         <Show when={stream}>
           <li class="mt-2 bg-gray-800 flex">
             <Link class="flex flex-grow items-center border-l-6 border-transparent pl-1.5 hover:text-white hover:border-violet-700 hover:underline" href={`/${stream.user_login}/videos`} title={stream.user_name}>
-              <img class="w-10 bg-gray-700" src={localImages.get(stream.user_id)} width="300" height="300" />
+              <img class="w-10" src={localImages.get(stream.user_id)} width="300" height="300" />
               <span class="ml-2 truncate">{stream.user_name}</span>
             </Link>
             <div class="flex items-center border-l-2 border-gray-700">
@@ -126,13 +126,11 @@ const Header = () => {
   // mousedown event happens before blur
   const inputBlur = () => {
     if (searchValue().length == 0) {
-      console.log("blur", sidebar());
       setSidebar(Sidebar.Closed)
     }
   };
 
   const toggleSidebar = (button_state: Sidebar) => {
-    console.log("toggle")
     setSidebar(sidebar() === button_state ? Sidebar.Closed : button_state)
   };
 
@@ -167,7 +165,7 @@ const Header = () => {
               onInput={inputSearch}
               onFocus={[setSidebar, Sidebar.Search]}
               onBlur={inputBlur}
-              onKeyup={(e: Event) => e.key === "Escape" && setSidebar(Sidebar.Closed)}
+              onKeyUp={(e: KeyboardEvent) => e.key === "Escape" && setSidebar(Sidebar.Closed)}
             />
             <button class="px-2.5 pt-1 text-gray-200 bg-gray-900 h-full hover:text-gray-50 focus:text-gray-50" type="submit" title="Search">
               <IconSprite id="looking-class" class="fill-current w-5 h-5" />
@@ -182,7 +180,6 @@ const Header = () => {
               "text-gray-200": sidebar() !== Sidebar.Games,
             }}
             onClick={[toggleSidebar, Sidebar.Games]}
-            onMouseDown={() => console.log("down")}
             title="Games"
           >
             <IconSprite id="game-controller" class="fill-current w-5 h-5" />
