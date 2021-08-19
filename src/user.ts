@@ -1,4 +1,4 @@
-import { HEADER_OPTS } from "./config";
+import { HEADER_OPTS } from "./common";
 
 // https://dev.twitch.tv/docs/api/reference#get-users
 export interface User {

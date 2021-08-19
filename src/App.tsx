@@ -1,5 +1,5 @@
 import { Component, lazy } from 'solid-js';
-import { Router, useRoutes } from 'solid-app-router';
+import { Router, useRoutes, useParams } from 'solid-app-router';
 import Header from './components/Header';
 import {routes} from './routes';
 

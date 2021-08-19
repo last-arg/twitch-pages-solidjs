@@ -1,4 +1,4 @@
-import { HEADER_OPTS } from "./config";
+import { HEADER_OPTS } from "./common";
 
 export interface Category {
   id: string,

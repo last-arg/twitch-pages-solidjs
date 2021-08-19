@@ -1,7 +1,7 @@
 import { createResource, createSignal, createEffect, For, Show, Switch, Match, untrack, Component } from 'solid-js';
-import { HEADER_OPTS, IMG_WIDTH, IMG_HEIGHT, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT } from "../config";
+import { IMG_WIDTH, IMG_HEIGHT, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT } from "../config";
 import { Link, useParams } from 'solid-app-router';
-import { createTwitchImage, localImages, fetchAndSetProfileImages } from "../common";
+import { HEADER_OPTS, createTwitchImage, localImages, fetchAndSetProfileImages } from "../common";
 import { IconSprite } from "../icons";
 import ButtonGameFollow from "../components/ButtonGameFollow";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";

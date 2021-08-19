@@ -1,10 +1,23 @@
 import { createMutable } from "solid-js/store";
-import { HEADER_OPTS } from "./config";
 import { Stream } from "./stream";
 import { Category } from "./category";
 import { User, fetchUsers } from "./user";
 
 const TWITCH_MAX_QUERY_PARAMS = 100
+
+// NOTE: should always be available if solidjs app is able to load
+export const twitchToken = localStorage.getItem("twitch_token")
+
+export const clientId = "7v5r973dmjp0nd1g43b8hcocj2airz";
+export const HEADER_OPTS = {
+  method: "GET",
+  headers: {
+    "Host": "api.twitch.tv",
+    "Authorization": `Bearer ${twitchToken}`,
+    "Client-id": clientId,
+    "Accept": "application/vnd.twitchtv.v5+json",
+  }
+};
 
 function getInsertIndex(key: string, value: string, arr: StreamFollow[]): number
 function getInsertIndex(key: string, value: string, arr: GameFollow[]): number

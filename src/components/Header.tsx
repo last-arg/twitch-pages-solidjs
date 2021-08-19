@@ -1,6 +1,5 @@
 import { Component, createResource, createSignal, For, Switch, Match, Show, Resource } from 'solid-js';
-import { HEADER_OPTS } from "../config";
-import { localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams} from "../common";
+import { HEADER_OPTS, localGames, localStreams, localImages, fetchAndSetProfileImages, localLiveStreams} from "../common";
 import { IconSprite } from "../icons";
 import { Link } from 'solid-app-router';
 import CategoryCard from "../components/CategoryCard";
