@@ -38,7 +38,7 @@ const CategoryTitle: Component<TitleProps> = (props) => {
   createEffect(() => params.name && setData(titleDefault))
 
   return (
-    <h1 class="flex items-center text-xl">
+    <h1 class="flex items-center text-xl mt-5">
       <Link class="group hover:text-purple-800 hover:underline" href={data().linkHref}>
         <span class="flex items-center">
           <img class="w-10 mr-3 bg-gray-200" src={data().imgUrl} alt="" width={IMG_WIDTH} height={IMG_HEIGHT} />
@@ -104,7 +104,7 @@ const CategoryStreams: Component<StreamProps> = (props) => {
 
   return (
     <>
-      <ul class="flex flex-wrap -mx-2">
+      <ul class="flex flex-wrap -mx-2 -mb-3 mt-2">
         <For each={allStreams()}>{(stream: Stream) => {
           const twitch_stream_url = `https://www.twitch.tv/${stream.user_login}`;
           return (

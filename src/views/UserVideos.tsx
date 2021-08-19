@@ -180,9 +180,11 @@ const VideoList: Component<{user_id: string}> = (props) => {
 
   const videosListItemClass = `mx-2 rounded flex items-center`;
 
+  // TODO: make load more button into component. Use it in Category and Home pages
+  // TODO: make video type filter sticky
   return (
     <>
-      <div class="flex items-center text-base">
+      <div class="flex items-center text-base mt-2">
         <h2>Videos:</h2>
         <ul class="videos-selected flex">
           <li class={videosListItemClass}>
@@ -238,7 +240,7 @@ const VideoList: Component<{user_id: string}> = (props) => {
             );
           }}</For>
         </ul>
-        <div class="mt-10 text-center text-base">
+        <div class="my-10 text-center text-base">
           <Switch>
             <Match when={videosResp.loading}>
               <p class="py-1 border-2 border-gray-300">Loading videos...</p>
@@ -281,7 +283,7 @@ const UserTitle: Component<TitleProps> = (props) => {
   createEffect(() => params.name && setData(titleDefault))
 
   return (
-    <h1 class="flex items-center text-xl">
+    <h1 class="flex items-center text-xl mt-5">
       <Link class="group hover:text-purple-800 hover:underline" href={data().linkHref}>
         <span class="flex items-center">
           <img class="w-10 mr-3" src={data().imgUrl} alt="" width="300" height="300" />

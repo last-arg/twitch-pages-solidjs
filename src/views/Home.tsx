@@ -39,8 +39,8 @@ const Home: Component = () => {
 
   return (
     <>
-      <h2>Top games</h2>
-      <ul class="flex flex-wrap -mr-2 text-gray-700">
+      <h2 class="mt-5">Top games</h2>
+      <ul class="flex flex-wrap -mr-2 text-gray-700 mt-5">
         <For each={category()}>
           {(c: Category) => 
             <li class="w-1/3 pb-2 pr-2">
