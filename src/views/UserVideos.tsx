@@ -1,7 +1,7 @@
-import { Component, createResource, createSignal, createEffect, For, Show, Match, Switch, Setter, Resource } from 'solid-js';
-import { IMG_WIDTH, IMG_HEIGHT, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT } from "../config";
+import { Component, createResource, createSignal, createEffect, For, Show, Match, Switch } from 'solid-js';
+import { IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT } from "../config";
 import { Link, useParams } from 'solid-app-router';
-import { HEADER_OPTS, createTwitchImage } from "../common";
+import { HEADER_OPTS } from "../common";
 import { fetchUser, User } from "../user";
 import { IconSprite } from "../icons";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
@@ -182,6 +182,9 @@ const VideoList: Component<{user_id: string}> = (props) => {
 
   // TODO: make video type filter sticky
   // Look for examples of tables
+
+  // TODO: make videos type filter into separate component
+  // Can be shown before first videos are shown
   return (
     <>
       <div class="flex items-center text-base mt-2">
@@ -287,9 +290,8 @@ const UserTitle: Component<TitleProps> = (props) => {
   );
 };
 
-const UserVideos: Component = (props) => {
+const UserVideos: Component = () => {
   const params = useParams()
-  const username = decodeURIComponent(params.name);
   const [user] = createResource<User | undefined, string>(() => params.name, fetchUser, {initialValue: undefined})
 
   // TODO: if live link to twitch.tv user's video page

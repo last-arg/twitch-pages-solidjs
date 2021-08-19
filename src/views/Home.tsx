@@ -1,4 +1,4 @@
-import { Component, createResource, createSignal, createEffect, For, Switch, Match } from 'solid-js';
+import { Component, createResource, createSignal, createEffect, For } from 'solid-js';
 import { HEADER_OPTS } from "../common";
 import { Category } from "../category";
 import TopCategoryCard from "../components/TopCategoryCard";
