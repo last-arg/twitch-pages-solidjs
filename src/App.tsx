@@ -9,7 +9,9 @@ const App: Component = () => {
   return (
     <>
       <Header />
-      <Routes />
+      <main class="px-2 contain-content">
+        <Routes />
+      </main>
     </>
   );
 };

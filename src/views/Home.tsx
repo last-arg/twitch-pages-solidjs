@@ -38,7 +38,7 @@ const Home: Component = () => {
   })
 
   return (
-    <main class="px-2 contain-content">
+    <>
       <h2>Top games</h2>
       <ul class="flex flex-wrap -mr-2 text-gray-700">
         <For each={category()}>
@@ -60,7 +60,7 @@ const Home: Component = () => {
           <p>Found no games</p>
         </Match>
       </Switch>
-    </main>
+    </>
   );
 };
 

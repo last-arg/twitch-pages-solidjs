@@ -308,7 +308,7 @@ const UserVideos: Component = (props) => {
   // TODO: if live link to twitch.tv user's video page
 
   return (
-    <main>
+    <>
       <UserTitle user={user()} fallbackTitle={decodeURIComponent(params.name)} />
       <Switch fallback={<p>Not Found</p>}>
         <Match when={user.loading}>
@@ -318,7 +318,7 @@ const UserVideos: Component = (props) => {
           <VideoList user_id={user()!.id} />
         </Match>
       </Switch>
-    </main>
+    </>
   );
 };
 

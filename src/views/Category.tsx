@@ -166,7 +166,7 @@ const CategoryView = () => {
     () => params.name, fetchCategory);
 
   return (
-    <main class="px-2">
+    <>
       <CategoryTitle category={category()} fallbackTitle={decodeURIComponent(params.name)} />
       <Switch fallback={<p>Not Found</p>}>
         <Match when={category.loading}>
@@ -176,8 +176,7 @@ const CategoryView = () => {
           <CategoryStreams category_id={category()!.id} />
         </Match>
       </Switch>
-
-    </main>
+    </>
   );
 };
 
