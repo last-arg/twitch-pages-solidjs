@@ -19,9 +19,6 @@ module.exports = {
         transparent: 'transparent',
         current: 'currentColor',
       },
-      padding: {
-        "3px": "3px",
-      },
       zIndex: {
         "-10": "-10",
       },

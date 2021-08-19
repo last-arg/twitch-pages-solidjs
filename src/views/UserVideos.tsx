@@ -100,11 +100,6 @@ const VideoList: Component<{user_id: string}> = (props) => {
     }
   })
 
-  const videosListItemClass = `mx-2 rounded flex items-center`;
-  const videosButtonCheckClass = ``;
-  const videosButtonClass = `pl-3.5 pr-2 py-0.5 rounded-r -ml-2 bg-amber-100 hover:bg-amber-200`;
-
-
   const activeVideoTypes = (): number => {
     let count = 0
     for (const value of Object.values(selected())) {
@@ -113,8 +108,27 @@ const VideoList: Component<{user_id: string}> = (props) => {
     return count
   }
 
-  const CheckButton: Component<Pick<Video, "type">> = (props) =>
-    <button class={`bg-amber-100 p-3px rounded-full border-2 border-white h-9 w-9 relative z-10 hover:bg-amber-200 check-${props.type}`} type="button"
+  const colors = {
+    archive: {
+      default: "bg-lime-200",
+      active: "bg-lime-300", // hover:bg-lime-300
+      unchecked: "bg-lime-50",
+    },
+    upload: {
+      default: "bg-sky-200",
+      active: "bg-sky-300", // hover:bg-sky-300
+      unchecked: "bg-sky-50",
+    },
+    highlight: {
+      default: "bg-amber-200",
+      active: "bg-amber-300", // hover:bg-amber-300
+      unchecked: "bg-amber-50",
+    },
+  }
+
+  const CheckButton: Component<Pick<Video, "type">> = (props) => {
+    const color = colors[props.type]
+    return <button class={`${ selected()[props.type] == true ? color.active : color.default} hover:${color.active} p-1 rounded-full border-2 border-white h-9 w-9 relative z-10 check-${props.type}`} type="button"
       aria-pressed={selected()[props.type] == true}
       onClick={() => {
         if (selected()[props.type]) {
@@ -125,17 +139,25 @@ const VideoList: Component<{user_id: string}> = (props) => {
           setSelected((prev) => { return {...prev, [props.type]: true} })
         }
       }}>
-      <span class="bg-amber-50 h-full w-full rounded-full block border-2 border-white">&nbsp;</span>
+      <span class={`${ selected()[props.type] == true ? color.active : color.unchecked} h-full w-full rounded-full block border-2 border-white`}>&nbsp;</span>
     </button>
+  }
+
+  const icons = {
+    archive: () => <IconSprite id="video-camera" class="fill-current h-5 w-5" />,
+    upload: () => <IconSprite id="video-upload" class="fill-current h-5 w-5" />,
+    highlight: () => <IconSprite id="video-reel" class="fill-current h-5 w-5" />,
+  };
 
   const ButtonTitle: Component<Pick<Video, "type">> = (props) => {
-    return <button class={videosButtonClass} type="button"
+    const color = colors[props.type]
+    return <button class={`pl-3.5 pr-2 py-0.5 rounded-r -ml-2 ${color.default} hover:${color.active} flex items-center`} type="button"
       onClick={() => {
         let newSelected = { archive: false, upload: false, highlight: false }
         newSelected[props.type] = true
         setSelected(newSelected)
       }}
-    >{props.children}</button>
+    >{icons[props.type]} <span class="ml-1">{props.children}</span></button>
   }
 
   const totalDisplayedVideos = () => {
@@ -149,6 +171,8 @@ const VideoList: Component<{user_id: string}> = (props) => {
     }
     return total
   }
+
+  const videosListItemClass = `mx-2 rounded flex items-center`;
 
   return (
     <>
@@ -268,6 +292,9 @@ const UserVideos: Component = (props) => {
   const username = decodeURIComponent(params.name);
   const [user] = createResource<User | undefined, string>(() => params.name, fetchUser, {initialValue: undefined})
 
+  // TODO: make video buttons differet colors
+  // TODO: add icons to video buttons
+  // TODO: add video type (color, icon) to video cards
   // TODO: if live link to twitch.tv user's video page
 
   return (
