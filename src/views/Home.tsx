@@ -50,7 +50,7 @@ const Home: Component = () => {
           }
         </For>
       </ul>
-      <ButtonFetchMore fetchResp={topGames} setCursor={setCursor} />
+      <ButtonFetchMore fetchResp={topGames} onClick={() => setCursor(topGames().pagination.cursor ?? "")} />
     </>
   );
 };

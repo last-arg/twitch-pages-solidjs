@@ -146,7 +146,7 @@ const CategoryStreams: Component<StreamProps> = (props) => {
             </li>
         )}}</For>
       </ul>
-      <ButtonFetchMore fetchResp={streams} setCursor={setCursor} />
+      <ButtonFetchMore fetchResp={streams} onClick={() => setCursor(streams().pagination.cursor ?? "")} />
     </>
   );
 };

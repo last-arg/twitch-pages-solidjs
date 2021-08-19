@@ -181,6 +181,7 @@ const VideoList: Component<{user_id: string}> = (props) => {
   const videosListItemClass = `mx-2 rounded flex items-center`;
 
   // TODO: make video type filter sticky
+  // Look for examples of tables
   return (
     <>
       <div class="flex items-center text-base mt-2">
@@ -239,7 +240,7 @@ const VideoList: Component<{user_id: string}> = (props) => {
             );
           }}</For>
         </ul>
-        <ButtonFetchMore fetchResp={videosResp} setCursor={setCursor} />
+        <ButtonFetchMore fetchResp={videosResp} onClick={() => setCursor(videosResp().pagination.cursor ?? "")} />
       </div>
     </>
   );
