@@ -1,10 +1,11 @@
-import { Component, createResource, createSignal, createEffect, For, Show, Match, Switch } from 'solid-js';
+import { Component, createResource, createSignal, createEffect, For, Show, Match, Switch, Setter, Resource } from 'solid-js';
 import { IMG_WIDTH, IMG_HEIGHT, IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT } from "../config";
 import { Link, useParams } from 'solid-app-router';
 import { HEADER_OPTS, createTwitchImage } from "../common";
 import { fetchUser, User } from "../user";
 import { IconSprite } from "../icons";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
+import ButtonFetchMore from "../components/ButtonFetchMore";
 
 interface Video {
   title: string,
@@ -34,7 +35,6 @@ const VideoList: Component<{user_id: string}> = (props) => {
   const [videos, setVideos] = createSignal<{data: Video[], uploadLength: number, archiveLength: number, highlightLength: number, }>({data: [], uploadLength: 0, archiveLength: 0, highlightLength: 0})
   const [videosResp] = createResource(() => {return {user_id: props.user_id, cursor: cursor()}}, fetchVideos,
     {initialValue: {data: [], pagination: {}}});
-
 
   const twitchDateToString = (d: Date): string => {
     const round = (nr: number): number => {
@@ -180,7 +180,6 @@ const VideoList: Component<{user_id: string}> = (props) => {
 
   const videosListItemClass = `mx-2 rounded flex items-center`;
 
-  // TODO: make load more button into component. Use it in Category and Home pages
   // TODO: make video type filter sticky
   return (
     <>
@@ -240,19 +239,7 @@ const VideoList: Component<{user_id: string}> = (props) => {
             );
           }}</For>
         </ul>
-        <div class="my-10 text-center text-base">
-          <Switch>
-            <Match when={videosResp.loading}>
-              <p class="py-1 border-2 border-gray-300">Loading videos...</p>
-            </Match>
-            <Match when={!videosResp.loading && videosResp().pagination.cursor}>
-              <button type="button" class="border-2 py-1 border-violet-600 block w-full hover:bg-violet-600 hover:text-gray-50" onClick={() => setCursor(videosResp().pagination.cursor ?? "")}>Load more videos</button>
-            </Match>
-            <Match when={!videosResp.loading && videos().data.length === 0}>
-              <p>Found no videos</p>
-            </Match>
-          </Switch>
-        </div>
+        <ButtonFetchMore fetchResp={videosResp} setCursor={setCursor} />
       </div>
     </>
   );

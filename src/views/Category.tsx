@@ -5,6 +5,7 @@ import { HEADER_OPTS, createTwitchImage, localImages, fetchAndSetProfileImages }
 import { IconSprite } from "../icons";
 import ButtonGameFollow from "../components/ButtonGameFollow";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
+import ButtonFetchMore from "../components/ButtonFetchMore";
 import { Stream } from "../stream";
 import { Category, fetchCategory } from "../category";
 
@@ -145,17 +146,7 @@ const CategoryStreams: Component<StreamProps> = (props) => {
             </li>
         )}}</For>
       </ul>
-      <Switch>
-        <Match when={streams.loading}>
-          <p>Loading streams...</p>
-        </Match>
-        <Match when={!streams.loading && streams().pagination.cursor}>
-          <button onClick={() => setCursor(streams().pagination.cursor ?? "")}>Load more streams</button>
-        </Match>
-        <Match when={!streams.loading && allStreams().length === 0}>
-          <p>Found no streams</p>
-        </Match>
-      </Switch>
+      <ButtonFetchMore fetchResp={streams} setCursor={setCursor} />
     </>
   );
 };

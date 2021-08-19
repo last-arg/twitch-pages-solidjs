@@ -2,6 +2,7 @@ import { Component, createResource, createSignal, createEffect, For, Switch, Mat
 import { HEADER_OPTS } from "../common";
 import { Category } from "../category";
 import TopCategoryCard from "../components/TopCategoryCard";
+import ButtonFetchMore from "../components/ButtonFetchMore";
 
 type CategoryResponse = {
   data: Category[],
@@ -49,17 +50,7 @@ const Home: Component = () => {
           }
         </For>
       </ul>
-      <Switch>
-        <Match when={topGames.loading}>
-          <p>Loading games...</p>
-        </Match>
-        <Match when={!topGames.loading && topGames().pagination.cursor}>
-          <button onClick={() => setCursor(topGames().pagination.cursor ?? "")}>Load more games</button>
-        </Match>
-        <Match when={!topGames.loading && category().length === 0}>
-          <p>Found no games</p>
-        </Match>
-      </Switch>
+      <ButtonFetchMore fetchResp={topGames} setCursor={setCursor} />
     </>
   );
 };
