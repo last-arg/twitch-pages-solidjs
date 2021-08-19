@@ -218,12 +218,12 @@ const VideoList: Component<{user_id: string}> = (props) => {
                   <Link class="hover:text-violet-700 hover:underline" href={video.url} title={video.title}>
                     <div class="relative">
                       <img src={video.thumbnail_url.replace("%{width}", IMG_STREAM_WIDTH.toString()).replace("%{height}", IMG_STREAM_HEIGHT.toString())} width={IMG_STREAM_WIDTH} height={IMG_STREAM_HEIGHT} />
-                      <span class={`absolute top-0 left-0 mt-1.5 ml-1.5 px-1 rounded-sm ${colors[video.type].default}`} title={`${videoTypeString[video.type]} video`}>
+                      <span class={`opacity-90 absolute top-0 left-0 mt-1.5 ml-1.5 px-1 rounded-sm ${colors[video.type].default}`} title={`${videoTypeString[video.type]} video`}>
                         {icons[video.type](4)}
                       </span>
-                      <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5">
-                        <span class="px-1 ml-1.5 text-sm bg-gray-800 text-gray-50 rounded-sm">{video.duration.slice(0,-1).replace("h", ":").replace("m", ":")}</span>
-                        <span class="px-1 mr-1.5 text-sm bg-gray-800 text-gray-50 rounded-sm" title={videoDate.toString()}>{twitchDateToString(videoDate)}</span>
+                      <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5 text-gray-50">
+                        <span class="px-1 ml-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70">{video.duration.slice(0,-1).replace("h", ":").replace("m", ":")}</span>
+                        <span class="px-1 mr-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70" title={videoDate.toString()}>{twitchDateToString(videoDate)}</span>
                       </div>
                     </div>
                     <div class="flex items-center">
