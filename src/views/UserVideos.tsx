@@ -128,7 +128,7 @@ const VideoList: Component<{user_id: string}> = (props) => {
 
   const CheckButton: Component<Pick<Video, "type">> = (props) => {
     const color = colors[props.type]
-    return <button class={`${ selected()[props.type] == true ? color.active : color.default} hover:${color.active} p-1 rounded-full border-2 border-white h-9 w-9 relative z-10 check-${props.type}`} type="button"
+    return <button class={`${ selected()[props.type] == true ? color.active : color.default} hover:${color.active} p-1 rounded-full border-2 border-white h-9 w-9 relative z-10`} type="button"
       aria-pressed={selected()[props.type] == true}
       onClick={() => {
         if (selected()[props.type]) {
@@ -143,10 +143,16 @@ const VideoList: Component<{user_id: string}> = (props) => {
     </button>
   }
 
+  const videoTypeString = {
+    archive: "Archive",
+    upload: "Upload",
+    highlight: "Highlight",
+  }
+
   const icons = {
-    archive: () => <IconSprite id="video-camera" class="fill-current h-5 w-5" />,
-    upload: () => <IconSprite id="video-upload" class="fill-current h-5 w-5" />,
-    highlight: () => <IconSprite id="video-reel" class="fill-current h-5 w-5" />,
+    archive: (size: number = 5) => <IconSprite id="video-camera" class={`fill-current h-${size} w-${size} text-lime-900`} />,
+    upload: (size: number = 5) => <IconSprite id="video-upload" class={`fill-current h-${size} w-${size} text-sky-900`} />,
+    highlight: (size: number = 5) => <IconSprite id="video-reel" class={`fill-current h-${size} w-${size} text-amber-900`} />,
   };
 
   const ButtonTitle: Component<Pick<Video, "type">> = (props) => {
@@ -207,13 +213,17 @@ const VideoList: Component<{user_id: string}> = (props) => {
           <For each={videos().data}>{(video) => {
             const videoDate = new Date(video.published_at)
             return (
-                <li class={`w-1/3 pl-3 pb-6 ${selected()[video.type] ? "block" : "hidden"}`}>
+              <Show when={selected()[video.type]}>
+                <li class={`w-1/3 pl-3 pb-6`}>
                   <Link class="hover:text-violet-700 hover:underline" href={video.url} title={video.title}>
                     <div class="relative">
                       <img src={video.thumbnail_url.replace("%{width}", IMG_STREAM_WIDTH.toString()).replace("%{height}", IMG_STREAM_HEIGHT.toString())} width={IMG_STREAM_WIDTH} height={IMG_STREAM_HEIGHT} />
-                      <div class="absolute bottom-0 flex justify-between w-full mb-2">
-                        <span class="px-1 ml-2 text-sm bg-gray-800 text-gray-50 rounded-sm">{video.duration.slice(0,-1).replace("h", ":").replace("m", ":")}</span>
-                        <span class="px-1 mr-2 text-sm bg-gray-800 text-gray-50 rounded-sm" title={videoDate.toString()}>{twitchDateToString(videoDate)}</span>
+                      <span class={`absolute top-0 left-0 mt-1.5 ml-1.5 px-1 rounded-sm ${colors[video.type].default}`} title={`${videoTypeString[video.type]} video`}>
+                        {icons[video.type](4)}
+                      </span>
+                      <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5">
+                        <span class="px-1 ml-1.5 text-sm bg-gray-800 text-gray-50 rounded-sm">{video.duration.slice(0,-1).replace("h", ":").replace("m", ":")}</span>
+                        <span class="px-1 mr-1.5 text-sm bg-gray-800 text-gray-50 rounded-sm" title={videoDate.toString()}>{twitchDateToString(videoDate)}</span>
                       </div>
                     </div>
                     <div class="flex items-center">
@@ -222,9 +232,9 @@ const VideoList: Component<{user_id: string}> = (props) => {
                         <IconSprite id="external-link" class="fill-current w-4 h-4" />
                       </span>
                     </div>
-
                   </Link>
                 </li>
+              </Show>
             );
           }}</For>
         </ul>
