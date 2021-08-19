@@ -302,9 +302,6 @@ const UserVideos: Component = (props) => {
   const username = decodeURIComponent(params.name);
   const [user] = createResource<User | undefined, string>(() => params.name, fetchUser, {initialValue: undefined})
 
-  // TODO: make video buttons differet colors
-  // TODO: add icons to video buttons
-  // TODO: add video type (color, icon) to video cards
   // TODO: if live link to twitch.tv user's video page
 
   return (
