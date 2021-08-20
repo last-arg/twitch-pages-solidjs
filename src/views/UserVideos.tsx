@@ -180,70 +180,69 @@ const VideoList: Component<{user_id: string}> = (props) => {
 
   const videosListItemClass = `mx-2 rounded flex items-center`;
 
-  // TODO: make video type filter sticky
-  // Look for examples of tables
-
   // TODO: make videos type filter into separate component
   // Can be shown before first videos are shown
   return (
     <>
-      <div class="flex items-center text-base mt-2">
-        <h2>Videos:</h2>
-        <ul class="videos-selected flex">
-          <li class={videosListItemClass}>
-            <CheckButton type="archive" />
-            <ButtonTitle type="archive">Archives ({videos().archiveLength})</ButtonTitle>
-          </li>
-          <li class={videosListItemClass}>
-            <CheckButton type="upload" />
-            <ButtonTitle type="upload">Uploads ({videos().uploadLength})</ButtonTitle>
-          </li>
-          <li class={videosListItemClass}>
-            <CheckButton type="highlight" />
-            <ButtonTitle type="highlight">Hightlights ({videos().highlightLength})</ButtonTitle>
-          </li>
-        </ul>
-        <span class="border-l mx-2">&nbsp;</span>
-        <div>
-          <button type="button" class=""
-            onClick={() => setSelected({archive: true, upload: true, highlight: true})}
-          >Show all</button>
+      <div class="relative">
+        <div class="flex items-center text-base bg-white sticky z-10 py-3" style="top: 40px">
+          <h2>Videos:</h2>
+          <ul class="videos-selected flex">
+            <li class={videosListItemClass}>
+              <CheckButton type="archive" />
+              <ButtonTitle type="archive">Archives ({videos().archiveLength})</ButtonTitle>
+            </li>
+            <li class={videosListItemClass}>
+              <CheckButton type="upload" />
+              <ButtonTitle type="upload">Uploads ({videos().uploadLength})</ButtonTitle>
+            </li>
+            <li class={videosListItemClass}>
+              <CheckButton type="highlight" />
+              <ButtonTitle type="highlight">Hightlights ({videos().highlightLength})</ButtonTitle>
+            </li>
+          </ul>
+          <span class="border-l mx-2">&nbsp;</span>
+          <div>
+            <button type="button" class=""
+              onClick={() => setSelected({archive: true, upload: true, highlight: true})}
+            >Show all</button>
+          </div>
         </div>
-      </div>
-      <div class="mt-6">
-        <Show when={totalDisplayedVideos() === 0}>
-          No videos to display
-        </Show>
-        <ul class="flex flex-wrap -mb-6 -ml-3">
-          <For each={videos().data}>{(video) => {
-            const videoDate = new Date(video.published_at)
-            return (
-              <Show when={selected()[video.type]}>
-                <li class={`w-1/3 pl-3 pb-6`}>
-                  <Link class="hover:text-violet-700 hover:underline" href={video.url} title={video.title}>
-                    <div class="relative">
-                      <img src={video.thumbnail_url.replace("%{width}", IMG_STREAM_WIDTH.toString()).replace("%{height}", IMG_STREAM_HEIGHT.toString())} width={IMG_STREAM_WIDTH} height={IMG_STREAM_HEIGHT} />
-                      <span class={`opacity-90 absolute top-0 left-0 mt-1.5 ml-1.5 px-1 rounded-sm ${colors[video.type].default}`} title={`${videoTypeString[video.type]} video`}>
-                        {icons[video.type](4)}
-                      </span>
-                      <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5 text-gray-50">
-                        <span class="px-1 ml-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70">{video.duration.slice(0,-1).replace("h", ":").replace("m", ":")}</span>
-                        <span class="px-1 mr-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70" title={videoDate.toString()}>{twitchDateToString(videoDate)}</span>
+        <div class="mt-4">
+          <Show when={totalDisplayedVideos() === 0}>
+            No videos to display
+          </Show>
+          <ul class="flex flex-wrap -mb-6 -ml-3">
+            <For each={videos().data}>{(video) => {
+              const videoDate = new Date(video.published_at)
+              return (
+                <Show when={selected()[video.type]}>
+                  <li class={`w-1/3 pl-3 pb-6`}>
+                    <Link class="hover:text-violet-700 hover:underline" href={video.url} title={video.title}>
+                      <div class="relative">
+                        <img src={video.thumbnail_url.replace("%{width}", IMG_STREAM_WIDTH.toString()).replace("%{height}", IMG_STREAM_HEIGHT.toString())} width={IMG_STREAM_WIDTH} height={IMG_STREAM_HEIGHT} />
+                        <span class={`opacity-90 absolute top-0 left-0 mt-1.5 ml-1.5 px-1 rounded-sm ${colors[video.type].default}`} title={`${videoTypeString[video.type]} video`}>
+                          {icons[video.type](4)}
+                        </span>
+                        <div class="absolute bottom-0 left-0 flex justify-between w-full mb-1.5 text-gray-50">
+                          <span class="px-1 ml-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70">{video.duration.slice(0,-1).replace("h", ":").replace("m", ":")}</span>
+                          <span class="px-1 mr-1.5 text-sm bg-gray-800 rounded-sm bg-opacity-70" title={videoDate.toString()}>{twitchDateToString(videoDate)}</span>
+                        </div>
                       </div>
-                    </div>
-                    <div class="flex items-center">
-                      <p class="truncate">{video.title}</p>
-                      <span class="ml-1 w-4 h-4">
-                        <IconSprite id="external-link" class="fill-current w-4 h-4" />
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-              </Show>
-            );
-          }}</For>
-        </ul>
-        <ButtonFetchMore fetchResp={videosResp} onClick={() => setCursor(videosResp().pagination.cursor ?? "")} />
+                      <div class="flex items-center">
+                        <p class="truncate">{video.title}</p>
+                        <span class="ml-1 w-4 h-4">
+                          <IconSprite id="external-link" class="fill-current w-4 h-4" />
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                </Show>
+              );
+            }}</For>
+          </ul>
+          <ButtonFetchMore fetchResp={videosResp} onClick={() => setCursor(videosResp().pagination.cursor ?? "")} />
+        </div>
       </div>
     </>
   );
