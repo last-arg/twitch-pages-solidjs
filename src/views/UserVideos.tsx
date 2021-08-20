@@ -1,7 +1,7 @@
 import { Component, createResource, createSignal, createEffect, For, Show, Match, Switch } from 'solid-js';
 import { IMG_STREAM_WIDTH, IMG_STREAM_HEIGHT } from "../config";
 import { Link, useParams } from 'solid-app-router';
-import { HEADER_OPTS } from "../common";
+import { HEADER_OPTS, fetchStreamsByUserIds } from "../common";
 import { fetchUser, User } from "../user";
 import { IconSprite } from "../icons";
 import ButtonStreamFollow from "../components/ButtonStreamFollow";
@@ -180,34 +180,40 @@ const VideoList: Component<{user_id: string}> = (props) => {
 
   const videosListItemClass = `mx-2 rounded flex items-center`;
 
-  // TODO: make videos type filter into separate component
-  // Can be shown before first videos are shown
+  // TODO?: Move component out of VideoList so it can be displayed before videos have been fetched
+  // Either display before user is confirmed or after
+  const VideosFilter = () => {
+    return (
+      <div class="flex items-center text-base sticky z-10 top-10 py-3 gradient-to-b-white-to-transparent">
+        <h2>Videos:</h2>
+        <ul class="videos-selected flex">
+          <li class={videosListItemClass}>
+            <CheckButton type="archive" />
+            <ButtonTitle type="archive">Archives ({videos().archiveLength})</ButtonTitle>
+          </li>
+          <li class={videosListItemClass}>
+            <CheckButton type="upload" />
+            <ButtonTitle type="upload">Uploads ({videos().uploadLength})</ButtonTitle>
+          </li>
+          <li class={videosListItemClass}>
+            <CheckButton type="highlight" />
+            <ButtonTitle type="highlight">Hightlights ({videos().highlightLength})</ButtonTitle>
+          </li>
+        </ul>
+        <span class="border-l mx-2">&nbsp;</span>
+        <div>
+          <button type="button" class=""
+            onClick={() => setSelected({archive: true, upload: true, highlight: true})}
+          >Show all</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div class="relative">
-        <div class="flex items-center text-base bg-white sticky z-10 py-3" style="top: 40px">
-          <h2>Videos:</h2>
-          <ul class="videos-selected flex">
-            <li class={videosListItemClass}>
-              <CheckButton type="archive" />
-              <ButtonTitle type="archive">Archives ({videos().archiveLength})</ButtonTitle>
-            </li>
-            <li class={videosListItemClass}>
-              <CheckButton type="upload" />
-              <ButtonTitle type="upload">Uploads ({videos().uploadLength})</ButtonTitle>
-            </li>
-            <li class={videosListItemClass}>
-              <CheckButton type="highlight" />
-              <ButtonTitle type="highlight">Hightlights ({videos().highlightLength})</ButtonTitle>
-            </li>
-          </ul>
-          <span class="border-l mx-2">&nbsp;</span>
-          <div>
-            <button type="button" class=""
-              onClick={() => setSelected({archive: true, upload: true, highlight: true})}
-            >Show all</button>
-          </div>
-        </div>
+        <VideosFilter />
         <div class="mt-4">
           <Show when={totalDisplayedVideos() === 0}>
             No videos to display
@@ -258,6 +264,8 @@ const UserTitle: Component<TitleProps> = (props) => {
   const params = useParams()
   const titleDefault = {imgUrl: "", linkHref: "#", name: decodeURIComponent(params.name), id: undefined}
   const [data, setData] = createSignal<TitleSignal>(titleDefault)
+  const [stream] = createResource<Stream[] | undefined, string[]>(() => props.user && [props.user.id], fetchStreamsByUserIds, {initialValue: undefined})
+
 
   createEffect(() => {
     if (props.user) {
@@ -273,19 +281,32 @@ const UserTitle: Component<TitleProps> = (props) => {
   createEffect(() => params.name && setData(titleDefault))
 
   return (
-    <h1 class="flex items-center text-xl mt-5">
-      <Link class="group hover:text-purple-800 hover:underline" href={data().linkHref}>
-        <span class="flex items-center">
-          <img class="w-10 mr-3" src={data().imgUrl} alt="" width="300" height="300" />
-          <span>{data().name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <IconSprite id="external-link" class="fill-current text-trueGray-400 group-hover:text-purple-800 -ml-4 w-4 h-4" />
-        </span>
-      </Link>
+    <div class="flex items-center mt-5">
+      <h1 class="text-xl">
+        <Link class="group hover:text-purple-800 hover:underline" href={data().linkHref}>
+          <span class="flex items-center">
+            <img class="w-10 mr-3" src={data().imgUrl} alt="" width="300" height="300" />
+            <span>{data().name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <IconSprite id="external-link" class="fill-current text-trueGray-400 group-hover:text-purple-800 -ml-4 w-4 h-4" />
+          </span>
+        </Link>
+      </h1>
+      <Show when={!stream.loading && stream() && stream()[0]}>{(s) => {
+        return (
+          <>
+            <span class="text-trueGray-400 ml-3 mr-2 border-l h-full w-0">&nbsp;</span>
+            <a class="flex items-center" href={`https://www.twitch.tv/${s.user_login}`}>
+              <span>Live</span>
+              <IconSprite id="external-link" class="fill-current text-trueGray-400 group-hover:text-purple-800 ml-2 w-4 h-4" />
+            </a>
+          </>
+        );
+      }}</Show>
       <span class="text-trueGray-400 ml-8 mr-2 border-l h-full w-0">&nbsp;</span>
       <Show when={props.user}>{(user) =>
         <ButtonStreamFollow class="w-5 h-5 text-trueGray-400 hover:text-violet-500" user_login={user.login} user_name={user.display_name} user_id={user.id} />
       }</Show>
-    </h1>
+    </div>
   );
 };
 
@@ -294,6 +315,11 @@ const UserVideos: Component = () => {
   const [user] = createResource<User | undefined, string>(() => params.name, fetchUser, {initialValue: undefined})
 
   // TODO: if live link to twitch.tv user's video page
+  // 1) Make twitch stream request to see if user is live
+  // 2) Could assume user is live if first video doesn't have and image
+  // TODO: video that is being streamed doesn't have an image
+  // 1) Could get image link from twitch stream request
+  // 2) Contruct image link
 
   return (
     <>

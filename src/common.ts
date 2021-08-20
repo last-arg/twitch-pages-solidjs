@@ -167,7 +167,7 @@ export const fetchAndSetProfileImages = async (user_ids: string[]) => {
 
 // https://dev.twitch.tv/docs/api/reference#get-streams
 // NOTE: Twitch API has a limit 100 on how many user_ids can be added into one request
-const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
+export const fetchStreamsByUserIds = async (userIds: string[]): Promise<Stream[]> => {
   if (userIds.length === 0) return []
   const url = `https://api.twitch.tv/helix/streams?user_id=${userIds.join("&user_id=")}&first=100`;
   return (await (await fetch(url, HEADER_OPTS)).json()).data;

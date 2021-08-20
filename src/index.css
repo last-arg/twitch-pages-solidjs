@@ -10,3 +10,6 @@
   contain: strict
 }
 
+.gradient-to-b-white-to-transparent {
+  background-image: linear-gradient(to bottom, white 80%, transparent)
+}
