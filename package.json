@@ -1,7 +1,7 @@
 {
-  "name": "vite-solid-tailwind-starter",
+  "name": "twitch-pages-solidjs",
   "version": "1.0.0",
-  "description": "Starter using Vite + Solid + Tailwind CSS",
+  "description": "Twitch alternative page with solidjs",
   "scripts": {
     "start": "vite",
     "dev": "vite",

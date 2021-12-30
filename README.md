@@ -1,7 +1,5 @@
-# Twitch filter
-Filter live stream based on view count
+# Twitch pages [solidjs]
+Use twitch API to display simple alternatives to some twitch pages.
 
-
-# Explore
-[Multi page app/setup](https://vitejs.dev/guide/build.html#multi-page-app)
-
+# Motivation
+Explore [solidjs](https://www.solidjs.com/) JS user interface library. 
